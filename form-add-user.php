@@ -1,0 +1,932 @@
+<?php
+session_start();
+error_reporting(~E_NOTICE);
+if($_SESSION["user"] == "")
+{
+	echo "กรุณาลงชื่อเข้าใช้";
+	exit();
+}
+
+if($_SESSION["permission"] != "2" && $_SESSION["permission"] != "3")
+{
+	echo "ไม่อนุญาตให้เข้าใช้";
+	exit();
+}
+
+if($_SESSION["userID"] != $_GET['user'])
+{
+	echo "ข้อมูลผู้ใช้ไม่ถูกต้อง";
+	exit();
+}
+require 'dbconnect.php';
+date_default_timezone_set('Asia/Bangkok');
+
+// set variable and query
+$id = $_GET['i'];
+if ($id != "") {
+	$sql = "SELECT d.budget_year,ins.fullname,d.boss_name,usl.name as divi_name,d.inspect_type,d.inspect_date,d.inspect_no,d.inspect_doc,d.inspect_doc_date,d.personnel1,d.personnel2,d.personnel3,d.personnel4,d.personnel5,d.cm,d.fc,d.cc,d.case53,d.case_f,d.case132,d.case_sp,d.tr1,d.tr2,d.tr3,d.tr4,d.tr5,d.tr6,d.tr7,d.tr8 ";
+	$sql .= " FROM data d, inspector ins,userlogin usl WHERE d.division = usl.username and d.inspector = ins.id and d.id = '$id'";
+	$query = mysqli_query($conn, $sql);
+	$row = mysqli_fetch_assoc($query);
+
+
+	$locate = (!empty($row['type_locate']))?$row['type_locate']:'';
+	$keylocate = $locate=="1"? "sp":'tr';
+
+	if ($row['inspect_type'] == 1) {
+		$insType = "กรณีปกติ";
+	} elseif ($row['inspect_type'] == 2) {
+		$insType = "กรณีพิเศษ";
+	} else {
+		$insType = "กรณีบูรณาการ";
+	}
+}
+
+?>
+<!doctype html>
+<html lang="en">
+
+<!-- Head -->
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="css/style.css" type="text/css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+
+	<!-- Style CSS -->
+	<style>
+	body{
+		background-color: Ivory;
+	}
+	label {
+		font-size: 14px !important;
+	}
+	</style>
+
+	<title>เพิ่มข้อมูลของต่างจังหวัด</title>
+
+</head>
+
+<!-- Body -->
+<body>
+	<div class="container pt-3 text-center">
+		<h3><img src="./images/hd-13.jpg" width="1000" height="150"></h3>
+		<h3><?php if($menu=="add"){echo "เพิ่มข้อมูลการออกตรวจราชการ";}else{echo "แก้ไขข้อมูลการออกตรวจราชการ";} ?></h3>
+	</div>
+	<!-- Form -->
+	<div class="container p-2" style="max-width:800px;">
+		<div class="container p-2 text-right">
+			<!-- <a href="detail-report.php?p=1" target="_blank">ดูรายงานทั้งหมด</a> -->
+			<!--
+			|
+			<a href="detail-reply.php" target="_blank">ดูการตอบกลับทั้งหมด</a>
+		-->
+	</div>
+	<form name="report" action="form-add-user-sent.php" method="post" enctype="multipart/form-data" id="report-form">
+		<hr>
+		<!-- ==================================================== tab 1 ==================================================== -->
+		<!-- Text input -->
+		<div class="form-group row" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
+			<input type="hidden" name="menu" value="<?=$menu?>">
+			<input type="hidden" name="locate" value="<?=$locate?>">
+			<?php if(!empty($id)){echo "<input type='hidden' name='inid' value='$id'";} ?>
+
+			<label class="col-sm-12 col-form-label"></label>
+			<label class="col-sm-12 col-form-label"></label>
+
+			<label class="col-3 col-form-label bold">ปีงบประมาณ:</label>
+			<label class="col-9 col-form-label"><?=$row['budget_year']?></label>
+
+			<label class="col-3 col-form-label bold">ชื่อผู้ตรวจ:</label>
+			<label class="col-9 col-form-label"><?=$row['fullname']?></label>
+
+			<label class="col-sm-3 col-form-label bold">ชื่อหัวหน้าหน่วยงาน:</label>
+			<label class="col-9 col-form-label"><?=$row['boss_name']?></label>
+
+			<label class="col-sm-3 col-form-label bold">หน่วยรับการตรวจ:</label>
+			<label class="col-9 col-form-label"><?=$row['divi_name']?></label>
+
+			<label class="col-sm-3 col-form-label bold">ครั้งที่ติดตาม: </label>
+			<label class="col-9 col-form-label"><?=$insType?></label>
+
+			<label class="col-sm-3 col-form-label bold">วัน/เดือน/ปีที่ออกตรวจ:</label>
+			<label class="col-4 col-form-label"><?=DateThai($row['inspect_date'])?></label>
+			<label class="col-sm-2 col-form-label bold">รอบที่:</label>
+			<label class="col-3 col-form-label"><?=$row['inspect_no']?></label>
+
+			<label class="col-sm-3 col-form-label bold">อ้างถึง ยธ:</label>
+			<label class="col-4 col-form-label"><?=$row['inspect_doc']?></label>
+
+			<label class="col-sm-2 col-form-label bold">วันที่หนังสือ:</label>
+			<label class="col-3 col-form-label"><?=DateThai($row['inspect_doc_date'])?></label>
+
+			<!-- hr line  -->
+			<label class="col-sm-12 col-form-label"><hr></label>
+
+			<label class="col-sm-3 col-form-label bold"><li>อัตรากำลัง รวม:</li></label>
+			<label class="col-1 col-form-label"><?=$row['personnel1']+$row['personnel2']+$row['personnel3']+$row['personnel4']+$row['personnel5']?></label>
+			<label class="col-sm-8 col-form-label">คน &emsp;<b>จำแนกเป็น</b></label>
+
+			<label class="col-sm-3 col-form-label bold">ข้าราชการ:</label>
+			<label class="col-1 col-form-label"><?=$row['personnel1']?></label>
+			<label class="col-sm-3 col-form-label">คน</label>
+			<label class="col-sm-3 col-form-label bold">ลูกจ้างประจำ:</label>
+			<label class="col-1 col-form-label"><?=$row['personnel2']?></label>
+			<label class="col-sm-1 col-form-label">คน</label>
+
+			<label class="col-sm-3 col-form-label bold">พนักงานราชการ:</label>
+			<label class="col-1 col-form-label"><?=$row['personnel3']?></label>
+			<label class="col-sm-3 col-form-label">คน</label>
+			<label class="col-sm-3 col-form-label bold">ลูกจ้างชั่วคราว:</label>
+			<label class="col-1 col-form-label"><?=$row['personnel4']?></label>
+			<label class="col-sm-1 col-form-label">คน</label>
+
+
+			<label class="col-sm-3 col-form-label bold">จ้างเหมาบริการ:</label>
+			<label class="col-1 col-form-label"><?=$row['personnel5']?></label>
+			<label class="col-sm-3 col-form-label">คน</label>
+
+			<!-- hr line  -->
+			<label class="col-sm-12 col-form-label"><hr></label>
+
+			<?php
+			if ($keylocate == "sp") { // check if keylocate == sp
+				?>
+				<label class="col-sm-12 col-form-label bold"><li>ปริมาณคดีในสถานพินิจฯ (ข้อมูล ณ วันเข้ารับการตรวจ)</li></label>
+
+				<label class="col-sm-3 col-form-label bold">คดีอาญา:</label>
+				<label class="col-1 col-form-label"><?=$row['cm']?></label>
+				<label class="col-sm-3 col-form-label">คดี</label>
+				<label class="col-sm-3 col-form-label bold">คดีครอบครัว:</label>
+				<label class="col-1 col-form-label"><?=$row['fc']?></label>
+				<label class="col-sm-1 col-form-label">คดี</label>
+
+				<label class="col-sm-3 col-form-label bold">คดีกำกับการปกครอง:</label>
+				<label class="col-1 col-form-label"><?=$row['cc']?></label>
+				<label class="col-sm-8 col-form-label">คดี</label>
+
+				<!-- hr line  -->
+				<label class="col-sm-12 col-form-label"><hr></label>
+
+				<label class="col-sm-12 col-form-label bold"><li>ปริมาณเด็กและเยาวชนในสถานพินิจฯ</li></label>
+
+				<label class="col-sm-5 col-form-label bold">คดีตาม พ.ร.บ.ศาลเยาวชน พ.ศ. 2553:</label>
+				<label class="col-1 col-form-label"><?=$row['case53']?></label>
+				<label class="col-sm-6 col-form-label">คดี</label>
+
+				<label class="col-sm-5 col-form-label bold">คดีตาม พ.ร.บ.ฟื้นฟูฯ:</label>
+				<label class="col-1 col-form-label"><?=$row['case_f']?></label>
+				<label class="col-sm-6 col-form-label">คดี</label>
+
+				<label class="col-sm-5 col-form-label bold">คดีศาลมีคำสั่งมาตรา132 วรรค 2:</label>
+				<label class="col-1 col-form-label"><?=$row['case132']?></label>
+				<label class="col-sm-6 col-form-label">คดี</label>
+
+				<label class="col-sm-5 col-form-label bold">คดีศาลมีคำสั่งฝึกอบรมในสถานพินิจฯ:</label>
+				<label class="col-1 col-form-label"><?=$row['case_sp']?></label>
+				<label class="col-sm-6 col-form-label">คดี</label>
+
+				<?php
+			} elseif ($keylocate == "tr") { // check if keylocate == tr
+				?>
+
+				<label class="col-sm-12 col-form-label bold"><li>ปริมาณเด็กและเยาวชนในศูนย์ฝึกและอบรมฯ (ข้อมูล ณ วันเข้ารับการตรวจ)</li></label>
+
+				<label class="col-sm-3 col-form-label bold">ฝึกอบรมในศูนย์ฝึก:</label>
+				<label class="col-1 col-form-label"><?=$row['tr1']?></label>
+				<label class="col-sm-3 col-form-label">คน</label>
+				<label class="col-sm-3 col-form-label bold">ลาเยี่ยมบ้าน:</label>
+				<label class="col-1 col-form-label"><?=$row['tr2']?></label>
+				<label class="col-sm-1 col-form-label">คน</label>
+
+				<label class="col-sm-3 col-form-label bold" style="padding-top: 0px;">รักษาตัวที่สถาน<br>พยาบาล/บ้าน:</label>
+				<label class="col-1 col-form-label"><?=$row['tr3']?></label>
+				<label class="col-sm-3 col-form-label">คน</label>
+				<label class="col-sm-3 col-form-label bold">พักฝึกอบรม:</label>
+				<label class="col-1 col-form-label"><?=$row['tr4']?></label>
+				<label class="col-sm-1 col-form-label">คน</label>
+
+				<label class="col-sm-5 col-form-label bold" style="padding-top: 0px;">ออกไปศึกษา/ฝึกอาชีพภายนอก<br>แบบเช้าไปเย็นกลับ:</label>
+				<label class="col-1 col-form-label"><?=$row['tr5']?></label>
+				<label class="col-sm-6 col-form-label">คดี</label>
+
+				<label class="col-sm-5 col-form-label bold" style="padding-top: 0px;">ออกไปศึกษา/ฝึกอาชีพภายนอก<br>แบบพักค้างคืนข้างนอก:</label>
+				<label class="col-1 col-form-label"><?=$row['tr6']?></label>
+				<label class="col-sm-6 col-form-label">คดี</label>
+
+				<!-- hr line  -->
+				<label class="col-sm-12 col-form-label"><hr></label>
+
+				<label class="col-sm-12 col-form-label bold"><li>ปริมาณเด็กและเยาวชนที่ถูกจำหน่ายออกจากศูนย์ฝึกและอบรมฯ</li></label>
+
+				<label class="col-sm-3 col-form-label bold">เสียชีวิต:</label>
+				<label class="col-1 col-form-label"><?=$row['tr7']?></label>
+				<label class="col-sm-3 col-form-label">คน</label>
+				<label class="col-sm-3 col-form-label bold">หลบหนี:</label>
+				<label class="col-1 col-form-label"><?=$row['tr8']?></label>
+				<label class="col-sm-1 col-form-label">คน</label>
+
+				<?php
+			} // end if keylocate == tr
+			?>
+			<!-- hr line  -->
+			<label class="col-sm-12 col-form-label"></label>
+		</div>
+
+		<!-- activity 1 -->
+		<div class="form-group row" id="r1" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
+		  <label class="col-sm-12 col-form-label bold"><li>สรุปข้อสังเกต/ความเสี่ยง</li></label>
+			<label class="col-sm-12 col-form-label">&emsp;1. ข้อมูลทั่วไป</label>
+			<!-- activity 1.1 -->
+			<div class="col-sm-1"></div>
+			<label for="r1-1" class="col-sm-11 col-form-label">1.1 บุคลากร</label>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-11">
+				<textarea class="form-control" id="r1-1" name="r1-1" rows="2"><?=$row['r1_1']?></textarea>
+			</div>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input"  name="cb1-1[]" id="reason1-1" value="1" <?php if(strpos($row['cb1_1'],"1")!==false){echo "checked";}?>>
+				<label class="form-check-label">กบค</label>
+			</div>
+			<div class="col-sm-6" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb1-1[]" id="reason1-1" value="2" <?php if(strpos($row['cb1_1'],"2")!==false){echo "checked";}?>>
+				<label class="form-check-label">JDI</label>
+				<!-- close activity 1.1 -->
+			</div>
+			<!-- activity 1.2 -->
+			<div class="col-sm-1"></div>
+			<label for="r1-2" class="col-sm-11 col-form-label">1.2 งบประมาณ</label>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-11">
+				<textarea class="form-control" id="r1-2" name="r1-2" rows="2"><?=$row['r1_2']?></textarea>
+			</div>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb1-2[]" id="reason1-2" value="3" <?php if(strpos($row['cb1_2'],"3")!==false){echo "checked";}?>>
+				<label class="form-check-label">แผน</label>
+			</div>
+			<div class="col-sm-6" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb1-2[]" id="reason1-2" value="4" <?php if(strpos($row['cb1_2'],"4")!==false){echo "checked";}?>>
+				<label class="form-check-label">คลัง</label>
+				<!-- close activity 1.2 -->
+			</div>
+			<!-- activity 1.3 -->
+			<div class="col-sm-1"></div>
+			<label for="r1-3" class="col-sm-11 col-form-label">1.3 อาคารสถานที่</label>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-11">
+				<textarea class="form-control" id="r1-3" name="r1-3" rows="2"><?=$row['r1_3']?></textarea>
+			</div>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb1-3[]" id="reason1-3" value="3" <?php if(strpos($row['cb1_3'],"3")!==false){echo "checked";}?>>
+				<label class="form-check-label">แผน</label>
+			</div>
+			<div class="col-sm-6" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb1-3[]" id="reason1-3" value="4" <?php if(strpos($row['cb1_3'],"4")!==false){echo "checked";}?>>
+				<label class="form-check-label">คลัง</label>
+				<!-- close activity 1.3 -->
+			</div>
+			<!-- activity 1.4 -->
+			<div class="col-sm-1"></div>
+			<label for="r1-4" class="col-sm-11 col-form-label">1.4 ยานพาหนะ</label>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-11">
+				<textarea class="form-control" id="r1-4" name="r1-4" rows="2"><?=$row['r1_4']?></textarea>
+			</div>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb1-4[]" id="reason1-4" value="3" <?php if(strpos($row['cb1_4'],"3")!==false){echo "checked";}?>>
+				<label class="form-check-label">แผน</label>
+			</div>
+			<div class="col-sm-6" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb1-4[]" id="reason1-4" value="4" <?php if(strpos($row['cb1_4'],"4")!==false){echo "checked";}?>>
+				<label class="form-check-label">คลัง</label>
+				<!-- close activity 1.4 -->
+			</div>
+			<!-- activity 1.5 -->
+			<div class="col-sm-1"></div>
+			<label for="r1-5" class="col-sm-11 col-form-label">1.5 ตัวชี้วัดตามคำรับรอง</label>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-11">
+				<textarea class="form-control" id="r1-5" name="r1-5" rows="2"><?=$row['r1_5']?></textarea>
+			</div>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb1-5[]" id="reason1-5" value="5" <?php if(strpos($row['cb1_5'],"5")!==false){echo "checked";}?>>
+				<label class="form-check-label">กพร</label>
+			</div>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb1-5[]" id="reason1-5" value="6" <?php if(strpos($row['cb1_5'],"6")!==false){echo "checked";}?>>
+				<label class="form-check-label">กพย</label>
+			</div>
+			<div class="col-sm-5" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb1-5[]" id="reason1-5" value="7" <?php if(strpos($row['cb1_5'],"7")!==false){echo "checked";}?>>
+				<label class="form-check-label">กองสุขภาพ</label>
+				<!-- close activity 1.5 -->
+			</div>
+			<!-- close activity 1 form -->
+		</div>
+
+		<!-- activity 2 -->
+		<div class="form-group row" id="r2" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
+			<label class="col-sm-12 col-form-label" style="cursor: pointer;" onclick="qqq()">2. แผนงาน/โครงการที่ส่งผลกระทบสูงต่อภารกิจหลักของกรม</label>
+			<!-- activity 2.1 -->
+			<div class="col-sm-1"></div>
+			<label for="r2-1" class="col-sm-11 col-form-label">2.1 การรับตัวเด็กและเยาวชน</label>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-11">
+				<textarea class="form-control" id="r2-1" name="r2-1" rows="2"><?=$row['r2_1']?></textarea>
+			</div>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb2-1[]" id="reason2-1" value="6" <?php if(strpos($row['cb2_1'],"6")!==false){echo "checked";}?>>
+				<label class="form-check-label">กพย</label>
+			</div>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb2-1[]" id="reason2-1" value="2" <?php if(strpos($row['cb2_1'],"2")!==false){echo "checked";}?>>
+				<label class="form-check-label">JDI</label>
+			</div>
+			<div class="col-sm-5" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb2-1[]" id="reason2-1" value="7" <?php if(strpos($row['cb2_1'],"7")!==false){echo "checked";}?>>
+				<label class="form-check-label">กองสุขภาพ</label>
+				<!-- close activity 2.1 -->
+			</div>
+			<!-- activity 2.2 -->
+			<div class="col-sm-1"></div>
+			<label for="r2-2" class="col-sm-11 col-form-label">2.2 <?php if($keylocate=="sp"){echo "การประเมินความเสี่ยงและความจำเป็น";}else{echo "การจำแนกและจัดทำแผนฝุกอบรมรายบุคคล";}?></label>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-11">
+				<textarea class="form-control" id="r2-2" name="r2-2" rows="2"><?=$row['r2_2']?></textarea>
+			</div>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb2-2[]" id="reason2-2" value="6" <?php if(strpos($row['cb2_2'],"6")!==false){echo "checked";}?>>
+				<label class="form-check-label">กพย</label>
+			</div>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb2-2[]" id="reason2-2" value="2" <?php if(strpos($row['cb2_2'],"2")!==false){echo "checked";}?>>
+				<label class="form-check-label">JDI</label>
+			</div>
+			<div class="col-sm-5" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb2-2[]" id="reason2-2" value="7" <?php if(strpos($row['cb2_2'],"7")!==false){echo "checked";}?>>
+				<label class="form-check-label">กองสุขภาพ</label>
+				<!-- close activity 2.2 -->
+			</div>
+			<!-- activity 2.3 -->
+			<div class="col-sm-1"></div>
+			<label for="r2-3" class="col-sm-11 col-form-label">2.3 <?php if($keylocate=="sp"){echo "การส่งต่อนักวิชาชีพเพื่อประเมินเฉพาะด้าน";}else{echo "การฝึกอบรม/การบำบัด";}?></label>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-11">
+				<textarea class="form-control" id="r2-3" name="r2-3" rows="2"><?=$row['r2_3']?></textarea>
+			</div>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb2-3[]" id="reason2-3" value="6" <?php if(strpos($row['cb2_3'],"6")!==false){echo "checked";}?>>
+				<label class="form-check-label">กพย</label>
+			</div>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb2-3[]" id="reason2-3" value="2" <?php if(strpos($row['cb2_3'],"2")!==false){echo "checked";}?>>
+				<label class="form-check-label">JDI</label>
+			</div>
+			<div class="col-sm-5" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb2-3[]" id="reason2-3" value="7" <?php if(strpos($row['cb2_3'],"7")!==false){echo "checked";}?>>
+				<label class="form-check-label">กองสุขภาพ</label>
+				<!-- close activity 2.3 -->
+			</div>
+			<!-- activity 2.4 -->
+			<div class="col-sm-1"></div>
+			<label for="r2-4" class="col-sm-11 col-form-label">2.4 <?php if($keylocate=="sp"){echo "การรายงานข้อเท็จจริง";}else{echo "เกษตรอินทรีย์";}?></label>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-11">
+				<textarea class="form-control" id="r2-4" name="r2-4" rows="2"><?=$row['r2_4']?></textarea>
+			</div>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb2-4[]" id="reason2-4" value="6" <?php if(strpos($row['cb2_4'],"6")!==false){echo "checked";}?>>
+				<label class="form-check-label">กพย</label>
+			</div>
+			<div class="col-sm-6" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb2-4[]" id="reason2-4" value="2" <?php if(strpos($row['cb2_4'],"2")!==false){echo "checked";}?>>
+				<label class="form-check-label">JDI</label>
+				<!-- close activity 2.4 -->
+			</div>
+			<!-- activity 2.5 -->
+			<div class="col-sm-1"></div>
+			<label for="r2-5" class="col-sm-11 col-form-label">2.5 <?php if($keylocate=="sp"){echo "การดำเนินงานตามมาตรการพิเศษ";}else{echo "ห้องเรียนกีฬา";}?></label>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-11">
+				<textarea class="form-control" id="r2-5" name="r2-5" rows="2"><?=$row['r2_5']?></textarea>
+			</div>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<div class="col-sm-1" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb2-5[]" id="reason2-5" value="6" <?php if(strpos($row['cb2_5'],"6")!==false){echo "checked";}?>>
+				<label class="form-check-label">กพย</label>
+			</div>
+			<div class="col-sm-6" style="margin-top: 8px;">
+				<input type="checkbox" class="form-check-input" name="cb2-5[]" id="reason2-5" value="2" <?php if(strpos($row['cb2_5'],"2")!==false){echo "checked";}?>>
+				<label class="form-check-label">JDI</label>
+				<!-- close activity 2.5 -->
+			</div>
+			<!-- activity 2.6 -->
+			<div class="col-sm-1"></div>
+			<label for="r2-6" class="col-sm-11 col-form-label">2.6 <?php if($keylocate=="sp"){echo "การลงข้อมูลในระบบ CM ของเด็กและเยาวชนถูกต้องครบถ้วน";}else{echo "การจัดการศึกษาสามัญ อาชีวศึกษาและอุดมศึกษา";}?></label>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-11">
+				<textarea class="form-control" id="r2-6" name="r2-6" rows="2"><?=$row['r2_6']?></textarea>
+			</div>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<?php
+			if ($keylocate == "sp") { // check if from SP
+				?>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb2-6[]" id="reason2-6" value="6" <?php if(strpos($row['cb2_6'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb2-6[]" id="reason2-6" value="2" <?php if(strpos($row['cb2_6'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+				</div>
+				<div class="col-sm-5" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb2-6[]" id="reason2-6" value="7" <?php if(strpos($row['cb2_6'],"7")!==false){echo "checked";}?>>
+					<label class="form-check-label">กองสุขภาพ</label>
+					<!-- close activity 2.6 from SP -->
+				</div>
+				<?php
+			} else { // cheeck if from TR
+				?>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb2-6[]" id="reason2-6" value="6" <?php if(strpos($row['cb2_6'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-6" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb2-6[]" id="reason2-6" value="2" <?php if(strpos($row['cb2_6'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+					<!-- close activity 2.6 from TR -->
+				</div>
+				<!-- activity 2.7 -->
+				<div class="col-sm-1"></div>
+				<label for="r2-7" class="col-sm-11 col-form-label">2.7 การลงข้อมูลในระบบ TR ของเด็กและเยาวชนถูกต้อง</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r2-7" name="r2-7" rows="2"><?=$row['r2_7']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb2-7[]" id="reason2-7" value="6" <?php if(strpos($row['cb2_7'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb2-7[]" id="reason2-7" value="2" <?php if(strpos($row['cb2_7'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+				</div>
+				<div class="col-sm-5" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb2-7[]" id="reason2-7" value="7" <?php if(strpos($row['cb2_7'],"7")!==false){echo "checked";}?>>
+					<label class="form-check-label">กองสุขภาพ</label>
+				</div>
+				<!-- close activity 2.7 -->
+				<?php
+			}
+			?>
+			<!-- close activity 2 form -->
+		</div>
+
+		<?php
+		if ($keylocate == "sp") { // -------------------------------- check if from SP ------------------------------- //
+			?>
+			<!-- activity 3 from SP -->
+			<div class="form-group row" id="r3" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
+				<label class="col-sm-12 col-form-label" style="cursor: pointer;" onclick="qqq()">3. การรักษาและเพิ่มมาตรฐานการปฏิบัติงาน</label>
+				<!-- activity 3.1 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-1" class="col-sm-11 col-form-label">3.1 งานด้านคดี</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-1" name="r3-1" rows="2"><?=$row['r3_1']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-1[]" id="reason3-1" value="6" <?php if(strpos($row['cb3_1'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-1[]" id="reason3-1" value="2"  <?php if(strpos($row['cb3_1'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+				</div>
+				<div class="col-sm-5" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-1[]" id="reason3-1" value="7"  <?php if(strpos($row['cb3_1'],"7")!==false){echo "checked";}?>>
+					<label class="form-check-label">กองสุขภาพ</label>
+					<!-- close activity 3.1 -->
+				</div>
+				<!-- activity 3.2 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-2" class="col-sm-11 col-form-label">3.2 งานรักษาความมั่นคงปลอดภัย</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-2" name="r3-2" rows="2"><?=$row['r3_2']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-2[]" id="reason3-2" value="6" <?php if(strpos($row['cb3_2'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-6" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-2[]" id="reason3-2" value="2" <?php if(strpos($row['cb3_2'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+					<!-- close activity 3.2 -->
+				</div>
+				<!-- activity 3.3 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-3" class="col-sm-11 col-form-label">3.3 การควบคุมดูแลเด็กและเยาวชนในสถานควบคุม</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-3" name="r3-3" rows="2"><?=$row['r3_3']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-3[]" id="reason3-3" value="6" <?php if(strpos($row['cb3_3'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-3[]" id="reason3-3" value="2" <?php if(strpos($row['cb3_3'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+				</div>
+				<div class="col-sm-5" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-3[]" id="reason3-3" value="7" <?php if(strpos($row['cb3_3'],"7")!==false){echo "checked";}?>>
+					<label class="form-check-label">กองสุขภาพ</label>
+					<!-- close activity 3.3 -->
+				</div>
+				<!-- activity 3.4 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-4" class="col-sm-11 col-form-label">3.4 การแก้ไขบำบัดฟื้นฟูเด็กและเยาวชน</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-4" name="r3-4" rows="2"><?=$row['r3_4']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="6" <?php if(strpos($row['cb3_4'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="2" <?php if(strpos($row['cb3_4'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+				</div>
+				<div class="col-sm-5" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="7" <?php if(strpos($row['cb3_4'],"7")!==false){echo "checked";}?>>
+					<label class="form-check-label">กองสุขภาพ</label>
+					<!-- close activity 3.4 -->
+				</div>
+				<!-- activity 3.5 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-5" class="col-sm-11 col-form-label">3.5 การป้องกันและปราบปรามการทุจริตประพฤติมิชอบ</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-5" name="r3-5" rows="2"><?=$row['r3_5']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-5[]" id="reason3-5" value="1" <?php if(strpos($row['cb3_5'],"1")!==false){echo "checked";}?>>
+					<label class="form-check-label">กบค</label>
+				</div>
+				<div class="col-sm-6" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-5[]" id="reason3-5" value="2" <?php if(strpos($row['cb3_5'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+					<!-- close activity 3.5 -->
+				</div>
+				<!-- activity 3.6 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-6" class="col-sm-11 col-form-label">3.6 การสนับสนุนของเครือข่าย</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-6" name="r3-6" rows="2"><?=$row['r3_6']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-6[]" id="reason3-6" value="6" <?php if(strpos($row['cb3_6'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-6" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-6[]" id="reason3-6" value="2" <?php if(strpos($row['cb3_6'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+					<!-- close activity 3.6 -->
+				</div>
+				<!-- activity 3.7 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-7" class="col-sm-11 col-form-label">3.7 การประหยัดพลังงานและทรัพยากร</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-7" name="r3-7" rows="2"><?=$row['r3_7']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-7[]" id="reason3-7" value="4" <?php if(strpos($row['cb3_7'],"4")!==false){echo "checked";}?>>
+					<label class="form-check-label">คลัง</label>
+				</div>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-7[]" id="reason3-7" value="5" <?php if(strpos($row['cb3_7'],"5")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพร</label>
+				</div>
+				<div class="col-sm-5" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-7[]" id="reason3-7" value="2" <?php if(strpos($row['cb3_7'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+					<!-- close activity 3.7 -->
+				</div>
+				<!-- activity 3.8 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-8" class="col-sm-11 col-form-label">3.8 การดำเนินงานด้านการเงินการคลัง</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-8" name="r3-8" rows="2"><?=$row['r3_8']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-8[]" id="reason3-8" value="4" <?php if(strpos($row['cb3_8'],"4")!==false){echo "checked";}?>>
+					<label class="form-check-label">คลัง</label>
+				</div>
+				<div class="col-sm-6" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-8[]" id="reason3-8" value="2" <?php if(strpos($row['cb3_8'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+					<!-- close activity 3.8 -->
+				</div>
+				<!-- activity 3.9 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-9" class="col-sm-11 col-form-label">3.9 การอำนวยความยุติธรรมและการป้องกันปัญหาเด็กและเยาวชน</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-9" name="r3-9" rows="2"><?=$row['r3_9']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-7" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-9[]" id="reason3-9" value="6" <?php if(strpos($row['cb3_9'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+					<!-- close activity 3.9 -->
+				</div>
+				<!-- activity 3.10 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-10" class="col-sm-11 col-form-label">3.10 การสนับสนุนภารกิจของสถานพินิจ</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-10" name="r3-10" rows="2"><?=$row['r3_10']?></textarea>
+					<!-- close activity 3.10 -->
+				</div>
+				<label class="col-sm-1 col-form-label"></label>
+				<!-- close activity 3 form SP -->
+			</div>
+			<?php
+		} else { // ------------------------------- check if from TR ------------------------------- //
+			?>
+			<!-- activity 3 from TR -->
+			<div class="form-group row" id="r3" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
+				<label class="col-sm-12 col-form-label" style="cursor: pointer;" onclick="qqq()">3. การรักษาและเพิ่มมาตรฐานการปฏิบัติงาน</label>
+				<!-- activity 3.1 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-1" class="col-sm-11 col-form-label">3.1 การรังานรักษาความมั่นคงปลอดภัย</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-1" name="r3-1" rows="2"><?=$row['r3_1']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-1[]" id="reason3-1" value="6" <?php if(strpos($row['cb3_1'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-6" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-1[]" id="reason3-1" value="2" <?php if(strpos($row['cb3_1'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+					<!-- close activity 3.1 -->
+				</div>
+				<!-- activity 3.2 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-2" class="col-sm-11 col-form-label">3.2 การบริการที่เป็นมิตรแก่เด็กและเยาวชน</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-2" name="r3-2" rows="2"><?=$row['r3_2']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-2[]" id="reason3-2" value="6" <?php if(strpos($row['cb3_2'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-2[]" id="reason3-2" value="2" <?php if(strpos($row['cb3_2'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+				</div>
+				<div class="col-sm-5" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-2[]" id="reason3-2" value="7" <?php if(strpos($row['cb3_2'],"7")!==false){echo "checked";}?>>
+					<label class="form-check-label">กองสุขภาพ</label>
+					<!-- close activity 3.3 -->
+				</div>
+				<!-- activity 3.3 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-3" class="col-sm-11 col-form-label">3.3 การรับตัวเด็กและเยาวชน</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-3" name="r3-3" rows="2"><?=$row['r3_3']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-3[]" id="reason3-3" value="6" <?php if(strpos($row['cb3_3'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-6" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-3[]" id="reason3-3" value="2" <?php if(strpos($row['cb3_3'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+					<!-- close activity 3.3 -->
+				</div>
+				<!-- activity 3.4 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-4" class="col-sm-11 col-form-label">3.4 การบำบัดแก้ไขฟื้นฟูเด็กและเยาวชน</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-4" name="r3-4" rows="2"><?=$row['r3_4']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="6" <?php if(strpos($row['cb3_4'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="2" <?php if(strpos($row['cb3_4'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+				</div>
+				<div class="col-sm-5" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="7" <?php if(strpos($row['cb3_4'],"7")!==false){echo "checked";}?>>
+					<label class="form-check-label">กองสุขภาพ</label>
+					<!-- close activity 3.4 -->
+				</div>
+				<!-- activity 3.5 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-5" class="col-sm-11 col-form-label">3.5 การประชุมคณะกรรมการสหวิชาชีพ</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-5" name="r3-5" rows="2"><?=$row['r3_5']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-5[]" id="reason3-5" value="6" <?php if(strpos($row['cb3_5'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-5[]" id="reason3-5" value="2" <?php if(strpos($row['cb3_5'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+				</div>
+				<div class="col-sm-5" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-5[]" id="reason3-5" value="7" <?php if(strpos($row['cb3_5'],"7")!==false){echo "checked";}?>>
+					<label class="form-check-label">กองสุขภาพ</label>
+					<!-- close activity 3.5 -->
+				</div>
+				<!-- activity 3.6 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-6" class="col-sm-11 col-form-label">3.6 การติดตามภายหลังปล่อย</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-6" name="r3-6" rows="2"><?=$row['r3_6']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-1" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-6[]" id="reason3-6" value="6" <?php if(strpos($row['cb3_6'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+				</div>
+				<div class="col-sm-6" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-6[]" id="reason3-6" value="2" <?php if(strpos($row['cb3_6'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
+					<!-- close activity 3.6 -->
+				</div>
+				<!-- activity 3.7 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-7" class="col-sm-11 col-form-label">3.7 การดำเนินแงานป้องกันและปราบปรามการทุจริตประพฤติมิชอบ</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-7" name="r3-7" rows="2"><?=$row['r3_7']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-7" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-7[]" id="reason3-7" value="1" <?php if(strpos($row['cb3_7'],"1")!==false){echo "checked";}?>>
+					<label class="form-check-label">กบค</label>
+					<!-- close activity 3.7 -->
+				</div>
+				<!-- activity 3.8 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-8" class="col-sm-11 col-form-label">3.8 การสนับสนุนดำเนินงานของเครือข่าย</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-8" name="r3-8" rows="2"><?=$row['r3_8']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-7" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-8[]" id="reason3-8" value="6"<?php if(strpos($row['cb3_8'],"6")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพย</label>
+					<!-- close activity 3.8 -->
+				</div>
+				<!-- activity 3.9 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-9" class="col-sm-11 col-form-label">3.9 การประหยัดพลังงาน</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-9" name="r3-9" rows="2"><?=$row['r3_9']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class="col-sm-7" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-9[]" id="reason3-9" value="4"<?php if(strpos($row['cb3_9'],"4")!==false){echo "checked";}?>>
+					<label class="form-check-label">คลัง</label>
+					<!-- close activity 3.9 -->
+				</div>
+				<!-- activity 3.10 -->
+				<div class="col-sm-1"></div>
+				<label for="r3-10" class="col-sm-11 col-form-label">3.10 การเงินการคลัง</label>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="r3-10" name="r3-10" rows="2"><?=$row['r3_10']?></textarea>
+				</div>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<div class=" col-sm-7" style="margin-top: 8px;">
+					<input type="checkbox" class="form-check-input" name="cb3-10[]" id="reason3-10" value="4"<?php if(strpos($row['cb3_10'],"4")!==false){echo "checked";}?>>
+					<label class="form-check-label">คลัง</label>
+					<!-- close activity 3.10 -->
+				</div>
+				<label class="col-sm-1 col-form-label"></label>
+				<!-- close activity 3 form TR -->
+			</div>
+			<?php
+		} // end if check from TR
+		?>
+		<hr>
+		<!-- /Upload input -->
+		<div class="form-group text-right">
+			<div>
+				<button type="submit" class="btn btn-primary">Submit</button>
+			</div>
+		</div>
+	</form>
+	<div class="text-center">
+		<a href="javascript:window.close()">ปิดหน้าต่าง</a> |
+		<a href="logout.php">Logout</a>
+	</div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+<script src="js/scripts.js" ></script>
+<!-- JScript -->
+<script>
+function sumpersonnel(){
+	var p1=	document.getElementById('personnel1').value;
+	var p2=	document.getElementById('personnel2').value;
+	var p3=	document.getElementById('personnel3').value;
+	var p4=	document.getElementById('personnel4').value;
+	var p5=	document.getElementById('personnel5').value;
+
+	if(p1=="")		p1=0;
+	if(p2=="")		p2=0;
+	if(p3=="")		p3=0;
+	if(p4=="")		p4=0;
+	if(p5=="")		p5=0;
+
+	document.getElementById('sum_personnel').value=parseInt(p1)+parseInt(p2)+parseInt(p3)+parseInt(p4)+parseInt(p5);
+}
+
+function menutrip(x) {
+	x.classList.toggle("change");
+}
+</script>
+</body>
+</html>
