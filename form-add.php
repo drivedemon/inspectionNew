@@ -387,7 +387,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 				<textarea class="form-control" id="r1-1" name="r1-1" rows="2"><?=$row['r1_1']?></textarea>
 			</div>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 			<div class="col-sm-1" style="margin-top: 8px;">
 				<input type="checkbox" class="form-check-input"  name="cb1-1[]" id="reason1-1" value="1" <?php if(strpos($row['cb1_1'],"1")!==false){echo "checked";}?>>
 				<label class="form-check-label">กบค</label>
@@ -405,7 +405,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 				<textarea class="form-control" id="r1-2" name="r1-2" rows="2"><?=$row['r1_2']?></textarea>
 			</div>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 			<div class="col-sm-1" style="margin-top: 8px;">
 				<input type="checkbox" class="form-check-input" name="cb1-2[]" id="reason1-2" value="3" <?php if(strpos($row['cb1_2'],"3")!==false){echo "checked";}?>>
 				<label class="form-check-label">แผน</label>
@@ -423,7 +423,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 				<textarea class="form-control" id="r1-3" name="r1-3" rows="2"><?=$row['r1_3']?></textarea>
 			</div>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 			<div class="col-sm-1" style="margin-top: 8px;">
 				<input type="checkbox" class="form-check-input" name="cb1-3[]" id="reason1-3" value="3" <?php if(strpos($row['cb1_3'],"3")!==false){echo "checked";}?>>
 				<label class="form-check-label">แผน</label>
@@ -441,7 +441,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 				<textarea class="form-control" id="r1-4" name="r1-4" rows="2"><?=$row['r1_4']?></textarea>
 			</div>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 			<div class="col-sm-1" style="margin-top: 8px;">
 				<input type="checkbox" class="form-check-input" name="cb1-4[]" id="reason1-4" value="3" <?php if(strpos($row['cb1_4'],"3")!==false){echo "checked";}?>>
 				<label class="form-check-label">แผน</label>
@@ -459,7 +459,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 				<textarea class="form-control" id="r1-5" name="r1-5" rows="2"><?=$row['r1_5']?></textarea>
 			</div>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 			<div class="col-sm-1" style="margin-top: 8px;">
 				<input type="checkbox" class="form-check-input" name="cb1-5[]" id="reason1-5" value="5" <?php if(strpos($row['cb1_5'],"5")!==false){echo "checked";}?>>
 				<label class="form-check-label">กพร</label>
@@ -487,7 +487,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 				<textarea class="form-control" id="r2-1" name="r2-1" rows="2"><?=$row['r2_1']?></textarea>
 			</div>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 			<div class="col-sm-1" style="margin-top: 8px;">
 				<input type="checkbox" class="form-check-input" name="cb2-1[]" id="reason2-1" value="6" <?php if(strpos($row['cb2_1'],"6")!==false){echo "checked";}?>>
 				<label class="form-check-label">กพย</label>
@@ -509,7 +509,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 				<textarea class="form-control" id="r2-2" name="r2-2" rows="2"><?=$row['r2_2']?></textarea>
 			</div>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 			<div class="col-sm-1" style="margin-top: 8px;">
 				<input type="checkbox" class="form-check-input" name="cb2-2[]" id="reason2-2" value="6" <?php if(strpos($row['cb2_2'],"6")!==false){echo "checked";}?>>
 				<label class="form-check-label">กพย</label>
@@ -531,7 +531,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 				<textarea class="form-control" id="r2-3" name="r2-3" rows="2"><?=$row['r2_3']?></textarea>
 			</div>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 			<div class="col-sm-1" style="margin-top: 8px;">
 				<input type="checkbox" class="form-check-input" name="cb2-3[]" id="reason2-3" value="6" <?php if(strpos($row['cb2_3'],"6")!==false){echo "checked";}?>>
 				<label class="form-check-label">กพย</label>
@@ -553,7 +553,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 				<textarea class="form-control" id="r2-4" name="r2-4" rows="2"><?=$row['r2_4']?></textarea>
 			</div>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 			<div class="col-sm-1" style="margin-top: 8px;">
 				<input type="checkbox" class="form-check-input" name="cb2-4[]" id="reason2-4" value="6" <?php if(strpos($row['cb2_4'],"6")!==false){echo "checked";}?>>
 				<label class="form-check-label">กพย</label>
@@ -571,7 +571,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 				<textarea class="form-control" id="r2-5" name="r2-5" rows="2"><?=$row['r2_5']?></textarea>
 			</div>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 			<div class="col-sm-1" style="margin-top: 8px;">
 				<input type="checkbox" class="form-check-input" name="cb2-5[]" id="reason2-5" value="6" <?php if(strpos($row['cb2_5'],"6")!==false){echo "checked";}?>>
 				<label class="form-check-label">กพย</label>
@@ -589,7 +589,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 				<textarea class="form-control" id="r2-6" name="r2-6" rows="2"><?=$row['r2_6']?></textarea>
 			</div>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 			<?php
 			if ($keylocate == "sp") { // check if from SP
 				?>
@@ -626,7 +626,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r2-7" name="r2-7" rows="2"><?=$row['r2_7']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb2-7[]" id="reason2-7" value="6" <?php if(strpos($row['cb2_7'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -660,7 +660,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-1" name="r3-1" rows="2"><?=$row['r3_1']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-1[]" id="reason3-1" value="6" <?php if(strpos($row['cb3_1'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -682,7 +682,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-2" name="r3-2" rows="2"><?=$row['r3_2']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-2[]" id="reason3-2" value="6" <?php if(strpos($row['cb3_2'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -700,7 +700,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-3" name="r3-3" rows="2"><?=$row['r3_3']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-3[]" id="reason3-3" value="6" <?php if(strpos($row['cb3_3'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -722,7 +722,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-4" name="r3-4" rows="2"><?=$row['r3_4']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="6" <?php if(strpos($row['cb3_4'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -744,7 +744,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-5" name="r3-5" rows="2"><?=$row['r3_5']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-5[]" id="reason3-5" value="1" <?php if(strpos($row['cb3_5'],"1")!==false){echo "checked";}?>>
 					<label class="form-check-label">กบค</label>
@@ -762,7 +762,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-6" name="r3-6" rows="2"><?=$row['r3_6']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-6[]" id="reason3-6" value="6" <?php if(strpos($row['cb3_6'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -780,7 +780,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-7" name="r3-7" rows="2"><?=$row['r3_7']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-7[]" id="reason3-7" value="4" <?php if(strpos($row['cb3_7'],"4")!==false){echo "checked";}?>>
 					<label class="form-check-label">คลัง</label>
@@ -802,7 +802,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-8" name="r3-8" rows="2"><?=$row['r3_8']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-8[]" id="reason3-8" value="4" <?php if(strpos($row['cb3_8'],"4")!==false){echo "checked";}?>>
 					<label class="form-check-label">คลัง</label>
@@ -820,7 +820,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-9" name="r3-9" rows="2"><?=$row['r3_9']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-7" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-9[]" id="reason3-9" value="6" <?php if(strpos($row['cb3_9'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -851,7 +851,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-1" name="r3-1" rows="2"><?=$row['r3_1']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-1[]" id="reason3-1" value="6" <?php if(strpos($row['cb3_1'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -869,7 +869,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-2" name="r3-2" rows="2"><?=$row['r3_2']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-2[]" id="reason3-2" value="6" <?php if(strpos($row['cb3_2'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -891,7 +891,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-3" name="r3-3" rows="2"><?=$row['r3_3']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-3[]" id="reason3-3" value="6" <?php if(strpos($row['cb3_3'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -909,7 +909,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-4" name="r3-4" rows="2"><?=$row['r3_4']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="6" <?php if(strpos($row['cb3_4'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -931,7 +931,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-5" name="r3-5" rows="2"><?=$row['r3_5']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-5[]" id="reason3-5" value="6" <?php if(strpos($row['cb3_5'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -953,7 +953,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-6" name="r3-6" rows="2"><?=$row['r3_6']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-1" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-6[]" id="reason3-6" value="6" <?php if(strpos($row['cb3_6'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -971,7 +971,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-7" name="r3-7" rows="2"><?=$row['r3_7']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-7" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-7[]" id="reason3-7" value="1" <?php if(strpos($row['cb3_7'],"1")!==false){echo "checked";}?>>
 					<label class="form-check-label">กบค</label>
@@ -985,7 +985,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-8" name="r3-8" rows="2"><?=$row['r3_8']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-7" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-8[]" id="reason3-8" value="6"<?php if(strpos($row['cb3_8'],"6")!==false){echo "checked";}?>>
 					<label class="form-check-label">กพย</label>
@@ -999,7 +999,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-9" name="r3-9" rows="2"><?=$row['r3_9']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class="col-sm-7" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-9[]" id="reason3-9" value="4"<?php if(strpos($row['cb3_9'],"4")!==false){echo "checked";}?>>
 					<label class="form-check-label">คลัง</label>
@@ -1013,7 +1013,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<textarea class="form-control" id="r3-10" name="r3-10" rows="2"><?=$row['r3_10']?></textarea>
 				</div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชการกรม :</label>
 				<div class=" col-sm-7" style="margin-top: 8px;">
 					<input type="checkbox" class="form-check-input" name="cb3-10[]" id="reason3-10" value="4"<?php if(strpos($row['cb3_10'],"4")!==false){echo "checked";}?>>
 					<label class="form-check-label">คลัง</label>

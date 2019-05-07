@@ -23,12 +23,22 @@ date_default_timezone_set('Asia/Bangkok');
 
 // set variable and query
 $id = $_GET['i'];
+$userS_locate = $_SESSION['user'];
+if (substr($userS_locate,0,2) == "sp") {
+	$check_locate = 1;
+} elseif (substr($userS_locate,0,2) == "tr") {
+	$check_locate = 2;
+} else {
+	$check_locate = "3";
+}
 if ($id != "") {
-	$sql = "SELECT d.budget_year,ins.fullname,d.boss_name,usl.name as divi_name,d.inspect_type,d.inspect_date,d.inspect_no,d.inspect_doc,d.inspect_doc_date,d.personnel1,d.personnel2,d.personnel3,d.personnel4,d.personnel5,d.cm,d.fc,d.cc,d.case53,d.case_f,d.case132,d.case_sp,d.tr1,d.tr2,d.tr3,d.tr4,d.tr5,d.tr6,d.tr7,d.tr8 ";
+	$sql = "SELECT d.budget_year,d.type_locate,ins.fullname,d.boss_name,usl.name as divi_name,d.inspect_type,d.inspect_date,d.inspect_no,d.inspect_doc,d.inspect_doc_date,d.personnel1,d.personnel2,d.personnel3,d.personnel4,d.personnel5,d.cm,d.fc,d.cc,d.case53,d.case_f,d.case132,d.case_sp,d.tr1,d.tr2,d.tr3,d.tr4,d.tr5,d.tr6,d.tr7,d.tr8, ";
+	$sql .= " d.r1_1,d.cb1_1,d.sub_pr1_1,d.cen1_1,d.r1_2,d.cb1_2,d.sub_pr1_2,d.cen1_2,d.r1_3,d.cb1_3,d.sub_pr1_3,d.cen1_3,d.r1_4,d.cb1_4,d.sub_pr1_4,d.cen1_4,d.r1_5,d.cb1_5,d.sub_pr1_5,d.cen1_5,";
+	$sql .= " d.r2_1,d.cb2_1,d.sub_pr2_1,d.cen2_1,d.r2_2,d.cb2_2,d.sub_pr2_2,d.cen2_2,d.r2_3,d.cb2_3,d.sub_pr2_3,d.cen2_3,d.r2_4,d.cb2_4,d.sub_pr2_4,d.cen2_4,d.r2_5,d.cb2_5,d.sub_pr2_5,d.cen2_5,d.r2_6,d.cb2_6,d.sub_pr2_6,d.cen2_6,d.r2_7,d.cb2_7,d.sub_pr2_7,d.cen2_7,";
+	$sql .= " d.r3_1,d.cb3_1,d.sub_pr3_1,d.cen3_1,d.r3_2,d.cb3_2,d.sub_pr3_2,d.cen3_2,d.r3_3,d.cb3_3,d.sub_pr3_3,d.cen3_3,d.r3_4,d.cb3_4,d.sub_pr3_4,d.cen3_4,d.r3_5,d.cb3_5,d.sub_pr3_5,d.cen3_5,d.r3_6,d.cb3_6,d.sub_pr3_6,d.cen3_6,d.r3_7,d.cb3_7,d.sub_pr3_7,d.cen3_7,d.r3_8,d.cb3_8,d.sub_pr3_8,d.cen3_8,d.r3_9,d.cb3_9,d.sub_pr3_9,d.cen3_9,d.r3_10,d.cb3_10,d.sub_pr3_10,d.cen3_10";
 	$sql .= " FROM data d, inspector ins,userlogin usl WHERE d.division = usl.username and d.inspector = ins.id and d.id = '$id'";
 	$query = mysqli_query($conn, $sql);
 	$row = mysqli_fetch_assoc($query);
-
 
 	$locate = (!empty($row['type_locate']))?$row['type_locate']:'';
 	$keylocate = $locate=="1"? "sp":'tr';
@@ -74,7 +84,7 @@ if ($id != "") {
 <body>
 	<div class="container pt-3 text-center">
 		<h3><img src="./images/hd-13.jpg" width="1000" height="150"></h3>
-		<h3><?php if($menu=="add"){echo "เพิ่มข้อมูลการออกตรวจราชการ";}else{echo "แก้ไขข้อมูลการออกตรวจราชการ";} ?></h3>
+		<h3>เพิ่มข้อมูลของต่างจังหวัด</h3>
 	</div>
 	<!-- Form -->
 	<div class="container p-2" style="max-width:800px;">
@@ -90,8 +100,8 @@ if ($id != "") {
 		<!-- ==================================================== tab 1 ==================================================== -->
 		<!-- Text input -->
 		<div class="form-group row" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
-			<input type="hidden" name="menu" value="<?=$menu?>">
-			<input type="hidden" name="locate" value="<?=$locate?>">
+			<input type="hidden" name="menu" value="edit">
+			<input type="text" name="locate" value="<?=$locate?>">
 			<?php if(!empty($id)){echo "<input type='hidden' name='inid' value='$id'";} ?>
 
 			<label class="col-sm-12 col-form-label"></label>
@@ -238,268 +248,826 @@ if ($id != "") {
 
 		<!-- activity 1 -->
 		<div class="form-group row" id="r1" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
-		  <label class="col-sm-12 col-form-label bold"><li>สรุปข้อสังเกต/ความเสี่ยง</li></label>
-			<label class="col-sm-12 col-form-label">&emsp;1. ข้อมูลทั่วไป</label>
+			<label class="col-sm-12 col-form-label bold"><li>สรุปข้อสังเกต/ความเสี่ยง</li></label>
+			<label class="col-sm-12 col-form-label bold">&emsp;1. ข้อมูลทั่วไป</label>
 			<!-- activity 1.1 -->
 			<div class="col-sm-1"></div>
-			<label for="r1-1" class="col-sm-11 col-form-label">1.1 บุคลากร</label>
+			<label class="col-sm-11 col-form-label bold">1.1 บุคลากร</label>
 			<div class="col-sm-1"></div>
-			<div class="col-sm-11">
-				<textarea class="form-control" id="r1-1" name="r1-1" rows="2"><?=$row['r1_1']?></textarea>
-			</div>
+			<label class="col-sm-10 col-form-label cut-word">&emsp;<?=$row['r1_1']?></label>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input"  name="cb1-1[]" id="reason1-1" value="1" <?php if(strpos($row['cb1_1'],"1")!==false){echo "checked";}?>>
-				<label class="form-check-label">กบค</label>
+			<!-- activity_center -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- กบค : </label>
+			<?php
+			if (strpos($row['cb1_1'],"1") !== false && strpos($row['cen1_1'],"1") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_1'], "1")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+			<?php
+			if (strpos($row['cb1_1'],"2") !== false  && strpos($row['cen1_1'],"2") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_1'], "2")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<!-- province input -->
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 			</div>
-			<div class="col-sm-6" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb1-1[]" id="reason1-1" value="2" <?php if(strpos($row['cb1_1'],"2")!==false){echo "checked";}?>>
-				<label class="form-check-label">JDI</label>
-				<!-- close activity 1.1 -->
-			</div>
+			<?php
+			if (!empty($row['r1_1'])) {
+				?>
+				<div class="col-sm-6"></div>
+				<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr1_1']?></label>
+						<?php
+					} else {
+						?>
+						<div class="col-sm-11">
+							<textarea class="form-control" id="sub_pr1_1" name="sub_pr1_1" rows="2" required><?=$row['sub_pr1_1']?></textarea>
+						</div>
+						<?php
+					}
+					?>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-6 col-form-label">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-10"><hr></div>
+			<div class="col-sm-1"></div>
+			<!-- close activity 1.1 -->
+
 			<!-- activity 1.2 -->
 			<div class="col-sm-1"></div>
-			<label for="r1-2" class="col-sm-11 col-form-label">1.2 งบประมาณ</label>
+			<label class="col-sm-11 col-form-label bold">1.2 งบประมาณ</label>
 			<div class="col-sm-1"></div>
-			<div class="col-sm-11">
-				<textarea class="form-control" id="r1-2" name="r1-2" rows="2"><?=$row['r1_2']?></textarea>
-			</div>
+			<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r1_2'])){echo $row['r1_2'];}else{echo "-";}?></label>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb1-2[]" id="reason1-2" value="3" <?php if(strpos($row['cb1_2'],"3")!==false){echo "checked";}?>>
-				<label class="form-check-label">แผน</label>
+			<!-- activity_center -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- แผน : </label>
+			<?php
+			if (strpos($row['cb1_2'],"3") !== false && strpos($row['cen1_2'],"3") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_2'], "3")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
+			<?php
+			if (strpos($row['cb1_2'],"4") !== false  && strpos($row['cen1_2'],"4") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_2'], "4")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<!-- province input -->
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 			</div>
-			<div class="col-sm-6" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb1-2[]" id="reason1-2" value="4" <?php if(strpos($row['cb1_2'],"4")!==false){echo "checked";}?>>
-				<label class="form-check-label">คลัง</label>
-				<!-- close activity 1.2 -->
-			</div>
+			<?php
+			if (!empty($row['r1_2'])) {
+				?>
+				<div class="col-sm-6"></div>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="sub_pr1_2" name="sub_pr1_2" rows="2" required><?=$row['sub_pr1_2']?></textarea>
+				</div>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-6 col-form-label">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-10"><hr></div>
+			<div class="col-sm-1"></div>
+			<!-- close activity 1.2 -->
+
 			<!-- activity 1.3 -->
 			<div class="col-sm-1"></div>
-			<label for="r1-3" class="col-sm-11 col-form-label">1.3 อาคารสถานที่</label>
+			<label class="col-sm-11 col-form-label bold">1.3 อาคารสถานที่</label>
 			<div class="col-sm-1"></div>
-			<div class="col-sm-11">
-				<textarea class="form-control" id="r1-3" name="r1-3" rows="2"><?=$row['r1_3']?></textarea>
-			</div>
+			<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r1_3'])){echo $row['r1_3'];}else{echo "-";}?></label>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb1-3[]" id="reason1-3" value="3" <?php if(strpos($row['cb1_3'],"3")!==false){echo "checked";}?>>
-				<label class="form-check-label">แผน</label>
+			<!-- activity_center -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- แผน : </label>
+			<?php
+			if (strpos($row['cb1_3'],"3") !== false && strpos($row['cen1_3'],"3") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_3'], "3")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
+			<?php
+			if (strpos($row['cb1_3'],"4") !== false  && strpos($row['cen1_3'],"4") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_3'], "4")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<!-- province input -->
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 			</div>
-			<div class="col-sm-6" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb1-3[]" id="reason1-3" value="4" <?php if(strpos($row['cb1_3'],"4")!==false){echo "checked";}?>>
-				<label class="form-check-label">คลัง</label>
-				<!-- close activity 1.3 -->
-			</div>
+			<?php
+			if (!empty($row['r1_3'])) {
+				?>
+				<div class="col-sm-6"></div>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="sub_pr1_3" name="sub_pr1_3" rows="2" required><?=$row['sub_pr1_3']?></textarea>
+				</div>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-6 col-form-label">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-10"><hr></div>
+			<div class="col-sm-1"></div>
+			<!-- close activity 1.3 -->
+
 			<!-- activity 1.4 -->
 			<div class="col-sm-1"></div>
-			<label for="r1-4" class="col-sm-11 col-form-label">1.4 ยานพาหนะ</label>
+			<label class="col-sm-11 col-form-label bold">1.4 ยานพาหนะ</label>
 			<div class="col-sm-1"></div>
-			<div class="col-sm-11">
-				<textarea class="form-control" id="r1-4" name="r1-4" rows="2"><?=$row['r1_4']?></textarea>
-			</div>
+			<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r1_4'])){echo $row['r1_4'];}else{echo "-";}?></label>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb1-4[]" id="reason1-4" value="3" <?php if(strpos($row['cb1_4'],"3")!==false){echo "checked";}?>>
-				<label class="form-check-label">แผน</label>
+			<!-- activity_center -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- แผน : </label>
+			<?php
+			if (strpos($row['cb1_4'],"3") !== false && strpos($row['cen1_4'],"3") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_4'], "3")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
+			<?php
+			if (strpos($row['cb1_4'],"4") !== false  && strpos($row['cen1_4'],"4") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_4'], "4")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<!-- province input -->
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 			</div>
-			<div class="col-sm-6" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb1-4[]" id="reason1-4" value="4" <?php if(strpos($row['cb1_4'],"4")!==false){echo "checked";}?>>
-				<label class="form-check-label">คลัง</label>
-				<!-- close activity 1.4 -->
-			</div>
+			<?php
+			if (!empty($row['r1_4'])) {
+				?>
+				<div class="col-sm-6"></div>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="sub_pr1_4" name="sub_pr1_4" rows="2" required><?=$row['sub_pr1_4']?></textarea>
+				</div>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-6 col-form-label">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-10"><hr></div>
+			<div class="col-sm-1"></div>
+			<!-- close activity 1.4 -->
+
 			<!-- activity 1.5 -->
 			<div class="col-sm-1"></div>
-			<label for="r1-5" class="col-sm-11 col-form-label">1.5 ตัวชี้วัดตามคำรับรอง</label>
+			<label class="col-sm-11 col-form-label bold">1.5 ตัวชี้วัดตามคำรับรอง</label>
 			<div class="col-sm-1"></div>
-			<div class="col-sm-11">
-				<textarea class="form-control" id="r1-5" name="r1-5" rows="2"><?=$row['r1_5']?></textarea>
-			</div>
+			<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r1_5'])){echo $row['r1_5'];}else{echo "-";}?></label>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb1-5[]" id="reason1-5" value="5" <?php if(strpos($row['cb1_5'],"5")!==false){echo "checked";}?>>
-				<label class="form-check-label">กพร</label>
+			<!-- activity_center -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- กพร : </label>
+			<?php
+			if (strpos($row['cb1_5'],"5") !== false && strpos($row['cen1_5'],"5") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_5'], "5")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+			<?php
+			if (strpos($row['cb1_5'],"6") !== false  && strpos($row['cen1_5'],"6") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_5'], "6")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
+			<?php
+			if (strpos($row['cb1_5'],"7") !== false  && strpos($row['cen1_5'],"7") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_5'], "7")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<!-- province input -->
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 			</div>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb1-5[]" id="reason1-5" value="6" <?php if(strpos($row['cb1_5'],"6")!==false){echo "checked";}?>>
-				<label class="form-check-label">กพย</label>
-			</div>
-			<div class="col-sm-5" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb1-5[]" id="reason1-5" value="7" <?php if(strpos($row['cb1_5'],"7")!==false){echo "checked";}?>>
-				<label class="form-check-label">กองสุขภาพ</label>
-				<!-- close activity 1.5 -->
-			</div>
+			<?php
+			if (!empty($row['r1_5'])) {
+				?>
+				<div class="col-sm-6"></div>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="sub_pr1_5" name="sub_pr1_5" rows="2" required><?=$row['sub_pr1_5']?></textarea>
+				</div>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-6 col-form-label">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-10"><hr></div>
+			<div class="col-sm-1"></div>
+			<!-- close activity 1.5 -->
 			<!-- close activity 1 form -->
 		</div>
 
 		<!-- activity 2 -->
 		<div class="form-group row" id="r2" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
-			<label class="col-sm-12 col-form-label" style="cursor: pointer;" onclick="qqq()">2. แผนงาน/โครงการที่ส่งผลกระทบสูงต่อภารกิจหลักของกรม</label>
+			<label class="col-sm-12 col-form-label bold">&emsp;2. แผนงาน/โครงการที่ส่งผลกระทบสูงต่อภารกิจหลักของกรม</label>
+
 			<!-- activity 2.1 -->
 			<div class="col-sm-1"></div>
-			<label for="r2-1" class="col-sm-11 col-form-label">2.1 การรับตัวเด็กและเยาวชน</label>
+			<label class="col-sm-11 col-form-label bold">2.1 การรับตัวเด็กและเยาวชน</label>
 			<div class="col-sm-1"></div>
-			<div class="col-sm-11">
-				<textarea class="form-control" id="r2-1" name="r2-1" rows="2"><?=$row['r2_1']?></textarea>
-			</div>
+			<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r2_1'])){echo $row['r2_1'];}else{echo "-";}?></label>
 			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb2-1[]" id="reason2-1" value="6" <?php if(strpos($row['cb2_1'],"6")!==false){echo "checked";}?>>
-				<label class="form-check-label">กพย</label>
-			</div>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb2-1[]" id="reason2-1" value="2" <?php if(strpos($row['cb2_1'],"2")!==false){echo "checked";}?>>
-				<label class="form-check-label">JDI</label>
-			</div>
-			<div class="col-sm-5" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb2-1[]" id="reason2-1" value="7" <?php if(strpos($row['cb2_1'],"7")!==false){echo "checked";}?>>
-				<label class="form-check-label">กองสุขภาพ</label>
-				<!-- close activity 2.1 -->
-			</div>
-			<!-- activity 2.2 -->
+			<!-- activity_center -->
 			<div class="col-sm-1"></div>
-			<label for="r2-2" class="col-sm-11 col-form-label">2.2 <?php if($keylocate=="sp"){echo "การประเมินความเสี่ยงและความจำเป็น";}else{echo "การจำแนกและจัดทำแผนฝุกอบรมรายบุคคล";}?></label>
+			<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
 			<div class="col-sm-1"></div>
-			<div class="col-sm-11">
-				<textarea class="form-control" id="r2-2" name="r2-2" rows="2"><?=$row['r2_2']?></textarea>
-			</div>
-			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb2-2[]" id="reason2-2" value="6" <?php if(strpos($row['cb2_2'],"6")!==false){echo "checked";}?>>
-				<label class="form-check-label">กพย</label>
-			</div>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb2-2[]" id="reason2-2" value="2" <?php if(strpos($row['cb2_2'],"2")!==false){echo "checked";}?>>
-				<label class="form-check-label">JDI</label>
-			</div>
-			<div class="col-sm-5" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb2-2[]" id="reason2-2" value="7" <?php if(strpos($row['cb2_2'],"7")!==false){echo "checked";}?>>
-				<label class="form-check-label">กองสุขภาพ</label>
-				<!-- close activity 2.2 -->
-			</div>
-			<!-- activity 2.3 -->
-			<div class="col-sm-1"></div>
-			<label for="r2-3" class="col-sm-11 col-form-label">2.3 <?php if($keylocate=="sp"){echo "การส่งต่อนักวิชาชีพเพื่อประเมินเฉพาะด้าน";}else{echo "การฝึกอบรม/การบำบัด";}?></label>
-			<div class="col-sm-1"></div>
-			<div class="col-sm-11">
-				<textarea class="form-control" id="r2-3" name="r2-3" rows="2"><?=$row['r2_3']?></textarea>
-			</div>
-			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb2-3[]" id="reason2-3" value="6" <?php if(strpos($row['cb2_3'],"6")!==false){echo "checked";}?>>
-				<label class="form-check-label">กพย</label>
-			</div>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb2-3[]" id="reason2-3" value="2" <?php if(strpos($row['cb2_3'],"2")!==false){echo "checked";}?>>
-				<label class="form-check-label">JDI</label>
-			</div>
-			<div class="col-sm-5" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb2-3[]" id="reason2-3" value="7" <?php if(strpos($row['cb2_3'],"7")!==false){echo "checked";}?>>
-				<label class="form-check-label">กองสุขภาพ</label>
-				<!-- close activity 2.3 -->
-			</div>
-			<!-- activity 2.4 -->
-			<div class="col-sm-1"></div>
-			<label for="r2-4" class="col-sm-11 col-form-label">2.4 <?php if($keylocate=="sp"){echo "การรายงานข้อเท็จจริง";}else{echo "เกษตรอินทรีย์";}?></label>
-			<div class="col-sm-1"></div>
-			<div class="col-sm-11">
-				<textarea class="form-control" id="r2-4" name="r2-4" rows="2"><?=$row['r2_4']?></textarea>
-			</div>
-			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb2-4[]" id="reason2-4" value="6" <?php if(strpos($row['cb2_4'],"6")!==false){echo "checked";}?>>
-				<label class="form-check-label">กพย</label>
-			</div>
-			<div class="col-sm-6" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb2-4[]" id="reason2-4" value="2" <?php if(strpos($row['cb2_4'],"2")!==false){echo "checked";}?>>
-				<label class="form-check-label">JDI</label>
-				<!-- close activity 2.4 -->
-			</div>
-			<!-- activity 2.5 -->
-			<div class="col-sm-1"></div>
-			<label for="r2-5" class="col-sm-11 col-form-label">2.5 <?php if($keylocate=="sp"){echo "การดำเนินงานตามมาตรการพิเศษ";}else{echo "ห้องเรียนกีฬา";}?></label>
-			<div class="col-sm-1"></div>
-			<div class="col-sm-11">
-				<textarea class="form-control" id="r2-5" name="r2-5" rows="2"><?=$row['r2_5']?></textarea>
-			</div>
-			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-			<div class="col-sm-1" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb2-5[]" id="reason2-5" value="6" <?php if(strpos($row['cb2_5'],"6")!==false){echo "checked";}?>>
-				<label class="form-check-label">กพย</label>
-			</div>
-			<div class="col-sm-6" style="margin-top: 8px;">
-				<input type="checkbox" class="form-check-input" name="cb2-5[]" id="reason2-5" value="2" <?php if(strpos($row['cb2_5'],"2")!==false){echo "checked";}?>>
-				<label class="form-check-label">JDI</label>
-				<!-- close activity 2.5 -->
-			</div>
-			<!-- activity 2.6 -->
-			<div class="col-sm-1"></div>
-			<label for="r2-6" class="col-sm-11 col-form-label">2.6 <?php if($keylocate=="sp"){echo "การลงข้อมูลในระบบ CM ของเด็กและเยาวชนถูกต้องครบถ้วน";}else{echo "การจัดการศึกษาสามัญ อาชีวศึกษาและอุดมศึกษา";}?></label>
-			<div class="col-sm-1"></div>
-			<div class="col-sm-11">
-				<textarea class="form-control" id="r2-6" name="r2-6" rows="2"><?=$row['r2_6']?></textarea>
-			</div>
-			<div class="col-sm-1"></div>
-			<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
+			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 			<?php
-			if ($keylocate == "sp") { // check if from SP
+			if (strpos($row['cb2_1'],"6") !== false  && strpos($row['cen2_1'],"6") !== false) {
 				?>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb2-6[]" id="reason2-6" value="6" <?php if(strpos($row['cb2_6'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
-				</div>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb2-6[]" id="reason2-6" value="2" <?php if(strpos($row['cb2_6'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-				</div>
-				<div class="col-sm-5" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb2-6[]" id="reason2-6" value="7" <?php if(strpos($row['cb2_6'],"7")!==false){echo "checked";}?>>
-					<label class="form-check-label">กองสุขภาพ</label>
-					<!-- close activity 2.6 from SP -->
-				</div>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_1'], "6")?></label>
 				<?php
-			} else { // cheeck if from TR
+			} else {
 				?>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb2-6[]" id="reason2-6" value="6" <?php if(strpos($row['cb2_6'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
-				</div>
-				<div class="col-sm-6" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb2-6[]" id="reason2-6" value="2" <?php if(strpos($row['cb2_6'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-					<!-- close activity 2.6 from TR -->
-				</div>
-				<!-- activity 2.7 -->
-				<div class="col-sm-1"></div>
-				<label for="r2-7" class="col-sm-11 col-form-label">2.7 การลงข้อมูลในระบบ TR ของเด็กและเยาวชนถูกต้อง</label>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+			<?php
+			if (strpos($row['cb2_1'],"2") !== false && strpos($row['cen2_1'],"2") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_1'], "2")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
+			<?php
+			if (strpos($row['cb2_1'],"7") !== false  && strpos($row['cen2_1'],"7") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_1'], "7")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<!-- province input -->
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
+			</div>
+			<?php
+			if (!empty($row['r2_1'])) {
+				?>
+				<div class="col-sm-6"></div>
 				<div class="col-sm-1"></div>
 				<div class="col-sm-11">
-					<textarea class="form-control" id="r2-7" name="r2-7" rows="2"><?=$row['r2_7']?></textarea>
+					<textarea class="form-control" id="sub_pr2_1" name="sub_pr2_1" rows="2" required><?=$row['sub_pr2_1']?></textarea>
 				</div>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-6 col-form-label">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-10"><hr></div>
+			<div class="col-sm-1"></div>
+			<!-- close activity 2.1 -->
+
+			<!-- activity 2.2 -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">2.2 <? if($locate==1){echo "การประเมินความเสี่ยงและความจำเป็น";}else{echo "การจำแนกและจัดทำแผนฝุกอบรมรายบุคคล";}?></label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r2_2'])){echo $row['r2_2'];}else{echo "-";}?></label>
+			<div class="col-sm-1"></div>
+			<!-- activity_center -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+			<?php
+			if (strpos($row['cb2_2'],"6") !== false  && strpos($row['cen2_2'],"6") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_2'], "6")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+			<?php
+			if (strpos($row['cb2_2'],"2") !== false && strpos($row['cen2_2'],"2") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_2'], "2")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
+			<?php
+			if (strpos($row['cb2_2'],"7") !== false  && strpos($row['cen2_2'],"7") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_2'], "7")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<!-- province input -->
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
+			</div>
+			<?php
+			if (!empty($row['r2_2'])) {
+				?>
+				<div class="col-sm-6"></div>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb2-7[]" id="reason2-7" value="6" <?php if(strpos($row['cb2_7'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="sub_pr2_2" name="sub_pr2_2" rows="2" required><?=$row['sub_pr2_2']?></textarea>
 				</div>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb2-7[]" id="reason2-7" value="2" <?php if(strpos($row['cb2_7'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-6 col-form-label">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-10"><hr></div>
+			<div class="col-sm-1"></div>
+			<!-- close activity 2.2 -->
+
+			<!-- activity 2.3 -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">2.3 <? if($locate==1){echo "การส่งต่อนักวิชาชีพเพื่อประเมินเฉพาะด้าน";}else{echo "การฝึกอบรม/การบำบัด";}?></label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r2_3'])){echo $row['r2_3'];}else{echo "-";}?></label>
+			<div class="col-sm-1"></div>
+			<!-- activity_center -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+			<?php
+			if (strpos($row['cb2_3'],"6") !== false  && strpos($row['cen2_3'],"6") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_3'], "6")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+			<?php
+			if (strpos($row['cb2_3'],"2") !== false && strpos($row['cen2_3'],"2") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_3'], "2")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
+			<?php
+			if (strpos($row['cb2_3'],"7") !== false  && strpos($row['cen2_3'],"7") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_3'], "7")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<!-- province input -->
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
+			</div>
+			<?php
+			if (!empty($row['r2_3'])) {
+				?>
+				<div class="col-sm-6"></div>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="sub_pr2_3" name="sub_pr2_3" rows="2" required><?=$row['sub_pr2_3']?></textarea>
 				</div>
-				<div class="col-sm-5" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb2-7[]" id="reason2-7" value="7" <?php if(strpos($row['cb2_7'],"7")!==false){echo "checked";}?>>
-					<label class="form-check-label">กองสุขภาพ</label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-6 col-form-label">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-10"><hr></div>
+			<div class="col-sm-1"></div>
+			<!-- close activity 2.3 -->
+
+			<!-- activity 2.4 -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">2.4 <? if($locate==1){echo "การรายงานข้อเท็จจริง";}else{echo "เกษตรอินทรีย์";}?></label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r2_4'])){echo $row['r2_4'];}else{echo "-";}?></label>
+			<div class="col-sm-1"></div>
+			<!-- activity_center -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+			<?php
+			if (strpos($row['cb2_4'],"6") !== false  && strpos($row['cen2_4'],"6") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_4'], "6")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+			<?php
+			if (strpos($row['cb2_4'],"2") !== false && strpos($row['cen2_4'],"2") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_4'], "2")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<!-- province input -->
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
+			</div>
+			<?php
+			if (!empty($row['r2_4'])) {
+				?>
+				<div class="col-sm-6"></div>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="sub_pr2_4" name="sub_pr2_4" rows="2" required><?=$row['sub_pr2_4']?></textarea>
 				</div>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-6 col-form-label">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-10"><hr></div>
+			<div class="col-sm-1"></div>
+			<!-- close activity 2.4 -->
+
+			<!-- activity 2.5 -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">2.5 <? if($locate==1){echo "การรายงานข้อเท็จจริง";}else{echo "ห้องเรียนกีฬา";}?></label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r2_5'])){echo $row['r2_5'];}else{echo "-";}?></label>
+			<div class="col-sm-1"></div>
+			<!-- activity_center -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+			<?php
+			if (strpos($row['cb2_5'],"6") !== false  && strpos($row['cen2_5'],"6") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_5'], "6")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+			<?php
+			if (strpos($row['cb2_5'],"2") !== false && strpos($row['cen2_5'],"2") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_5'], "2")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<!-- province input -->
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
+			</div>
+			<?php
+			if (!empty($row['r2_5'])) {
+				?>
+				<div class="col-sm-6"></div>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="sub_pr2_5" name="sub_pr2_5" rows="2" required><?=$row['sub_pr2_5']?></textarea>
+				</div>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-6 col-form-label">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-10"><hr></div>
+			<div class="col-sm-1"></div>
+			<!-- close activity 2.5 -->
+
+
+			<!-- activity 2.6 -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">2.6 <? if($locate==1){echo "การลงข้อมูลในระบบ CM ของเด็กและเยาวชนถูกต้องครบถ้วน";}else{echo "การจัดการศึกษาสามัญ อาชีวศึกษาและอุดมศึกษา";}?></label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r2_6'])){echo $row['r2_6'];}else{echo "-";}?></label>
+			<div class="col-sm-1"></div>
+			<!-- activity_center -->
+			<div class="col-sm-1"></div>
+			<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+			<?php
+			if (strpos($row['cb2_6'],"6") !== false  && strpos($row['cen2_6'],"6") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_6'], "6")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+			<?php
+			if (strpos($row['cb2_6'],"2") !== false && strpos($row['cen2_6'],"2") !== false) {
+				?>
+				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_6'], "2")?></label>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-9 col-form-label cut-word">-</label>
+				<?php
+			}
+			if ($locate == 1) {
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
+				<?php
+				if (strpos($row['cb2_3'],"7") !== false  && strpos($row['cen2_3'],"7") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_3'], "7")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+			}
+			?>
+			<!-- province input -->
+			<div class="col-sm-1"></div>
+			<div class="col-sm-5">
+				<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
+			</div>
+			<?php
+			if (!empty($row['r2_6'])) {
+				?>
+				<div class="col-sm-6"></div>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+					<textarea class="form-control" id="sub_pr2_6" name="sub_pr2_6" rows="2" required><?=$row['sub_pr2_6']?></textarea>
+				</div>
+				<?php
+			} else {
+				?>
+				<label class="col-sm-6 col-form-label">-</label>
+				<?php
+			}
+			?>
+			<div class="col-sm-1"></div>
+			<div class="col-sm-10"><hr></div>
+			<div class="col-sm-1"></div>
+			<!-- close activity 2.6 -->
+
+			<?php
+			if ($locate == 2) {
+				?>
+				<!-- activity 2.7 -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">2.7 การลงข้อมูลในระบบ TR ของเด็กและเยาวชนถูกต้อง</label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r2_7'])){echo $row['r2_7'];}else{echo "-";}?></label>
+				<div class="col-sm-1"></div>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb2_7'],"6") !== false  && strpos($row['cen2_7'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_7'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb2_7'],"2") !== false && strpos($row['cen2_7'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_7'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
+				<?php
+				if (strpos($row['cb2_7'],"7") !== false  && strpos($row['cen2_7'],"7") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_7'], "7")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
+				</div>
+				<?php
+				if (!empty($row['r2_7'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr2_7" name="sub_pr2_7" rows="2" required><?=$row['sub_pr2_7']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
 				<!-- close activity 2.7 -->
 				<?php
 			}
@@ -508,193 +1076,623 @@ if ($id != "") {
 		</div>
 
 		<?php
-		if ($keylocate == "sp") { // -------------------------------- check if from SP ------------------------------- //
+		if ($locate == 1) { // -------------------------------- check if from SP ------------------------------- //
 			?>
 			<!-- activity 3 from SP -->
 			<div class="form-group row" id="r3" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
-				<label class="col-sm-12 col-form-label" style="cursor: pointer;" onclick="qqq()">3. การรักษาและเพิ่มมาตรฐานการปฏิบัติงาน</label>
+				<label class="col-sm-12 col-form-label bold">&emsp;3. การรักษาและเพิ่มมาตรฐานการปฏิบัติงาน</label>
 				<!-- activity 3.1 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-1" class="col-sm-11 col-form-label">3.1 งานด้านคดี</label>
+				<label class="col-sm-11 col-form-label bold">3.1 งานด้านคดี</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-1" name="r3-1" rows="2"><?=$row['r3_1']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_1'])){echo $row['r3_1'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-1[]" id="reason3-1" value="6" <?php if(strpos($row['cb3_1'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb3_1'],"6") !== false  && strpos($row['cen3_1'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_1'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_1'],"2") !== false && strpos($row['cen3_1'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_1'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
+				<?php
+				if (strpos($row['cb3_1'],"7") !== false  && strpos($row['cen3_1'],"7") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_1'], "7")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-1[]" id="reason3-1" value="2"  <?php if(strpos($row['cb3_1'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-				</div>
-				<div class="col-sm-5" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-1[]" id="reason3-1" value="7"  <?php if(strpos($row['cb3_1'],"7")!==false){echo "checked";}?>>
-					<label class="form-check-label">กองสุขภาพ</label>
-					<!-- close activity 3.1 -->
-				</div>
+				<?php
+				if (!empty($row['r3_1'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_1" name="sub_pr3_1" rows="2" required><?=$row['sub_pr3_1']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.1 -->
+
 				<!-- activity 3.2 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-2" class="col-sm-11 col-form-label">3.2 งานรักษาความมั่นคงปลอดภัย</label>
+				<label class="col-sm-11 col-form-label bold">3.2 งานรักษาความมั่นคงปลอดภัย</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-2" name="r3-2" rows="2"><?=$row['r3_2']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_2'])){echo $row['r3_2'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-2[]" id="reason3-2" value="6" <?php if(strpos($row['cb3_2'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb3_2'],"6") !== false  && strpos($row['cen3_2'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_2'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_2'],"2") !== false && strpos($row['cen3_2'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_2'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-6" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-2[]" id="reason3-2" value="2" <?php if(strpos($row['cb3_2'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-					<!-- close activity 3.2 -->
-				</div>
+				<?php
+				if (!empty($row['r3_2'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_2" name="sub_pr3_2" rows="2" required><?=$row['sub_pr3_2']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.2 -->
+
 				<!-- activity 3.3 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-3" class="col-sm-11 col-form-label">3.3 การควบคุมดูแลเด็กและเยาวชนในสถานควบคุม</label>
+				<label class="col-sm-11 col-form-label bold">3.3 การควบคุมดูแลเด็กและเยาวชนในสถานควบคุม</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-3" name="r3-3" rows="2"><?=$row['r3_3']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_3'])){echo $row['r3_3'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-3[]" id="reason3-3" value="6" <?php if(strpos($row['cb3_3'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb3_3'],"6") !== false  && strpos($row['cen3_3'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_3'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_3'],"2") !== false && strpos($row['cen3_3'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_3'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
+				<?php
+				if (strpos($row['cb3_3'],"7") !== false  && strpos($row['cen3_3'],"7") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_3'], "7")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-3[]" id="reason3-3" value="2" <?php if(strpos($row['cb3_3'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-				</div>
-				<div class="col-sm-5" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-3[]" id="reason3-3" value="7" <?php if(strpos($row['cb3_3'],"7")!==false){echo "checked";}?>>
-					<label class="form-check-label">กองสุขภาพ</label>
-					<!-- close activity 3.3 -->
-				</div>
+				<?php
+				if (!empty($row['r3_3'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_3" name="sub_pr3_3" rows="2" required><?=$row['sub_pr3_3']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.3 -->
+
 				<!-- activity 3.4 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-4" class="col-sm-11 col-form-label">3.4 การแก้ไขบำบัดฟื้นฟูเด็กและเยาวชน</label>
+				<label class="col-sm-11 col-form-label bold">3.4 การแก้ไขบำบัดฟื้นฟูเด็กและเยาวชน</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-4" name="r3-4" rows="2"><?=$row['r3_4']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_4'])){echo $row['r3_4'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="6" <?php if(strpos($row['cb3_4'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb3_4'],"6") !== false  && strpos($row['cen3_4'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_4'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_4'],"2") !== false && strpos($row['cen3_4'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_4'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
+				<?php
+				if (strpos($row['cb3_4'],"7") !== false  && strpos($row['cen3_4'],"7") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_4'], "7")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="2" <?php if(strpos($row['cb3_4'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-				</div>
-				<div class="col-sm-5" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="7" <?php if(strpos($row['cb3_4'],"7")!==false){echo "checked";}?>>
-					<label class="form-check-label">กองสุขภาพ</label>
-					<!-- close activity 3.4 -->
-				</div>
+				<?php
+				if (!empty($row['r3_4'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_4" name="sub_pr3_4" rows="2" required><?=$row['sub_pr3_4']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.4 -->
+
 				<!-- activity 3.5 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-5" class="col-sm-11 col-form-label">3.5 การป้องกันและปราบปรามการทุจริตประพฤติมิชอบ</label>
+				<label class="col-sm-11 col-form-label bold">3.5 การป้องกันและปราบปรามการทุจริตประพฤติมิชอบ</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-5" name="r3-5" rows="2"><?=$row['r3_5']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_5'])){echo $row['r3_5'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-5[]" id="reason3-5" value="1" <?php if(strpos($row['cb3_5'],"1")!==false){echo "checked";}?>>
-					<label class="form-check-label">กบค</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กบค : </label>
+				<?php
+				if (strpos($row['cb3_5'],"1") !== false  && strpos($row['cen3_5'],"1") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_5'], "1")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_5'],"2") !== false && strpos($row['cen3_5'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_5'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-6" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-5[]" id="reason3-5" value="2" <?php if(strpos($row['cb3_5'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-					<!-- close activity 3.5 -->
-				</div>
+				<?php
+				if (!empty($row['r3_5'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_5" name="sub_pr3_5" rows="2" required><?=$row['sub_pr3_5']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.5 -->
+
+
 				<!-- activity 3.6 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-6" class="col-sm-11 col-form-label">3.6 การสนับสนุนของเครือข่าย</label>
+				<label class="col-sm-11 col-form-label bold">3.6 การสนับสนุนของเครือข่าย</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-6" name="r3-6" rows="2"><?=$row['r3_6']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_6'])){echo $row['r3_6'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-6[]" id="reason3-6" value="6" <?php if(strpos($row['cb3_6'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb3_6'],"6") !== false  && strpos($row['cen3_6'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_6'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_6'],"2") !== false && strpos($row['cen3_6'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_6'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-6" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-6[]" id="reason3-6" value="2" <?php if(strpos($row['cb3_6'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-					<!-- close activity 3.6 -->
-				</div>
+				<?php
+				if (!empty($row['r3_6'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_6" name="sub_pr3_6" rows="2" required><?=$row['sub_pr3_6']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.6 -->
+
 				<!-- activity 3.7 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-7" class="col-sm-11 col-form-label">3.7 การประหยัดพลังงานและทรัพยากร</label>
+				<label class="col-sm-11 col-form-label bold">3.7 การประหยัดพลังงานและทรัพยากร</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-7" name="r3-7" rows="2"><?=$row['r3_7']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_7'])){echo $row['r3_7'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-7[]" id="reason3-7" value="4" <?php if(strpos($row['cb3_7'],"4")!==false){echo "checked";}?>>
-					<label class="form-check-label">คลัง</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
+				<?php
+				if (strpos($row['cb3_7'],"4") !== false  && strpos($row['cen3_7'],"4") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_7'], "4")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพร : </label>
+				<?php
+				if (strpos($row['cb3_7'],"5") !== false && strpos($row['cen3_7'],"5") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_7'], "5")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_7'],"2") !== false && strpos($row['cen3_7'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_7'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-7[]" id="reason3-7" value="5" <?php if(strpos($row['cb3_7'],"5")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพร</label>
-				</div>
-				<div class="col-sm-5" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-7[]" id="reason3-7" value="2" <?php if(strpos($row['cb3_7'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-					<!-- close activity 3.7 -->
-				</div>
+				<?php
+				if (!empty($row['r3_7'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_7" name="sub_pr3_7" rows="2" required><?=$row['sub_pr3_7']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.7 -->
+
 				<!-- activity 3.8 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-8" class="col-sm-11 col-form-label">3.8 การดำเนินงานด้านการเงินการคลัง</label>
+				<label class="col-sm-11 col-form-label bold">3.8 การดำเนินงานด้านการเงินการคลัง</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-8" name="r3-8" rows="2"><?=$row['r3_8']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_8'])){echo $row['r3_8'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-8[]" id="reason3-8" value="4" <?php if(strpos($row['cb3_8'],"4")!==false){echo "checked";}?>>
-					<label class="form-check-label">คลัง</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
+				<?php
+				if (strpos($row['cb3_8'],"4") !== false  && strpos($row['cen3_8'],"4") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_8'], "4")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_8'],"2") !== false && strpos($row['cen3_8'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_8'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-6" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-8[]" id="reason3-8" value="2" <?php if(strpos($row['cb3_8'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-					<!-- close activity 3.8 -->
-				</div>
+				<?php
+				if (!empty($row['r3_8'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_8" name="sub_pr3_8" rows="2" required><?=$row['sub_pr3_8']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.8 -->
+
 				<!-- activity 3.9 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-9" class="col-sm-11 col-form-label">3.9 การอำนวยความยุติธรรมและการป้องกันปัญหาเด็กและเยาวชน</label>
+				<label class="col-sm-11 col-form-label bold">3.9 การอำนวยความยุติธรรมและการป้องกันปัญหาเด็กและเยาวชน</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-9" name="r3-9" rows="2"><?=$row['r3_9']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_9'])){echo $row['r3_9'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-7" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-9[]" id="reason3-9" value="6" <?php if(strpos($row['cb3_9'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
-					<!-- close activity 3.9 -->
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb3_9'],"6") !== false  && strpos($row['cen3_9'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_9'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
+				<?php
+				if (!empty($row['r3_9'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_9" name="sub_pr3_9" rows="2" required><?=$row['sub_pr3_9']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.9 -->
+
 				<!-- activity 3.10 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-10" class="col-sm-11 col-form-label">3.10 การสนับสนุนภารกิจของสถานพินิจ</label>
+				<label class="col-sm-11 col-form-label bold">3.10 การสนับสนุนภารกิจของสถานพินิจ</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-10" name="r3-10" rows="2"><?=$row['r3_10']?></textarea>
-					<!-- close activity 3.10 -->
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_10'])){echo $row['r3_10'];}else{echo "-";}?></label>
+				<div class="col-sm-1"></div>
+				<!-- no activity_center -->
+
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
+				<?php
+				if (!empty($row['r3_10'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_10" name="sub_pr3_10" rows="2" required><?=$row['sub_pr3_10']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.10 -->
 				<label class="col-sm-1 col-form-label"></label>
 				<!-- close activity 3 form SP -->
 			</div>
@@ -703,183 +1701,595 @@ if ($id != "") {
 			?>
 			<!-- activity 3 from TR -->
 			<div class="form-group row" id="r3" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
-				<label class="col-sm-12 col-form-label" style="cursor: pointer;" onclick="qqq()">3. การรักษาและเพิ่มมาตรฐานการปฏิบัติงาน</label>
+				<label class="col-sm-12 col-form-label bold">&emsp;3. การรักษาและเพิ่มมาตรฐานการปฏิบัติงาน</label>
+				<!-- activity 3.1 -->
 				<!-- activity 3.1 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-1" class="col-sm-11 col-form-label">3.1 การรังานรักษาความมั่นคงปลอดภัย</label>
+				<label class="col-sm-11 col-form-label bold">3.1 การรังานรักษาความมั่นคงปลอดภัย</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-1" name="r3-1" rows="2"><?=$row['r3_1']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_1'])){echo $row['r3_1'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-1[]" id="reason3-1" value="6" <?php if(strpos($row['cb3_1'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb3_1'],"6") !== false  && strpos($row['cen3_1'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_1'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_1'],"2") !== false && strpos($row['cen3_1'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_1'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-6" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-1[]" id="reason3-1" value="2" <?php if(strpos($row['cb3_1'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-					<!-- close activity 3.1 -->
-				</div>
+				<?php
+				if (!empty($row['r3_1'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_1" name="sub_pr3_1" rows="2" required><?=$row['sub_pr3_1']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.1 -->
+
 				<!-- activity 3.2 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-2" class="col-sm-11 col-form-label">3.2 การบริการที่เป็นมิตรแก่เด็กและเยาวชน</label>
+				<label class="col-sm-11 col-form-label bold">3.2 การบริการที่เป็นมิตรแก่เด็กและเยาวชน</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-2" name="r3-2" rows="2"><?=$row['r3_2']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_2'])){echo $row['r3_2'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-2[]" id="reason3-2" value="6" <?php if(strpos($row['cb3_2'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb3_2'],"6") !== false  && strpos($row['cen3_2'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_2'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_2'],"2") !== false && strpos($row['cen3_2'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_2'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
+				<?php
+				if (strpos($row['cb3_2'],"7") !== false  && strpos($row['cen3_2'],"7") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_2'], "7")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-2[]" id="reason3-2" value="2" <?php if(strpos($row['cb3_2'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-				</div>
-				<div class="col-sm-5" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-2[]" id="reason3-2" value="7" <?php if(strpos($row['cb3_2'],"7")!==false){echo "checked";}?>>
-					<label class="form-check-label">กองสุขภาพ</label>
-					<!-- close activity 3.3 -->
-				</div>
+				<?php
+				if (!empty($row['r3_2'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_2" name="sub_pr3_2" rows="2" required><?=$row['sub_pr3_2']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.2 -->
+
 				<!-- activity 3.3 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-3" class="col-sm-11 col-form-label">3.3 การรับตัวเด็กและเยาวชน</label>
+				<label class="col-sm-11 col-form-label bold">3.3 การรับตัวเด็กและเยาวชน</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-3" name="r3-3" rows="2"><?=$row['r3_3']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_3'])){echo $row['r3_3'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-3[]" id="reason3-3" value="6" <?php if(strpos($row['cb3_3'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb3_3'],"6") !== false  && strpos($row['cen3_3'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_3'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_3'],"2") !== false && strpos($row['cen3_3'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_3'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-6" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-3[]" id="reason3-3" value="2" <?php if(strpos($row['cb3_3'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-					<!-- close activity 3.3 -->
-				</div>
+				<?php
+				if (!empty($row['r3_3'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_3" name="sub_pr3_3" rows="2" required><?=$row['sub_pr3_3']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.3 -->
+
 				<!-- activity 3.4 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-4" class="col-sm-11 col-form-label">3.4 การบำบัดแก้ไขฟื้นฟูเด็กและเยาวชน</label>
+				<label class="col-sm-11 col-form-label bold">3.4 การบำบัดแก้ไขฟื้นฟูเด็กและเยาวชน</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-4" name="r3-4" rows="2"><?=$row['r3_4']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_4'])){echo $row['r3_4'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="6" <?php if(strpos($row['cb3_4'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb3_4'],"6") !== false  && strpos($row['cen3_4'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_4'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_4'],"2") !== false && strpos($row['cen3_4'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_4'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
+				<?php
+				if (strpos($row['cb3_4'],"7") !== false  && strpos($row['cen3_4'],"7") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_4'], "7")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="2" <?php if(strpos($row['cb3_4'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-				</div>
-				<div class="col-sm-5" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-4[]" id="reason3-4" value="7" <?php if(strpos($row['cb3_4'],"7")!==false){echo "checked";}?>>
-					<label class="form-check-label">กองสุขภาพ</label>
-					<!-- close activity 3.4 -->
-				</div>
+				<?php
+				if (!empty($row['r3_4'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_4" name="sub_pr3_4" rows="2" required><?=$row['sub_pr3_4']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.4 -->
+
 				<!-- activity 3.5 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-5" class="col-sm-11 col-form-label">3.5 การประชุมคณะกรรมการสหวิชาชีพ</label>
+				<label class="col-sm-11 col-form-label bold">3.5 การประชุมคณะกรรมการสหวิชาชีพ</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-5" name="r3-5" rows="2"><?=$row['r3_5']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_5'])){echo $row['r3_5'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-5[]" id="reason3-5" value="6" <?php if(strpos($row['cb3_5'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb3_5'],"6") !== false  && strpos($row['cen3_5'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_5'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_5'],"2") !== false && strpos($row['cen3_5'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_5'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
+				<?php
+				if (strpos($row['cb3_5'],"7") !== false  && strpos($row['cen3_5'],"7") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_5'], "7")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-5[]" id="reason3-5" value="2" <?php if(strpos($row['cb3_5'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-				</div>
-				<div class="col-sm-5" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-5[]" id="reason3-5" value="7" <?php if(strpos($row['cb3_5'],"7")!==false){echo "checked";}?>>
-					<label class="form-check-label">กองสุขภาพ</label>
-					<!-- close activity 3.5 -->
-				</div>
+				<?php
+				if (!empty($row['r3_5'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_5" name="sub_pr3_5" rows="2" required><?=$row['sub_pr3_5']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.5 -->
+
+
 				<!-- activity 3.6 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-6" class="col-sm-11 col-form-label">3.6 การติดตามภายหลังปล่อย</label>
+				<label class="col-sm-11 col-form-label bold">3.6 การติดตามภายหลังปล่อย</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-6" name="r3-6" rows="2"><?=$row['r3_6']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_6'])){echo $row['r3_6'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-6[]" id="reason3-6" value="6" <?php if(strpos($row['cb3_6'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb3_6'],"6") !== false  && strpos($row['cen3_6'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_6'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
+				<?php
+				if (strpos($row['cb3_6'],"2") !== false && strpos($row['cen3_6'],"2") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_6'], "2")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
-				<div class="col-sm-6" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-6[]" id="reason3-6" value="2" <?php if(strpos($row['cb3_6'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
-					<!-- close activity 3.6 -->
-				</div>
+				<?php
+				if (!empty($row['r3_6'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_6" name="sub_pr3_6" rows="2" required><?=$row['sub_pr3_6']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.6 -->
+
 				<!-- activity 3.7 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-7" class="col-sm-11 col-form-label">3.7 การดำเนินแงานป้องกันและปราบปรามการทุจริตประพฤติมิชอบ</label>
+				<label class="col-sm-11 col-form-label bold">3.7 การดำเนินแงานป้องกันและปราบปรามการทุจริตประพฤติมิชอบ</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-7" name="r3-7" rows="2"><?=$row['r3_7']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_7'])){echo $row['r3_7'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-7" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-7[]" id="reason3-7" value="1" <?php if(strpos($row['cb3_7'],"1")!==false){echo "checked";}?>>
-					<label class="form-check-label">กบค</label>
-					<!-- close activity 3.7 -->
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กบค : </label>
+				<?php
+				if (strpos($row['cb3_7'],"1") !== false  && strpos($row['cen3_7'],"1") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_7'], "1")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
+				<?php
+				if (!empty($row['r3_7'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_7" name="sub_pr3_7" rows="2" required><?=$row['sub_pr3_7']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.7 -->
+
 				<!-- activity 3.8 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-8" class="col-sm-11 col-form-label">3.8 การสนับสนุนดำเนินงานของเครือข่าย</label>
+				<label class="col-sm-11 col-form-label bold">3.8 การสนับสนุนดำเนินงานของเครือข่าย</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-8" name="r3-8" rows="2"><?=$row['r3_8']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_8'])){echo $row['r3_8'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-7" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-8[]" id="reason3-8" value="6"<?php if(strpos($row['cb3_8'],"6")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพย</label>
-					<!-- close activity 3.8 -->
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
+				<?php
+				if (strpos($row['cb3_8'],"6") !== false  && strpos($row['cen3_8'],"6") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_8'], "6")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
+				<?php
+				if (!empty($row['r3_8'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_8" name="sub_pr3_8" rows="2" required><?=$row['sub_pr3_8']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.8 -->
+
 				<!-- activity 3.9 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-9" class="col-sm-11 col-form-label">3.9 การประหยัดพลังงาน</label>
+				<label class="col-sm-11 col-form-label bold">3.9 การประหยัดพลังงาน</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-9" name="r3-9" rows="2"><?=$row['r3_9']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_9'])){echo $row['r3_9'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class="col-sm-7" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-9[]" id="reason3-9" value="4"<?php if(strpos($row['cb3_9'],"4")!==false){echo "checked";}?>>
-					<label class="form-check-label">คลัง</label>
-					<!-- close activity 3.9 -->
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
+				<?php
+				if (strpos($row['cb3_9'],"4") !== false  && strpos($row['cen3_9'],"4") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_9'], "4")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
+				<?php
+				if (!empty($row['r3_9'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_9" name="sub_pr3_9" rows="2" required><?=$row['sub_pr3_9']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.9 -->
+
 				<!-- activity 3.10 -->
 				<div class="col-sm-1"></div>
-				<label for="r3-10" class="col-sm-11 col-form-label">3.10 การเงินการคลัง</label>
+				<label class="col-sm-11 col-form-label bold">3.10 การเงินการคลัง</label>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="r3-10" name="r3-10" rows="2"><?=$row['r3_10']?></textarea>
-				</div>
+				<label class="col-sm-10 col-form-label cut-word">&emsp;<? if (!empty($row['r3_10'])){echo $row['r3_10'];}else{echo "-";}?></label>
 				<div class="col-sm-1"></div>
-				<label class="col-sm-4 col-form-label">ข้อเสนอแนะของผู้ตรวจราชกรม :</label>
-				<div class=" col-sm-7" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" name="cb3-10[]" id="reason3-10" value="4"<?php if(strpos($row['cb3_10'],"4")!==false){echo "checked";}?>>
-					<label class="form-check-label">คลัง</label>
-					<!-- close activity 3.10 -->
+				<!-- activity_center -->
+				<div class="col-sm-1"></div>
+				<label class="col-sm-11 col-form-label bold">ผลการดำเนินงานของส่วนกลางตามข้อเสนอแนะ/ข้อสั่งการของอธิบดี : </label>
+				<div class="col-sm-1"></div>
+				<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
+				<?php
+				if (strpos($row['cb3_10'],"4") !== false  && strpos($row['cen3_10'],"4") !== false) {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_10'], "4")?></label>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word">-</label>
+					<?php
+				}
+				?>
+				<!-- province input -->
+				<div class="col-sm-1"></div>
+				<div class="col-sm-5">
+					<label class="col-form-label bold">ผลการดำเนินงานของหน่วยรับการตรวจ :</label>
 				</div>
+				<?php
+				if (!empty($row['r3_10'])) {
+					?>
+					<div class="col-sm-6"></div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr3_10" name="sub_pr3_10" rows="2" required><?=$row['sub_pr3_10']?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-6 col-form-label">-</label>
+					<?php
+				}
+				?>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10"><hr></div>
+				<div class="col-sm-1"></div>
+				<!-- close activity 3.10 -->
 				<label class="col-sm-1 col-form-label"></label>
 				<!-- close activity 3 form TR -->
 			</div>

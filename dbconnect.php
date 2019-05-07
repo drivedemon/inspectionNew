@@ -22,6 +22,40 @@ function checkNull($a) {
 	}
 	return $a;
 }
+
+function convertName($name, $pos) {
+	if (strpos($name, "|") !== false) {
+		$arr = explode("|",$name);
+		foreach ($arr as $key => $value) {
+			if (strpos($value, "1;", 0) !== false && $pos == 1) {
+				$name = substr($value, 2);
+				break;
+			} elseif (strpos($value, "2;", 0) !== false && $pos == 2) {
+				$name = substr($value, 2);
+				break;
+			} elseif (strpos($value, "3;", 0) !== false) {
+				$name = substr($value, 2);
+				break;
+			} elseif (strpos($value, "4;", 0) !== false) {
+				$name = substr($value, 2);
+				break;
+			} elseif (strpos($value, "5;", 0) !== false) {
+				$name = substr($value, 2);
+				break;
+			} elseif (strpos($value, "6;", 0) !== false) {
+				$name = substr($value, 2);
+				break;
+			} elseif (strpos($value, "7;", 0) !== false) {
+				$name = substr($value, 2);
+				break;
+			}
+		}
+	} else {
+		$name = substr($name, 2);
+	}
+	return $name;
+}
+
 function DateThai($strDate)	{
 		$strYear = date("Y",strtotime($strDate))+543;
 		$strMonth= date("n",strtotime($strDate));

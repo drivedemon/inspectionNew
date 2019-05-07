@@ -32,7 +32,7 @@ $sub_pr3_10 = (isset($_POST['sub_pr3_10']))? $_POST["sub_pr3_10"]:'';
 
 // hidden input
 $menu = $_POST['menu'];
-$locate = $_POST['locate'];
+// $locate = $_POST['locate'];
 $id = $_POST['inid'];
 $user = $_SESSION["user"];
 $uID = $_SESSION["userID"];

@@ -103,6 +103,7 @@ $currentdate = date('Y-m-d');
 				<tbody>
 
 					<?php
+					if (mysqli_num_rows($query_detail) >= 1) {
 					while ($data = mysqli_fetch_assoc($query_detail)){
 						//query join table
 						$id = $data['id'];
@@ -131,7 +132,12 @@ $currentdate = date('Y-m-d');
 							</td>
 							<td><a href="form-add.php?menu=edit&i=<?=$id?>"><img src="./images/edit.png" width="18" height="18" border="0" /></a></td>
 						</tr>
-					<?php }; ?>
+					<?php
+				 };
+			 } else {
+				 echo "<td colspan='5'>Please Add more data...</td>";
+			 }
+				 ?>
 				</tbody>
 			</table>
 			<!-- -->

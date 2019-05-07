@@ -20,8 +20,20 @@ if($_SESSION["userID"] != $_GET['user'])
 }
 
 require 'dbconnect.php';
+//Time Zone Set
+date_default_timezone_set('Asia/Bangkok');
+$currentdate = date('Y-m-d');
 
-$check_locate = substr($_SESSION["user"],0,2)=="sp"?"1":"2";
+$locate = $_SESSION["user"];
+if (substr($locate,0,2) == "sp") {
+	$check_locate = 1;
+} elseif (substr($locate,0,2) == "tr") {
+	$check_locate = 2;
+} else {
+	$check_locate = "3";
+}
+
+// $check_locate = substr($locate,0,2)=="sp"?"1":"2";
 $perpage = 10;	//จำนวนข้อมูลในแต่ละหน้า
 $page = '';
 if (isset($_GET['page'])) {
@@ -30,21 +42,40 @@ if (isset($_GET['page'])) {
 	$page = 1;
 }
 $start = ($page - 1) * $perpage; //ตำแหน่งข้อมูลแรกในแต่ละหน้า
-$sql_detail = "SELECT d.id,d.inspector,d.division,d.inspect_level,d.inspect_date,d.inspect_no,d.budget_year,d.insert_date,ins.fullname,ul.name from data d, inspector ins,userlogin ul";
-$sql_detail .= " WHERE (r1_1 is not null or r1_2 is not null or r1_3 is not null or r1_4 is not null or r1_5 is not null or r2_1 is not null or r2_2 is not null or r2_3 is not null or r2_4 is not null or r2_5 is not null or r2_6 is not null or r2_7 is not null or r3_1 is not null or r3_2 is not null or r3_3 is not null or r3_4 is not null or r3_5 is not null or r3_6 is not null or r3_7 is not null or r3_8 is not null or r3_9 is not null or r3_10 is not null) and ";
-$sql_detail .= " type_locate = $check_locate and d.inspector=ins.id and d.division=ul.username";
-$sql_datail .= " ORDER BY insert_date DESC LIMIT {$start},{$perpage}";
 
+$sql_detail = "SELECT d.id,d.inspector,d.division,d.inspect_level,d.inspect_date,d.inspect_no,d.budget_year,d.insert_date,ins.fullname,ul.name,d.cb1_1,d.cb1_2,d.cb1_3,d.cb1_4,d.cb1_5,d.cb2_1,d.cb2_2,d.cb2_3,d.cb2_4,d.cb2_5,d.cb2_6,d.cb2_7,d.cb3_1,d.cb3_2,d.cb3_3,d.cb3_4,d.cb3_5,d.cb3_6,d.cb3_7,d.cb3_8,d.cb3_9,d.cb3_10";
+$sql_detail .= " from data d, inspector ins, userlogin ul";
+if ($check_locate == 1 || $check_locate == 2) {
+	$sql_detail .= " WHERE (d.r1_1 is not null or d.r1_2 is not null or d.r1_3 is not null or d.r1_4 is not null or d.r1_5 is not null or d.r2_1 is not null or d.r2_2 is not null or d.r2_3 is not null or d.r2_4 is not null or d.r2_5 is not null or d.r2_6 is not null or d.r2_7 is not null or d.r3_1 is not null or d.r3_2 is not null or d.r3_3 is not null or d.r3_4 is not null or d.r3_5 is not null or d.r3_6 is not null or d.r3_7 is not null or d.r3_8 is not null or d.r3_9 is not null or d.r3_10 is not null) and ";
+	$sql_detail .= " division = '$locate' and type_locate = $check_locate and ";
+	$sql_detail .= " d.inspector=ins.id and d.division=ul.username";
+} else {
+	$sql_detail .= " WHERE (d.r1_1 is not null or d.r1_2 is not null or d.r1_3 is not null or d.r1_4 is not null or d.r1_5 is not null or d.r2_1 is not null or d.r2_2 is not null or d.r2_3 is not null or d.r2_4 is not null or d.r2_5 is not null or d.r2_6 is not null or d.r2_7 is not null or d.r3_1 is not null or d.r3_2 is not null or d.r3_3 is not null or d.r3_4 is not null or d.r3_5 is not null or d.r3_6 is not null or d.r3_7 is not null or d.r3_8 is not null or d.r3_9 is not null or d.r3_10 is not null) and ";
+	if ($_GET['user'] == 99) {
+		$sql_detail .= " (d.cb1_5 LIKE '%6%' or d.cb2_1 LIKE '%6%' or d.cb2_2 LIKE '%6%' or d.cb2_3 LIKE '%6%' or d.cb2_4 LIKE '%6%' or d.cb2_5 LIKE '%6%' or d.cb2_6 LIKE '%6%' or d.cb2_7 LIKE '%6%' or d.cb3_1 LIKE '%6%' or d.cb3_2 LIKE '%6%' or d.cb3_3 LIKE '%6%' or d.cb3_4 LIKE '%6%' or d.cb3_5 LIKE '%6%' or d.cb3_6 LIKE '%6%' or d.cb3_8 LIKE '%6%' or d.cb3_9 LIKE '%6%') and ";
+	} elseif ($_GET['user'] == 100) {
+		$sql_detail .= " (d.cb1_5 LIKE '%7%' or d.cb2_1 LIKE '%7%' or d.cb2_2 LIKE '%7%' or d.cb2_3 LIKE '%7%' or d.cb2_6 LIKE '%7%' or d.cb2_7 LIKE '%7%' or d.cb3_1 LIKE '%7%' or d.cb3_2 LIKE '%7%' or d.cb3_3 LIKE '%7%' or d.cb3_4 LIKE '%7%' or d.cb3_5 LIKE '%7%') and ";
+	} elseif ($_GET['user'] == 101) {
+		$sql_detail .= " (d.cb1_1 LIKE '%1%' or d.cb3_5 LIKE '%1%' or d.cb3_7 LIKE '%1%') and ";
+	} elseif ($_GET['user'] == 102) {
+		$sql_detail .= " (d.cb1_2 LIKE '%3%' or d.cb1_3 LIKE '%3%' or d.cb1_4 LIKE '%3%') and ";
+	} elseif ($_GET['user'] == 103) {
+		$sql_detail .= " (d.cb1_5 LIKE '%5%' or d.cb3_7 LIKE '%5%') and ";
+	} elseif ($_GET['user'] == 104) {
+		$sql_detail .= " (d.cb1_2 LIKE '%4%' or d.cb1_3 LIKE '%4%' or d.cb1_4 LIKE '%4%' or d.cb3_7 LIKE '%4%' or d.cb3_8 LIKE '%4%' or d.cb3_9 LIKE '%4%' or d.cb3_10 LIKE '%4%') and ";
+	} elseif ($_GET['user'] == 105) {
+		$sql_detail .= " (d.cb1_1 LIKE '%2%' or d.cb2_1 LIKE '%2%' or d.cb2_2 LIKE '%2%' or d.cb2_3 LIKE '%2%' or d.cb2_4 LIKE '%2%' or d.cb2_5 LIKE '%2%' or d.cb2_6 LIKE '%2%' or d.cb2_7 LIKE '%2%' or d.cb3_1 LIKE '%2%' or d.cb3_2 LIKE '%2%' or d.cb3_3 LIKE '%2%' or d.cb3_4 LIKE '%2%' or d.cb3_5 LIKE '%2%' or d.cb3_6 LIKE '%2%' or d.cb3_7 LIKE '%2%' or d.cb3_8 LIKE '%2%') and ";
+	} else {
+		$sql_detail .= "";
+	}
+	$sql_detail .= " d.inspector=ins.id and d.division=ul.username";
+}
+$sql_datail .= " ORDER BY insert_date DESC LIMIT {$start},{$perpage}";
 $query_detail = mysqli_query($conn, $sql_detail);
 $num_rows = 0;
-
-//Time Zone Set
-date_default_timezone_set('Asia/Bangkok');
-$currentdate = date('Y-m-d');
 ?>
 <!doctype html>
 <html lang="en">
-
 <!-- Head -->
 <head>
 	<!-- Required meta tags -->
@@ -88,37 +119,42 @@ $currentdate = date('Y-m-d');
 					</tr>
 				</thead>
 				<tbody>
-
 					<?php
-					while ($data = mysqli_fetch_assoc($query_detail)){
-						//query join table
-						$id = $data['id'];
-						$inspector = $data['inspector'];
-						$division = $data['division'];
-						$inspect_level = $data['inspect_level'];
-						$inspect_date = $data['inspect_date'];
-						$inspect_no = $data['inspect_no'];
-						$budget_year = $data['budget_year'];
-						$fullname = $data['fullname'];
-						$name_division = $data['name'];
-						$num_rows++;
-						?>
-						<tr>
-							<td><?php echo $fullname; ?></td>
-							<td><?php echo $name_division; ?></td>
-							<td><?php echo $inspect_no.'/'.$budget_year; ?></td>
-							<td>
-								<?php
-								$sent_date = date_create($inspect_date);
-								$sday = date_format($sent_date,"d");
-								$smonth = date_format($sent_date,"m");
-								$syear = date_format($sent_date,"Y")+543;
-								echo $sday."/".$smonth."/".$syear;
-								?>
-							</td>
-							<td><a href="form-add-user.php?user=<?=$_GET['user']?>&i=<?=$id?>"><img src="./images/edit.png" width="18" height="18" border="0" /></a></td>
-						</tr>
-					<?php }; ?>
+					if (mysqli_num_rows($query_detail) >= 1) {
+						while ($data = mysqli_fetch_assoc($query_detail)){
+							//query join table
+							$id = $data['id'];
+							$inspector = $data['inspector'];
+							$division = $data['division'];
+							$inspect_level = $data['inspect_level'];
+							$inspect_date = $data['inspect_date'];
+							$inspect_no = $data['inspect_no'];
+							$budget_year = $data['budget_year'];
+							$fullname = $data['fullname'];
+							$name_division = $data['name'];
+							$num_rows++;
+							?>
+							<tr>
+								<td><?php echo $fullname; ?></td>
+								<td><?php echo $name_division; ?></td>
+								<td><?php echo $inspect_no.'/'.$budget_year; ?></td>
+								<td>
+									<?php
+									$sent_date = date_create($inspect_date);
+									$sday = date_format($sent_date,"d");
+									$smonth = date_format($sent_date,"m");
+									$syear = date_format($sent_date,"Y")+543;
+									echo $sday."/".$smonth."/".$syear;
+									?>
+								</td>
+								<td><a href="form-add-user.php?user=<?=$_GET['user']?>&i=<?=$id?>"><img src="./images/edit.png" width="18" height="18" border="0" /></a></td>
+							</tr>
+							<?php
+						};
+					} else {
+						echo "<td colspan='5'>No data from inspector...</td>";
+					}
+					?>
 				</tbody>
 			</table>
 			<!-- -->
