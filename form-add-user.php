@@ -3,34 +3,36 @@ session_start();
 error_reporting(~E_NOTICE);
 if($_SESSION["user"] == "")
 {
-	echo "กรุณาลงชื่อเข้าใช้";
-	exit();
+echo "กรุณาลงชื่อเข้าใช้";
+exit();
 }
 
 if($_SESSION["permission"] != "2" && $_SESSION["permission"] != "3")
 {
-	echo "ไม่อนุญาตให้เข้าใช้";
-	exit();
+echo "ไม่อนุญาตให้เข้าใช้";
+exit();
 }
 
 if($_SESSION["userID"] != $_GET['user'])
 {
-	echo "ข้อมูลผู้ใช้ไม่ถูกต้อง";
-	exit();
+echo "ข้อมูลผู้ใช้ไม่ถูกต้อง";
+exit();
 }
 require 'dbconnect.php';
 date_default_timezone_set('Asia/Bangkok');
 
 // set variable and query
 $id = $_GET['i'];
+$userID = $_GET['user'];
 $userS_locate = $_SESSION['user'];
 if (substr($userS_locate,0,2) == "sp") {
-	$check_locate = 1;
+$check_locate = 1;
 } elseif (substr($userS_locate,0,2) == "tr") {
-	$check_locate = 2;
+$check_locate = 2;
 } else {
-	$check_locate = "3";
+$check_locate = "3";
 }
+$menu = $check_locate==3?"editcen":"edit";
 if ($id != "") {
 	$sql = "SELECT d.budget_year,d.type_locate,ins.fullname,d.boss_name,usl.name as divi_name,d.inspect_type,d.inspect_date,d.inspect_no,d.inspect_doc,d.inspect_doc_date,d.personnel1,d.personnel2,d.personnel3,d.personnel4,d.personnel5,d.cm,d.fc,d.cc,d.case53,d.case_f,d.case132,d.case_sp,d.tr1,d.tr2,d.tr3,d.tr4,d.tr5,d.tr6,d.tr7,d.tr8, ";
 	$sql .= " d.r1_1,d.cb1_1,d.sub_pr1_1,d.cen1_1,d.r1_2,d.cb1_2,d.sub_pr1_2,d.cen1_2,d.r1_3,d.cb1_3,d.sub_pr1_3,d.cen1_3,d.r1_4,d.cb1_4,d.sub_pr1_4,d.cen1_4,d.r1_5,d.cb1_5,d.sub_pr1_5,d.cen1_5,";
@@ -100,8 +102,9 @@ if ($id != "") {
 		<!-- ==================================================== tab 1 ==================================================== -->
 		<!-- Text input -->
 		<div class="form-group row" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
-			<input type="hidden" name="menu" value="edit">
+			<input type="hidden" name="menu" value="<?=$menu?>">
 			<input type="text" name="locate" value="<?=$locate?>">
+			<input type="text" name="cen_locate" value="<?=$check_locate?>">
 			<?php if(!empty($id)){echo "<input type='hidden' name='inid' value='$id'";} ?>
 
 			<label class="col-sm-12 col-form-label"></label>
@@ -262,10 +265,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- กบค : </label>
 			<?php
-			if (strpos($row['cb1_1'],"1") !== false && strpos($row['cen1_1'],"1") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_1'], "1")?></label>
-				<?php
+			if (strpos($row['cb1_1'],"1") !== false) {
+				if (strpos($row['cb1_1'],"1") !== false && $userID == 101) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen1_1" name="cen1_1" rows="2" required><?=convertName($row['cen1_1'], "1")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen1_1'], "1") == ""){echo "-";}else{echo convertName($row['cen1_1'], "1");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -275,10 +286,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 			<?php
-			if (strpos($row['cb1_1'],"2") !== false  && strpos($row['cen1_1'],"2") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_1'], "2")?></label>
-				<?php
+			if (strpos($row['cb1_1'],"2") !== false ) {
+				if (strpos($row['cb1_1'],"2") !== false && $userID == 105) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen1_1" name="cen1_1" rows="2" required><?=convertName($row['cen1_1'], "2")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen1_1'], "2") == ""){echo "-";}else{echo convertName($row['cen1_1'], "2");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -299,16 +318,14 @@ if ($id != "") {
 				if ($check_locate == "3") {
 					?>
 					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr1_1']?></label>
-						<?php
-					} else {
-						?>
-						<div class="col-sm-11">
-							<textarea class="form-control" id="sub_pr1_1" name="sub_pr1_1" rows="2" required><?=$row['sub_pr1_1']?></textarea>
-						</div>
-						<?php
-					}
+					<?php
+				} else {
 					?>
-				<?php
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr1_1" name="sub_pr1_1" rows="2" required><?=$row['sub_pr1_1']?></textarea>
+					</div>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-6 col-form-label">-</label>
@@ -332,10 +349,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- แผน : </label>
 			<?php
-			if (strpos($row['cb1_2'],"3") !== false && strpos($row['cen1_2'],"3") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_2'], "3")?></label>
-				<?php
+			if (strpos($row['cb1_2'],"3") !== false) {
+				if (strpos($row['cb1_2'],"3") !== false && $userID == 102) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen1_2" name="cen1_2" rows="2" required><?=convertName($row['cen1_2'], "3")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen1_2'], "3") == ""){echo "-";}else{echo convertName($row['cen1_2'], "3");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -345,10 +370,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
 			<?php
-			if (strpos($row['cb1_2'],"4") !== false  && strpos($row['cen1_2'],"4") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_2'], "4")?></label>
-				<?php
+			if (strpos($row['cb1_2'],"4") !== false ) {
+				if (strpos($row['cb1_2'],"4") !== false && $userID == 104) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen1_2" name="cen1_2" rows="2" required><?=convertName($row['cen1_2'], "4")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen1_2'], "4") == ""){echo "-";}else{echo convertName($row['cen1_2'], "4");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -365,10 +398,18 @@ if ($id != "") {
 				?>
 				<div class="col-sm-6"></div>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="sub_pr1_2" name="sub_pr1_2" rows="2" required><?=$row['sub_pr1_2']?></textarea>
-				</div>
 				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr1_2']?></label>
+					<?php
+				} else {
+					?>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr1_2" name="sub_pr1_2" rows="2" required><?=$row['sub_pr1_2']?></textarea>
+					</div>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-6 col-form-label">-</label>
@@ -392,10 +433,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- แผน : </label>
 			<?php
-			if (strpos($row['cb1_3'],"3") !== false && strpos($row['cen1_3'],"3") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_3'], "3")?></label>
-				<?php
+			if (strpos($row['cb1_3'],"3") !== false) {
+				if (strpos($row['cb1_3'],"3") !== false && $userID == 102) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen1_3" name="cen1_3" rows="2" required><?=convertName($row['cen1_3'], "3")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen1_3'], "3") == ""){echo "-";}else{echo convertName($row['cen1_3'], "3");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -405,10 +454,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
 			<?php
-			if (strpos($row['cb1_3'],"4") !== false  && strpos($row['cen1_3'],"4") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_3'], "4")?></label>
-				<?php
+			if (strpos($row['cb1_3'],"4") !== false ) {
+				if (strpos($row['cb1_3'],"4") !== false && $userID == 104) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen1_3" name="cen1_3" rows="2" required><?=convertName($row['cen1_3'], "4")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><? if(convertName($row['cen1_3'], "4") == ""){echo "-";}else{echo convertName($row['cen1_3'], "4");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -425,10 +482,18 @@ if ($id != "") {
 				?>
 				<div class="col-sm-6"></div>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="sub_pr1_3" name="sub_pr1_3" rows="2" required><?=$row['sub_pr1_3']?></textarea>
-				</div>
 				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr1_3']?></label>
+					<?php
+				} else {
+					?>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr1_3" name="sub_pr1_3" rows="2" required><?=$row['sub_pr1_3']?></textarea>
+					</div>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-6 col-form-label">-</label>
@@ -452,10 +517,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- แผน : </label>
 			<?php
-			if (strpos($row['cb1_4'],"3") !== false && strpos($row['cen1_4'],"3") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_4'], "3")?></label>
-				<?php
+			if (strpos($row['cb1_4'],"3") !== false) {
+				if (strpos($row['cb1_4'],"4") !== false && $userID == 102) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen1_4" name="cen1_4" rows="2" required><?=convertName($row['cen1_4'], "3")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen1_4'], "3") == ""){echo "-";}else{echo convertName($row['cen1_2'], "3");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -465,10 +538,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
 			<?php
-			if (strpos($row['cb1_4'],"4") !== false  && strpos($row['cen1_4'],"4") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_4'], "4")?></label>
-				<?php
+			if (strpos($row['cb1_4'],"4") !== false ) {
+				if (strpos($row['cb1_4'],"4") !== false && $userID == 104) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen1_4" name="cen1_4" rows="2" required><?=convertName($row['cen1_4'], "4")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen1_4'], "4") == ""){echo "-";}else{echo convertName($row['cen1_4'], "4");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -485,10 +566,18 @@ if ($id != "") {
 				?>
 				<div class="col-sm-6"></div>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="sub_pr1_4" name="sub_pr1_4" rows="2" required><?=$row['sub_pr1_4']?></textarea>
-				</div>
 				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr1_4']?></label>
+					<?php
+				} else {
+					?>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr1_4" name="sub_pr1_4" rows="2" required><?=$row['sub_pr1_4']?></textarea>
+					</div>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-6 col-form-label">-</label>
@@ -512,10 +601,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- กพร : </label>
 			<?php
-			if (strpos($row['cb1_5'],"5") !== false && strpos($row['cen1_5'],"5") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_5'], "5")?></label>
-				<?php
+			if (strpos($row['cb1_5'],"5") !== false) {
+				if (strpos($row['cb1_5'],"5") !== false && $userID == 103) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen1_5" name="cen1_5" rows="2" required><?=convertName($row['cen1_5'], "5")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen1_5'], "5") == ""){echo "-";}else{echo convertName($row['cen1_5'], "5");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -525,10 +622,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 			<?php
-			if (strpos($row['cb1_5'],"6") !== false  && strpos($row['cen1_5'],"6") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_5'], "6")?></label>
-				<?php
+			if (strpos($row['cb1_5'],"6") !== false ) {
+				if (strpos($row['cb1_5'],"6") !== false && $userID == 99) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen1_5" name="cen1_5" rows="2" required><?=convertName($row['cen1_5'], "6")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen1_5'], "6") == ""){echo "-";}else{echo convertName($row['cen1_5'], "6");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -538,10 +643,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
 			<?php
-			if (strpos($row['cb1_5'],"7") !== false  && strpos($row['cen1_5'],"7") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen1_5'], "7")?></label>
-				<?php
+			if (strpos($row['cb1_5'],"7") !== false ) {
+				if (strpos($row['cb1_5'],"7") !== false && $userID == 100) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen1_5" name="cen1_5" rows="2" required><?=convertName($row['cen1_5'], "7")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen1_5'], "7") == ""){echo "-";}else{echo convertName($row['cen1_5'], "7");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -558,10 +671,18 @@ if ($id != "") {
 				?>
 				<div class="col-sm-6"></div>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-11">
-					<textarea class="form-control" id="sub_pr1_5" name="sub_pr1_5" rows="2" required><?=$row['sub_pr1_5']?></textarea>
-				</div>
 				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr1_5']?></label>
+					<?php
+				} else {
+					?>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="sub_pr1_5" name="sub_pr1_5" rows="2" required><?=$row['sub_pr1_5']?></textarea>
+					</div>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-6 col-form-label">-</label>
@@ -591,10 +712,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 			<?php
-			if (strpos($row['cb2_1'],"6") !== false  && strpos($row['cen2_1'],"6") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_1'], "6")?></label>
-				<?php
+			if (strpos($row['cb2_1'],"6") !== false ) {
+				if (strpos($row['cb2_1'],"6") !== false && $userID == 99) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_1" name="cen2_1" rows="2" required><?=convertName($row['cen2_1'], "6")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_1'], "6") == ""){echo "-";}else{echo convertName($row['cen2_1'], "6");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -604,10 +733,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 			<?php
-			if (strpos($row['cb2_1'],"2") !== false && strpos($row['cen2_1'],"2") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_1'], "2")?></label>
-				<?php
+			if (strpos($row['cb2_1'],"2") !== false) {
+				if (strpos($row['cb2_1'],"2") !== false && $userID == 105) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_1" name="cen2_1" rows="2" required><?=convertName($row['cen2_1'], "2")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_1'], "2") == ""){echo "-";}else{echo convertName($row['cen2_1'], "2");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -617,10 +754,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
 			<?php
-			if (strpos($row['cb2_1'],"7") !== false  && strpos($row['cen2_1'],"7") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_1'], "7")?></label>
-				<?php
+			if (strpos($row['cb2_1'],"7") !== false ) {
+				if (strpos($row['cb1_5'],"7") !== false && $userID == 100) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_1" name="cen2_1" rows="2" required><?=convertName($row['cen2_1'], "7")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_1'], "7") == ""){echo "-";}else{echo convertName($row['cen2_1'], "7");}?></label>
+					<?php
+				}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -637,10 +782,18 @@ if ($id != "") {
 				?>
 				<div class="col-sm-6"></div>
 				<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr2_1']?></label>
+					<?php
+				} else {
+					?>
 				<div class="col-sm-11">
 					<textarea class="form-control" id="sub_pr2_1" name="sub_pr2_1" rows="2" required><?=$row['sub_pr2_1']?></textarea>
 				</div>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-6 col-form-label">-</label>
@@ -664,10 +817,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 			<?php
-			if (strpos($row['cb2_2'],"6") !== false  && strpos($row['cen2_2'],"6") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_2'], "6")?></label>
+			if (strpos($row['cb2_2'],"6") !== false ) {
+				if (strpos($row['cb2_2'],"6") !== false && $userID == 99) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_2" name="cen2_2" rows="2" required><?=convertName($row['cen2_2'], "6")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+				<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_2'], "6") == ""){echo "-";}else{echo convertName($row['cen2_2'], "6");}?></label>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -677,10 +838,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 			<?php
-			if (strpos($row['cb2_2'],"2") !== false && strpos($row['cen2_2'],"2") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_2'], "2")?></label>
+			if (strpos($row['cb2_2'],"2") !== false) {
+				if (strpos($row['cb2_2'],"2") !== false && $userID == 105) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_2" name="cen2_2" rows="2" required><?=convertName($row['cen2_2'], "2")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+				<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_2'], "2") == ""){echo "-";}else{echo convertName($row['cen2_2'], "2");}?></label>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -690,10 +859,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
 			<?php
-			if (strpos($row['cb2_2'],"7") !== false  && strpos($row['cen2_2'],"7") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_2'], "7")?></label>
+			if (strpos($row['cb2_2'],"7") !== false ) {
+				if (strpos($row['cb2_2'],"7") !== false && $userID == 100) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_2" name="cen2_2" rows="2" required><?=convertName($row['cen2_2'], "7")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+				<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_2'], "7") == ""){echo "-";}else{echo convertName($row['cen2_2'], "7");}?></label>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -710,10 +887,18 @@ if ($id != "") {
 				?>
 				<div class="col-sm-6"></div>
 				<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr2_2']?></label>
+					<?php
+				} else {
+					?>
 				<div class="col-sm-11">
 					<textarea class="form-control" id="sub_pr2_2" name="sub_pr2_2" rows="2" required><?=$row['sub_pr2_2']?></textarea>
 				</div>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-6 col-form-label">-</label>
@@ -737,10 +922,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 			<?php
-			if (strpos($row['cb2_3'],"6") !== false  && strpos($row['cen2_3'],"6") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_3'], "6")?></label>
+			if (strpos($row['cb2_3'],"6") !== false ) {
+				if (strpos($row['cb2_3'],"6") !== false && $userID == 99) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_3" name="cen2_3" rows="2" required><?=convertName($row['cen2_3'], "6")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+				<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_3'], "6") == ""){echo "-";}else{echo convertName($row['cen2_3'], "6");}?></label>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -750,10 +943,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 			<?php
-			if (strpos($row['cb2_3'],"2") !== false && strpos($row['cen2_3'],"2") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_3'], "2")?></label>
+			if (strpos($row['cb2_3'],"2") !== false) {
+				if (strpos($row['cb2_3'],"2") !== false && $userID == 105) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_3" name="cen2_3" rows="2" required><?=convertName($row['cen2_3'], "2")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+				<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_3'], "2") == ""){echo "-";}else{echo convertName($row['cen2_3'], "2");}?></label>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -763,10 +964,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
 			<?php
-			if (strpos($row['cb2_3'],"7") !== false  && strpos($row['cen2_3'],"7") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_3'], "7")?></label>
+			if (strpos($row['cb2_3'],"7") !== false ) {
+				if (strpos($row['cb2_3'],"7") !== false && $userID == 100) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_3" name="cen2_3" rows="2" required><?=convertName($row['cen2_3'], "7")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+				<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_3'], "7") == ""){echo "-";}else{echo convertName($row['cen2_3'], "7");}?></label>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -783,10 +992,18 @@ if ($id != "") {
 				?>
 				<div class="col-sm-6"></div>
 				<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr2_3']?></label>
+					<?php
+				} else {
+					?>
 				<div class="col-sm-11">
 					<textarea class="form-control" id="sub_pr2_3" name="sub_pr2_3" rows="2" required><?=$row['sub_pr2_3']?></textarea>
 				</div>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-6 col-form-label">-</label>
@@ -810,10 +1027,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 			<?php
-			if (strpos($row['cb2_4'],"6") !== false  && strpos($row['cen2_4'],"6") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_4'], "6")?></label>
+			if (strpos($row['cb2_4'],"6") !== false ) {
+				if (strpos($row['cb2_4'],"6") !== false && $userID == 99) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_4" name="cen2_4" rows="2" required><?=convertName($row['cen2_4'], "6")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+				<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_4'], "6") == ""){echo "-";}else{echo convertName($row['cen2_4'], "6");}?></label>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -823,10 +1048,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 			<?php
-			if (strpos($row['cb2_4'],"2") !== false && strpos($row['cen2_4'],"2") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_4'], "2")?></label>
+			if (strpos($row['cb2_4'],"2") !== false) {
+				if (strpos($row['cb2_4'],"2") !== false && $userID == 105) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_4" name="cen2_4" rows="2" required><?=convertName($row['cen2_4'], "2")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+				<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_4'], "2") == ""){echo "-";}else{echo convertName($row['cen2_4'], "2");}?></label>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -843,10 +1076,18 @@ if ($id != "") {
 				?>
 				<div class="col-sm-6"></div>
 				<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr2_4']?></label>
+					<?php
+				} else {
+					?>
 				<div class="col-sm-11">
 					<textarea class="form-control" id="sub_pr2_4" name="sub_pr2_4" rows="2" required><?=$row['sub_pr2_4']?></textarea>
 				</div>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-6 col-form-label">-</label>
@@ -870,10 +1111,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 			<?php
-			if (strpos($row['cb2_5'],"6") !== false  && strpos($row['cen2_5'],"6") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_5'], "6")?></label>
+			if (strpos($row['cb2_5'],"6") !== false ) {
+				if (strpos($row['cb2_5'],"6") !== false && $userID == 99) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_5" name="cen2_5" rows="2" required><?=convertName($row['cen2_5'], "6")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+				<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_5'], "6") == ""){echo "-";}else{echo convertName($row['cen2_5'], "6");}?></label>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -883,10 +1132,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 			<?php
-			if (strpos($row['cb2_5'],"2") !== false && strpos($row['cen2_5'],"2") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_5'], "2")?></label>
+			if (strpos($row['cb2_5'],"2") !== false) {
+				if (strpos($row['cb2_5'],"2") !== false && $userID == 105) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_5" name="cen2_5" rows="2" required><?=convertName($row['cen2_5'], "2")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+				<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_5'], "2") == ""){echo "-";}else{echo convertName($row['cen2_5'], "2");}?></label>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -903,10 +1160,18 @@ if ($id != "") {
 				?>
 				<div class="col-sm-6"></div>
 				<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr2_5']?></label>
+					<?php
+				} else {
+					?>
 				<div class="col-sm-11">
 					<textarea class="form-control" id="sub_pr2_5" name="sub_pr2_5" rows="2" required><?=$row['sub_pr2_5']?></textarea>
 				</div>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-6 col-form-label">-</label>
@@ -931,10 +1196,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 			<?php
-			if (strpos($row['cb2_6'],"6") !== false  && strpos($row['cen2_6'],"6") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_6'], "6")?></label>
+			if (strpos($row['cb2_6'],"6") !== false ) {
+				if (strpos($row['cb2_6'],"6") !== false && $userID == 99) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_6" name="cen2_6" rows="2" required><?=convertName($row['cen2_6'], "6")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+				<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_6'], "6") == ""){echo "-";}else{echo convertName($row['cen2_6'], "6");}?></label>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -944,10 +1217,18 @@ if ($id != "") {
 			<div class="col-sm-1"></div>
 			<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 			<?php
-			if (strpos($row['cb2_6'],"2") !== false && strpos($row['cen2_6'],"2") !== false) {
-				?>
-				<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_6'], "2")?></label>
+			if (strpos($row['cb2_6'],"2") !== false) {
+				if (strpos($row['cb2_6'],"2") !== false && $userID == 105) {
+					?>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_6" name="cen2_6" rows="2" required><?=convertName($row['cen2_6'], "2")?></textarea>
+					</div>
+					<?php
+				} else {
+					?>
+				<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_6'], "2") == ""){echo "-";}else{echo convertName($row['cen2_6'], "2");}?></label>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -958,10 +1239,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
 				<?php
-				if (strpos($row['cb2_3'],"7") !== false  && strpos($row['cen2_3'],"7") !== false) {
+				if (strpos($row['cb2_6'],"7") !== false ) {
+				if (strpos($row['cb2_6'],"7") !== false && $userID == 100) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_3'], "7")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_6" name="cen2_6" rows="2" required><?=convertName($row['cen2_6'], "7")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_6'], "7") == ""){echo "-";}else{echo convertName($row['cen2_6'], "7");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -979,10 +1268,18 @@ if ($id != "") {
 				?>
 				<div class="col-sm-6"></div>
 				<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr2_6']?></label>
+					<?php
+				} else {
+					?>
 				<div class="col-sm-11">
 					<textarea class="form-control" id="sub_pr2_6" name="sub_pr2_6" rows="2" required><?=$row['sub_pr2_6']?></textarea>
 				</div>
 				<?php
+			}
 			} else {
 				?>
 				<label class="col-sm-6 col-form-label">-</label>
@@ -1009,10 +1306,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb2_7'],"6") !== false  && strpos($row['cen2_7'],"6") !== false) {
+				if (strpos($row['cb2_7'],"6") !== false ) {
+				if (strpos($row['cb2_7'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_7'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_7" name="cen2_7" rows="2" required><?=convertName($row['cen2_7'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_7'], "6") == ""){echo "-";}else{echo convertName($row['cen2_7'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1022,10 +1327,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb2_7'],"2") !== false && strpos($row['cen2_7'],"2") !== false) {
+				if (strpos($row['cb2_7'],"2") !== false) {
+				if (strpos($row['cb2_7'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_7'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_7" name="cen2_7" rows="2" required><?=convertName($row['cen2_7'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_7'], "2") == ""){echo "-";}else{echo convertName($row['cen2_7'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1035,10 +1348,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
 				<?php
-				if (strpos($row['cb2_7'],"7") !== false  && strpos($row['cen2_7'],"7") !== false) {
+				if (strpos($row['cb2_7'],"7") !== false ) {
+				if (strpos($row['cb2_7'],"7") !== false && $userID == 100) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen2_7'], "7")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen2_7" name="cen2_7" rows="2" required><?=convertName($row['cen2_7'], "7")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen2_7'], "7") == ""){echo "-";}else{echo convertName($row['cen2_7'], "7");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1055,10 +1376,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr2_7']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr2_7" name="sub_pr2_7" rows="2" required><?=$row['sub_pr2_7']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1093,10 +1422,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb3_1'],"6") !== false  && strpos($row['cen3_1'],"6") !== false) {
+				if (strpos($row['cb3_1'],"6") !== false ) {
+				if (strpos($row['cb3_1'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_1'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_1" name="cen3_1" rows="2" required><?=convertName($row['cen3_1'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_1'], "6") == ""){echo "-";}else{echo convertName($row['cen3_1'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1106,10 +1443,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_1'],"2") !== false && strpos($row['cen3_1'],"2") !== false) {
+				if (strpos($row['cb3_1'],"2") !== false) {
+				if (strpos($row['cb3_1'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_1'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_1" name="cen3_1" rows="2" required><?=convertName($row['cen3_1'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_1'], "2") == ""){echo "-";}else{echo convertName($row['cen3_1'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1119,10 +1464,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
 				<?php
-				if (strpos($row['cb3_1'],"7") !== false  && strpos($row['cen3_1'],"7") !== false) {
+				if (strpos($row['cb3_1'],"7") !== false ) {
+				if (strpos($row['cb3_1'],"7") !== false && $userID == 100) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_1'], "7")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_1" name="cen3_1" rows="2" required><?=convertName($row['cen3_1'], "7")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_1'], "7") == ""){echo "-";}else{echo convertName($row['cen3_1'], "7");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1139,10 +1492,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_1']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_1" name="sub_pr3_1" rows="2" required><?=$row['sub_pr3_1']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1166,10 +1527,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb3_2'],"6") !== false  && strpos($row['cen3_2'],"6") !== false) {
+				if (strpos($row['cb3_2'],"6") !== false ) {
+				if (strpos($row['cb3_2'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_2'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_2" name="cen3_2" rows="2" required><?=convertName($row['cen3_2'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_2'], "6") == ""){echo "-";}else{echo convertName($row['cen3_2'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1179,10 +1548,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_2'],"2") !== false && strpos($row['cen3_2'],"2") !== false) {
+				if (strpos($row['cb3_2'],"2") !== false) {
+				if (strpos($row['cb3_2'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_2'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_2" name="cen3_2" rows="2" required><?=convertName($row['cen3_2'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_2'], "2") == ""){echo "-";}else{echo convertName($row['cen3_2'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1199,10 +1576,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_2']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_2" name="sub_pr3_2" rows="2" required><?=$row['sub_pr3_2']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1226,10 +1611,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb3_3'],"6") !== false  && strpos($row['cen3_3'],"6") !== false) {
+				if (strpos($row['cb3_3'],"6") !== false ) {
+				if (strpos($row['cb3_3'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_3'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_3" name="cen3_3" rows="2" required><?=convertName($row['cen3_3'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_3'], "6") == ""){echo "-";}else{echo convertName($row['cen3_3'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1239,10 +1632,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_3'],"2") !== false && strpos($row['cen3_3'],"2") !== false) {
+				if (strpos($row['cb3_3'],"2") !== false) {
+				if (strpos($row['cb3_3'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_3'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_3" name="cen3_3" rows="2" required><?=convertName($row['cen3_3'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_3'], "2") == ""){echo "-";}else{echo convertName($row['cen3_3'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1252,10 +1653,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
 				<?php
-				if (strpos($row['cb3_3'],"7") !== false  && strpos($row['cen3_3'],"7") !== false) {
+				if (strpos($row['cb3_3'],"7") !== false ) {
+				if (strpos($row['cb3_3'],"7") !== false && $userID == 100) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_3'], "7")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_3" name="cen3_3" rows="2" required><?=convertName($row['cen3_3'], "7")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_3'], "7") == ""){echo "-";}else{echo convertName($row['cen3_3'], "7");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1272,10 +1681,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_3']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_3" name="sub_pr3_3" rows="2" required><?=$row['sub_pr3_3']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1299,10 +1716,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb3_4'],"6") !== false  && strpos($row['cen3_4'],"6") !== false) {
+				if (strpos($row['cb3_4'],"6") !== false ) {
+				if (strpos($row['cb3_4'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_4'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_4" name="cen3_4" rows="2" required><?=convertName($row['cen3_4'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_4'], "6") == ""){echo "-";}else{echo convertName($row['cen3_4'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1312,10 +1737,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_4'],"2") !== false && strpos($row['cen3_4'],"2") !== false) {
+				if (strpos($row['cb3_4'],"2") !== false) {
+				if (strpos($row['cb3_4'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_4'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_4" name="cen3_4" rows="2" required><?=convertName($row['cen3_4'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_4'], "2") == ""){echo "-";}else{echo convertName($row['cen3_4'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1325,10 +1758,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
 				<?php
-				if (strpos($row['cb3_4'],"7") !== false  && strpos($row['cen3_4'],"7") !== false) {
+				if (strpos($row['cb3_4'],"7") !== false ) {
+				if (strpos($row['cb3_4'],"7") !== false && $userID == 100) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_4'], "7")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_4" name="cen3_4" rows="2" required><?=convertName($row['cen3_4'], "7")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_4'], "7") == ""){echo "-";}else{echo convertName($row['cen3_4'], "7");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1345,10 +1786,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_4']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_4" name="sub_pr3_4" rows="2" required><?=$row['sub_pr3_4']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1372,10 +1821,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กบค : </label>
 				<?php
-				if (strpos($row['cb3_5'],"1") !== false  && strpos($row['cen3_5'],"1") !== false) {
-					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_5'], "1")?></label>
+				if (strpos($row['cb3_5'],"1") !== false ) {
+					if (strpos($row['cb3_5'],"1") !== false && $userID == 101) {
+						?>
+						<div class="col-sm-9">
+							<textarea class="form-control" id="cen3_5" name="cen3_5" rows="2" required><?=convertName($row['cen3_5'], "1")?></textarea>
+						</div>
+						<?php
+					} else {
+						?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_5'], "1") == ""){echo "-";}else{echo convertName($row['cen3_5'], "1");}?></label>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1385,10 +1842,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_5'],"2") !== false && strpos($row['cen3_5'],"2") !== false) {
+				if (strpos($row['cb3_5'],"2") !== false) {
+				if (strpos($row['cb3_5'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_5'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_5" name="cen3_5" rows="2" required><?=convertName($row['cen3_5'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_5'], "2") == ""){echo "-";}else{echo convertName($row['cen3_5'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1405,10 +1870,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_5']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_5" name="sub_pr3_5" rows="2" required><?=$row['sub_pr3_5']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1433,10 +1906,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb3_6'],"6") !== false  && strpos($row['cen3_6'],"6") !== false) {
+				if (strpos($row['cb3_6'],"6") !== false ) {
+				if (strpos($row['cb3_6'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_6'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_6" name="cen3_6" rows="2" required><?=convertName($row['cen3_6'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_6'], "6") == ""){echo "-";}else{echo convertName($row['cen3_6'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1446,10 +1927,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_6'],"2") !== false && strpos($row['cen3_6'],"2") !== false) {
+				if (strpos($row['cb3_6'],"2") !== false) {
+				if (strpos($row['cb3_6'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_6'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_6" name="cen3_6" rows="2" required><?=convertName($row['cen3_6'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_6'], "2") == ""){echo "-";}else{echo convertName($row['cen3_6'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1466,10 +1955,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_6']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_6" name="sub_pr3_6" rows="2" required><?=$row['sub_pr3_6']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1493,10 +1990,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
 				<?php
-				if (strpos($row['cb3_7'],"4") !== false  && strpos($row['cen3_7'],"4") !== false) {
-					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_7'], "4")?></label>
+				if (strpos($row['cb3_7'],"4") !== false ) {
+					if (strpos($row['cb3_7'],"4") !== false && $userID == 104) {
+						?>
+						<div class="col-sm-9">
+							<textarea class="form-control" id="cen3_7" name="cen3_7" rows="2" required><?=convertName($row['cen3_7'], "4")?></textarea>
+						</div>
+						<?php
+					} else {
+						?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_7'], "4") == ""){echo "-";}else{echo convertName($row['cen3_7'], "4");}?></label>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1506,10 +2011,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพร : </label>
 				<?php
-				if (strpos($row['cb3_7'],"5") !== false && strpos($row['cen3_7'],"5") !== false) {
-					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_7'], "5")?></label>
+				if (strpos($row['cb3_7'],"5") !== false) {
+					if (strpos($row['cb3_7'],"5") !== false && $userID == 103) {
+						?>
+						<div class="col-sm-9">
+							<textarea class="form-control" id="cen3_7" name="cen3_7" rows="2" required><?=convertName($row['cen3_7'], "5")?></textarea>
+						</div>
+						<?php
+					} else {
+						?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_7'], "5") == ""){echo "-";}else{echo convertName($row['cen3_7'], "5");}?></label>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1519,10 +2032,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_7'],"2") !== false && strpos($row['cen3_7'],"2") !== false) {
+				if (strpos($row['cb3_7'],"2") !== false) {
+				if (strpos($row['cb3_7'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_7'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_7" name="cen3_7" rows="2" required><?=convertName($row['cen3_7'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_7'], "2") == ""){echo "-";}else{echo convertName($row['cen3_7'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1539,10 +2060,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_7']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_7" name="sub_pr3_7" rows="2" required><?=$row['sub_pr3_7']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1566,10 +2095,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
 				<?php
-				if (strpos($row['cb3_8'],"4") !== false  && strpos($row['cen3_8'],"4") !== false) {
-					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_8'], "4")?></label>
+				if (strpos($row['cb3_8'],"4") !== false ) {
+					if (strpos($row['cb3_8'],"4") !== false && $userID == 104) {
+						?>
+						<div class="col-sm-9">
+							<textarea class="form-control" id="cen3_8" name="cen3_8" rows="2" required><?=convertName($row['cen3_8'], "4")?></textarea>
+						</div>
+						<?php
+					} else {
+						?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_8'], "4") == ""){echo "-";}else{echo convertName($row['cen3_8'], "4");}?></label>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1579,10 +2116,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_8'],"2") !== false && strpos($row['cen3_8'],"2") !== false) {
+				if (strpos($row['cb3_8'],"2") !== false) {
+				if (strpos($row['cb3_8'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_8'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_8" name="cen3_8" rows="2" required><?=convertName($row['cen3_8'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_8'], "2") == ""){echo "-";}else{echo convertName($row['cen3_8'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1599,10 +2144,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_8']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_8" name="sub_pr3_8" rows="2" required><?=$row['sub_pr3_8']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1626,10 +2179,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb3_9'],"6") !== false  && strpos($row['cen3_9'],"6") !== false) {
+				if (strpos($row['cb3_9'],"6") !== false ) {
+				if (strpos($row['cb3_9'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_9'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_9" name="cen3_9" rows="2" required><?=convertName($row['cen3_9'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_9'], "6") == ""){echo "-";}else{echo convertName($row['cen3_9'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1646,10 +2207,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_9']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_9" name="sub_pr3_9" rows="2" required><?=$row['sub_pr3_9']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1679,10 +2248,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_10']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_10" name="sub_pr3_10" rows="2" required><?=$row['sub_pr3_10']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1715,10 +2292,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb3_1'],"6") !== false  && strpos($row['cen3_1'],"6") !== false) {
+				if (strpos($row['cb3_1'],"6") !== false ) {
+				if (strpos($row['cb3_1'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_1'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_1" name="cen3_1" rows="2" required><?=convertName($row['cen3_1'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_1'], "6") == ""){echo "-";}else{echo convertName($row['cen3_1'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1728,10 +2313,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_1'],"2") !== false && strpos($row['cen3_1'],"2") !== false) {
+				if (strpos($row['cb3_1'],"2") !== false) {
+				if (strpos($row['cb3_1'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_1'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_1" name="cen3_1" rows="2" required><?=convertName($row['cen3_1'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_1'], "2") == ""){echo "-";}else{echo convertName($row['cen3_1'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1748,10 +2341,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_1']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_1" name="sub_pr3_1" rows="2" required><?=$row['sub_pr3_1']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1775,10 +2376,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb3_2'],"6") !== false  && strpos($row['cen3_2'],"6") !== false) {
+				if (strpos($row['cb3_2'],"6") !== false ) {
+				if (strpos($row['cb3_2'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_2'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_2" name="cen3_2" rows="2" required><?=convertName($row['cen3_2'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_2'], "6") == ""){echo "-";}else{echo convertName($row['cen3_2'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1788,10 +2397,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_2'],"2") !== false && strpos($row['cen3_2'],"2") !== false) {
+				if (strpos($row['cb3_2'],"2") !== false) {
+				if (strpos($row['cb3_2'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_2'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_2" name="cen3_2" rows="2" required><?=convertName($row['cen3_2'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_2'], "2") == ""){echo "-";}else{echo convertName($row['cen3_2'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1801,10 +2418,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
 				<?php
-				if (strpos($row['cb3_2'],"7") !== false  && strpos($row['cen3_2'],"7") !== false) {
+				if (strpos($row['cb3_2'],"7") !== false ) {
+				if (strpos($row['cb3_2'],"7") !== false && $userID == 100) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_2'], "7")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_2" name="cen3_2" rows="2" required><?=convertName($row['cen3_2'], "7")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_2'], "7") == ""){echo "-";}else{echo convertName($row['cen3_2'], "7");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1821,10 +2446,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_2']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_2" name="sub_pr3_2" rows="2" required><?=$row['sub_pr3_2']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1848,10 +2481,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb3_3'],"6") !== false  && strpos($row['cen3_3'],"6") !== false) {
+				if (strpos($row['cb3_3'],"6") !== false ) {
+				if (strpos($row['cb3_3'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_3'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_3" name="cen3_3" rows="2" required><?=convertName($row['cen3_3'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_3'], "6") == ""){echo "-";}else{echo convertName($row['cen3_3'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1861,10 +2502,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_3'],"2") !== false && strpos($row['cen3_3'],"2") !== false) {
+				if (strpos($row['cb3_3'],"2") !== false) {
+				if (strpos($row['cb3_3'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_3'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_3" name="cen3_3" rows="2" required><?=convertName($row['cen3_3'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_3'], "2") == ""){echo "-";}else{echo convertName($row['cen3_3'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1881,10 +2530,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_3']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_3" name="sub_pr3_3" rows="2" required><?=$row['sub_pr3_3']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1908,10 +2565,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb3_4'],"6") !== false  && strpos($row['cen3_4'],"6") !== false) {
+				if (strpos($row['cb3_4'],"6") !== false ) {
+				if (strpos($row['cb3_4'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_4'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_4" name="cen3_4" rows="2" required><?=convertName($row['cen3_4'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_4'], "6") == ""){echo "-";}else{echo convertName($row['cen3_4'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1921,10 +2586,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_4'],"2") !== false && strpos($row['cen3_4'],"2") !== false) {
+				if (strpos($row['cb3_4'],"2") !== false) {
+				if (strpos($row['cb3_4'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_4'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_4" name="cen3_4" rows="2" required><?=convertName($row['cen3_4'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_4'], "2") == ""){echo "-";}else{echo convertName($row['cen3_4'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1934,10 +2607,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
 				<?php
-				if (strpos($row['cb3_4'],"7") !== false  && strpos($row['cen3_4'],"7") !== false) {
+				if (strpos($row['cb3_4'],"7") !== false ) {
+				if (strpos($row['cb3_4'],"7") !== false && $userID == 100) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_4'], "7")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_4" name="cen3_4" rows="2" required><?=convertName($row['cen3_4'], "7")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_4'], "7") == ""){echo "-";}else{echo convertName($row['cen3_4'], "7");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1954,10 +2635,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_4']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_4" name="sub_pr3_4" rows="2" required><?=$row['sub_pr3_4']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -1981,10 +2670,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb3_5'],"6") !== false  && strpos($row['cen3_5'],"6") !== false) {
+				if (strpos($row['cb3_5'],"6") !== false ) {
+				if (strpos($row['cb3_5'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_5'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_5" name="cen3_5" rows="2" required><?=convertName($row['cen3_5'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_5'], "6") == ""){echo "-";}else{echo convertName($row['cen3_5'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -1994,10 +2691,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_5'],"2") !== false && strpos($row['cen3_5'],"2") !== false) {
+				if (strpos($row['cb3_5'],"2") !== false) {
+				if (strpos($row['cb3_5'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_5'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_5" name="cen3_5" rows="2" required><?=convertName($row['cen3_5'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_5'], "2") == ""){echo "-";}else{echo convertName($row['cen3_5'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -2007,10 +2712,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กองสุขภาพ : </label>
 				<?php
-				if (strpos($row['cb3_5'],"7") !== false  && strpos($row['cen3_5'],"7") !== false) {
+				if (strpos($row['cb3_5'],"7") !== false ) {
+				if (strpos($row['cb3_5'],"7") !== false && $userID == 100) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_5'], "7")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_5" name="cen3_5" rows="2" required><?=convertName($row['cen3_5'], "7")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_5'], "7") == ""){echo "-";}else{echo convertName($row['cen3_5'], "7");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -2027,10 +2740,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_5']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_5" name="sub_pr3_5" rows="2" required><?=$row['sub_pr3_5']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -2055,10 +2776,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb3_6'],"6") !== false  && strpos($row['cen3_6'],"6") !== false) {
+				if (strpos($row['cb3_6'],"6") !== false ) {
+				if (strpos($row['cb3_6'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_6'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_6" name="cen3_6" rows="2" required><?=convertName($row['cen3_6'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_6'], "6") == ""){echo "-";}else{echo convertName($row['cen3_6'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -2068,10 +2797,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- JDI : </label>
 				<?php
-				if (strpos($row['cb3_6'],"2") !== false && strpos($row['cen3_6'],"2") !== false) {
+				if (strpos($row['cb3_6'],"2") !== false) {
+				if (strpos($row['cb3_6'],"2") !== false && $userID == 105) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_6'], "2")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_6" name="cen3_6" rows="2" required><?=convertName($row['cen3_6'], "2")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_6'], "2") == ""){echo "-";}else{echo convertName($row['cen3_6'], "2");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -2088,10 +2825,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_6']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_6" name="sub_pr3_6" rows="2" required><?=$row['sub_pr3_6']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -2115,10 +2860,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กบค : </label>
 				<?php
-				if (strpos($row['cb3_7'],"1") !== false  && strpos($row['cen3_7'],"1") !== false) {
-					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_7'], "1")?></label>
+				if (strpos($row['cb3_7'],"1") !== false ) {
+					if (strpos($row['cb3_7'],"1") !== false && $userID == 101) {
+						?>
+						<div class="col-sm-9">
+							<textarea class="form-control" id="cen3_7" name="cen3_7" rows="2" required><?=convertName($row['cen3_7'], "1")?></textarea>
+						</div>
+						<?php
+					} else {
+						?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_7'], "1") == ""){echo "-";}else{echo convertName($row['cen3_7'], "1");}?></label>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -2135,10 +2888,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_7']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_7" name="sub_pr3_7" rows="2" required><?=$row['sub_pr3_7']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -2162,10 +2923,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>
 				<?php
-				if (strpos($row['cb3_8'],"6") !== false  && strpos($row['cen3_8'],"6") !== false) {
+				if (strpos($row['cb3_8'],"6") !== false ) {
+				if (strpos($row['cb3_8'],"6") !== false && $userID == 99) {
 					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_8'], "6")?></label>
+					<div class="col-sm-9">
+						<textarea class="form-control" id="cen3_8" name="cen3_8" rows="2" required><?=convertName($row['cen3_8'], "6")?></textarea>
+					</div>
 					<?php
+				} else {
+					?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_8'], "6") == ""){echo "-";}else{echo convertName($row['cen3_8'], "6");}?></label>
+					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -2182,10 +2951,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_8']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_8" name="sub_pr3_8" rows="2" required><?=$row['sub_pr3_8']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -2209,10 +2986,18 @@ if ($id != "") {
 				<div class="col-sm-1"></div>
 				<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
 				<?php
-				if (strpos($row['cb3_9'],"4") !== false  && strpos($row['cen3_9'],"4") !== false) {
-					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_9'], "4")?></label>
+				if (strpos($row['cb3_9'],"4") !== false ) {
+					if (strpos($row['cb3_9'],"4") !== false && $userID == 104) {
+						?>
+						<div class="col-sm-9">
+							<textarea class="form-control" id="cen3_9" name="cen3_9" rows="2" required><?=convertName($row['cen3_9'], "4")?></textarea>
+						</div>
+						<?php
+					} else {
+						?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_9'], "4") == ""){echo "-";}else{echo convertName($row['cen3_9'], "4");}?></label>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -2229,10 +3014,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_9']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_9" name="sub_pr3_9" rows="2" required><?=$row['sub_pr3_9']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>
@@ -2257,9 +3050,17 @@ if ($id != "") {
 				<label class="col-sm-2 col-form-label bold">&emsp;- คลัง : </label>
 				<?php
 				if (strpos($row['cb3_10'],"4") !== false  && strpos($row['cen3_10'],"4") !== false) {
-					?>
-					<label class="col-sm-9 col-form-label cut-word"><?=convertName($row['cen3_10'], "4")?></label>
+					if (strpos($row['cb3_10'],"4") !== false && $userID == 104) {
+						?>
+						<div class="col-sm-9">
+							<textarea class="form-control" id="cen3_10" name="cen3_10" rows="2" required><?=convertName($row['cen3_10'], "4")?></textarea>
+						</div>
+						<?php
+					} else {
+						?>
+					<label class="col-sm-9 col-form-label cut-word"><?if(convertName($row['cen3_10'], "4") == ""){echo "-";}else{echo convertName($row['cen3_10'], "10");}?></label>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-9 col-form-label cut-word">-</label>
@@ -2276,10 +3077,18 @@ if ($id != "") {
 					?>
 					<div class="col-sm-6"></div>
 					<div class="col-sm-1"></div>
+				<?php
+				if ($check_locate == "3") {
+					?>
+					<label class="col-sm-11 col-form-label cut-word"><?=$row['sub_pr3_10']?></label>
+					<?php
+				} else {
+					?>
 					<div class="col-sm-11">
 						<textarea class="form-control" id="sub_pr3_10" name="sub_pr3_10" rows="2" required><?=$row['sub_pr3_10']?></textarea>
 					</div>
 					<?php
+				}
 				} else {
 					?>
 					<label class="col-sm-6 col-form-label">-</label>

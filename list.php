@@ -46,7 +46,7 @@ $currentdate = date('Y-m-d');
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="css/style.css" type="text/css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
-
+	<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
 	<!-- Style CSS -->
 	<style>
 	body{
@@ -130,7 +130,7 @@ $currentdate = date('Y-m-d');
 								echo $sday."/".$smonth."/".$syear;
 								?>
 							</td>
-							<td><a href="form-add.php?menu=edit&i=<?=$id?>"><img src="./images/edit.png" width="18" height="18" border="0" /></a></td>
+							<td><a href="form-add.php?menu=edit&i=<?=$id?>"><i class='fas fa-pen'></i></a></td>
 						</tr>
 					<?php
 				 };
