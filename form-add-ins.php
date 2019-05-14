@@ -66,26 +66,25 @@ $keylocate = $locate=="1"? "sp":'tr';
 	</div>
 	<!-- Form -->
 	<div class="container p-2" style="max-width:800px;">
-		<form name="report" action="form-add-sent.php" method="post" enctype="multipart/form-data" id="report-form">
+		<form name="ins-form" action="form-add-ins-sent.php" method="post" enctype="multipart/form-data" id="ins-form">
 			<hr>
 			<!-- ==================================================== tab 1 ==================================================== -->
 			<!-- Text input -->
 			<div class="form-group row" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
 				<input type="hidden" name="menu" value="<?=$menu?>">
-				<input type="hidden" name="locate" value="<?=$locate?>">
 				<?php if(!empty($id)){echo "<input type='hidden' name='inid' value='$id'";} ?>
 				<label class="col-sm-12 col-form-label"></label>
 				<label for="input-creator" class="col-sm-12 col-form-label bold">ชื่อผู้ตรวจ : </label>
 				<div class="form-group col-md-1"></div>
 				<div class="form-group col-md-2">
 					<label>คำนำหน้า</label>
-					<select class="form-control" name="txtReceiver" id="input-receiver">
+					<select class="form-control" name="tname" id="input-tname">
 						<?php
 						$sql_tname = "SELECT * FROM title ORDER BY title_name DESC";
 						$query_tname = mysqli_query($conn,$sql_tname);
 						?>
 						<?php while ($data_tname = mysqli_fetch_assoc($query_tname)){ ?>
-							<option <?php if($row['division']==$data_tname['username']){echo "selected";}?> value="<?php echo $data_tname['id']; ?>">
+							<option value="<?php echo $data_tname['id']; ?>">
 								<?php echo $data_tname['title_name']; ?>
 							</option>
 						<?php }; ?>
@@ -100,25 +99,17 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<input type="text" name="lastname" class="form-control" id="lastname" placeholder="นามสกุล" value="<?=$row['boss_name']?>" required>
 				</div>
 			</div>
-			<div class="form-group row">
-				<div class="col-sm-3">
-					<input type="button" class="myButton2" value="+ เขตการตรวจราชการ" id="AddMore">
-				</div>
-				<div class="col-sm-7">
-					<div id="remove-cont"></div>
-				</div>
-			</div>
 
 			<div class="form-group row" id="area_zone" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
-				<label class="col-sm-12 col-form-label"></label>
+				<label class="col-sm-12 col-form-label bold">ข้อมูลเขตตรวจราชการ : </label>
 				<div class="form-group col-md-1"></div>
 				<div class="form-group col-md-7">
-					<label>เขตตรวจราชการ</label>
+					<label>เขตตรวจราชการที่ 1</label>
 					<input type="text" name="area[]" class="form-control" id="area1" placeholder="เขตตรวจราชการที่ 1" value="" required>
 				</div>
 				<div class="form-group col-md-3">
 					<label>รองที่กำกับดูแล</label>
-					<select class="form-control" name="area[]" id="sub_ins1">
+					<select class="form-control" name="sub_ins[]" id="sub_ins1">
 						<?php
 						$sql_zone = "SELECT * FROM zone ORDER BY id ASC";
 						$query_zone = mysqli_query($conn,$sql_zone);
@@ -134,13 +125,13 @@ $keylocate = $locate=="1"? "sp":'tr';
 				<div class="form-group col-md-1"></div>
 				<div class="form-group col-md-7">
 					<label>ผต.ยธที่ดูแล</label>
-					<input type="text" name="area[]" class="form-control" id="ins1" placeholder="ชื่อ-นามสกุล" value="" required>
+					<input type="text" name="areaname[]" class="form-control" id="insname1" placeholder="ชื่อ-นามสกุล" value="" required>
 				</div>
 				<div class="form-group col-md-3">
 					<label>ศูนย์ฝึกที่ฝึกอบรม</label>
-					<select class="form-control" name="area[]" id="locate1">
+					<select class="form-control" name="trlocate[]" id="trlocate1">
 						<?php
-						$sql_divi = "SELECT distinct * FROM tr_area ORDER BY id ASC";
+						$sql_divi = "SELECT * FROM tr_area ORDER BY id ASC";
 						$query_divi = mysqli_query($conn,$sql_divi);
 						?>
 						<?php while ($data_divi = mysqli_fetch_assoc($query_divi)){ ?>
@@ -150,19 +141,25 @@ $keylocate = $locate=="1"? "sp":'tr';
 						<?php }; ?>
 					</select>
 				</div>
+				<div class="form-group col-md-1"></div>
 			</div>
 
 
 
-
-
-			<label class="col-sm-12 col-form-label"></label>
+			<div class="form-group row">
+				<div class="col-sm-3">
+					<input type="button" class="myButton2" value="+ เขตการตรวจราชการ" id="AddMore">
+				</div>
+				<div class="col-sm-7">
+					<div id="remove-cont"></div>
+				</div>
+			</div>
 			<!-- </div> -->
 			<hr>
 			<!-- /Upload input -->
 			<div class="form-group text-right">
-				<div>
-					<button type="submit" class="btn btn-primary">Submit</button>
+				<div id="submit-form">
+					<button type="button" onclick="checkInput()" class="btn btn-primary">Submit</button>
 				</div>
 			</div>
 		</form>
@@ -171,15 +168,9 @@ $keylocate = $locate=="1"? "sp":'tr';
 			<a href="logout.php">Logout</a>
 		</div>
 	</div>
-	<select id="indarea" size="5" style="display :;">
-		<?php
-		foreach ($c13Q as $key => $value) {
-			if ($key != 0) {
-				$n = $key+1;
-				echo "<option>$n</option>";
-			}
-		}
-		?>
+	<select id="indarea" name="indarea" size="5" style="display :none;">
+
+	</select>
 		<!-- Optional JavaScript -->
 		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -189,29 +180,76 @@ $keylocate = $locate=="1"? "sp":'tr';
 		<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
 		<!-- JScript -->
 		<script>
+		function rmve(i) {
+			var o = i;
+			var x2 = document.getElementById("area"+o);
+			var indar = document.getElementById("indarea");
+			// alert(indar.length);
+			if (indar.length == 1) {
+				$("#hr"+o).remove();
+				$("#fcol"+o).remove();
+				$("#farea"+o).remove();
+				$("#fsub"+o).remove();
+				$("#fcolend"+o).remove();
+				$("#scol"+o).remove();
+				$("#sinsname"+o).remove();
+				$("#strzone"+o).remove();
+				$("#scolend"+o).remove();
+				indar.remove(indar.length-1);
+				$("#remove-cont").empty();
+				$("#submit-form").empty();
+				$("#submit-form").append('<button type="button" onclick="checkInput()" class="btn btn-primary">Submit</button>');
+			} else {
+				$("#hr"+o).remove();
+				$("#fcol"+o).remove();
+				$("#farea"+o).remove();
+				$("#fsub"+o).remove();
+				$("#fcolend"+o).remove();
+				$("#scol"+o).remove();
+				$("#sinsname"+o).remove();
+				$("#strzone"+o).remove();
+				$("#scolend"+o).remove();
+				// x2.remove();
+				indar.remove(indar.length-1);
+				var lastind = (indar.length) + 1;
+				$("#remove-cont").empty();
+				$("#remove-cont").append('<input type="button" class="myButton3" id="removeMore" onClick="rmve(\''+lastind+'\')" value="- เขตการตรวจราชการ">');
+				$("#submit-form").empty();
+				$("#submit-form").append('<button type="button" onclick="checkInput(\''+lastind+'\')" class="btn btn-primary">Submit</button>');
+			}
+		}
+
 		$(document).ready(function(){
 			$("#AddMore").click(function(){
 				var indad = document.getElementById("indarea").length;
 				indad = indad+2;
 				var dd = $("#removeMore").val();
-				$("#area_zone").append('<label class="col-sm-12 col-form-label"><hr></label>');
-				$("#area_zone").append('<div class="form-group col-md-1"></div>');
-				$("#area_zone").append('<div class="form-group col-md-7"><label>เขตตรวจราชการ</label><input type="text" name="area[]" class="form-control" id="area'+indad+'" placeholder="เขตตรวจราชการท่ '+indad+'" value="" required></div>');
-				$("#area_zone").append('<div class="form-group col-md-3"><label>รองที่กำกับดูแล</label><select class="form-control" name="area[]" id="sub_ins'+indad+'"></div>');
-				$("#area_zone").append('<div class="form-group col-md-1"></div>');
+				$("#area_zone").append('<label class="col-sm-12 col-form-label" id="hr'+indad+'"><hr></label>');
+				$("#area_zone").append('<div class="form-group col-md-1" id="fcol'+indad+'"></div>');
+				$("#area_zone").append('<div class="form-group col-md-7" id="farea'+indad+'"><label>เขตตรวจราชการที่ '+indad+'</label><input type="text" name="area[]" class="form-control" id="area'+indad+'" placeholder="เขตตรวจราชการที่ '+indad+'" value="" required></div>');
+				$("#area_zone").append('<div class="form-group col-md-3" id="fsub'+indad+'"><label>รองที่กำกับดูแล</label><select class="form-control" name="sub_ins[]" id="sub_ins'+indad+'"></select></div>');
+				$("#area_zone").append('<div class="form-group col-md-1" id="fcolend'+indad+'"></div>');
+				$("#area_zone").append('<div class="form-group col-md-1" id="scol'+indad+'"></div>');
+				$("#area_zone").append('<div class="form-group col-md-7" id="sinsname'+indad+'"><label>ผต.ยธที่ดูแล</label><input type="text" name="areaname[]" class="form-control" id="insname'+indad+'" placeholder="ชื่อ-นามสกุล" value="" required></div>');
+				$("#area_zone").append('<div class="form-group col-md-3" id="strzone'+indad+'"><label>ศูนย์ฝึกที่ฝึกอบรม</label><select class="form-control" name="trlocate[]" id="trlocate'+indad+'"></select></div>');
+				$("#area_zone").append('<div class="form-group col-md-1" id="scolend'+indad+'"></div>');
 				subinsLoad(indad);
+				trzoneLoad(indad);
 				$("#indarea").append('<option>'+indad+'</option>');
+				$("#submit-form").empty();
+				$("#submit-form").append('<button type="button" onclick="checkInput(\''+indad+'\')" class="btn btn-primary">Submit</button>');
 				if (typeof dd === "undefined") {
 					$("#remove-cont").append('<input type="button" class="myButton3" id="removeMore" onClick="rmve(\''+indad+'\')" value="- เขตการตรวจราชการ">');
 				} else {
 					$("#remove-cont").empty();
 					$("#remove-cont").append('<input type="button" class="myButton3" id="removeMore" onClick="rmve(\''+indad+'\')" value="- เขตการตรวจราชการ">');
+					$("#submit-form").empty();
+					$("#submit-form").append('<button type="button" onclick="checkInput(\''+indad+'\')" class="btn btn-primary">Submit</button>');
 				}
 			});
 		});
 
 		function subinsLoad(n) {
-			var list = "";
 			$.ajax({
 				url: "ajax_get_inspect.php",
 				type: "POST",
@@ -222,6 +260,37 @@ $keylocate = $locate=="1"? "sp":'tr';
 				},
 				error: function(xhr, status, exception) { alert(status); }
 			});
+		}
+
+		function trzoneLoad(n) {
+			$.ajax({
+				url: "ajax_get_trzone.php",
+				type: "POST",
+				async:false,
+				success: function(data, status) {
+					$("#trlocate"+n).html(data);
+					var q = data;
+				},
+				error: function(xhr, status, exception) { alert(status); }
+			});
+		}
+
+		function submit() {
+			document.getElementById("ins-form").submit();
+		}
+
+		function checkInput(i) {
+			if (!$("#firstname").val() || !$("#lastname").val()) {
+				alert("alkaka");
+			} else if (i === undefined) {
+				if (!$("#area1").val() || !$("#sub_ins1").val() || !$("#insname1").val() || !$("#trlocate1").val()) {
+					alert(i);
+				} else {
+					submit();
+				}
+			} else {
+				submit();
+			}
 		}
 		</script>
 	</body>

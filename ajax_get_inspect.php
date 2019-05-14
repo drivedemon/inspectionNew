@@ -2,7 +2,7 @@
 
 include 'dbconnect.php';
 
-$dpid = $_REQUEST["dpid"];
+// $dpid = $_REQUEST["dpid"];
 
 $sql2= "SELECT * FROM zone ORDER BY id ASC";
 

@@ -23,7 +23,8 @@ if (isset($_GET['page'])) {
 	$page = 1;
 }
 $start = ($page - 1) * $perpage; //ตำแหน่งข้อมูลแรกในแต่ละหน้า
-$sql_detail = "SELECT d.id,d.inspector,d.division,d.inspect_level,d.inspect_date,d.inspect_no,d.budget_year,d.insert_date,ins.fullname,ul.name from data d, inspector ins,userlogin ul where d.inspector=ins.id and d.division=ul.username ORDER BY insert_date DESC LIMIT {$start},{$perpage}";
+$sql_detail = "SELECT d.id,d.inspector,d.division,d.inspect_level,d.inspect_date,d.inspect_no,d.budget_year,d.insert_date,t.title_name,ins.firstname,ins.lastname,ul.name from data d, inspector ins, title t, userlogin ul where ins.titlename=t.id and d.inspector=ins.id and d.division=ul.username
+ORDER BY insert_date DESC LIMIT {$start},{$perpage}";
 
 $query_detail = mysqli_query($conn, $sql_detail);
 $num_rows = 0;
@@ -113,7 +114,7 @@ $currentdate = date('Y-m-d');
 						$inspect_date = $data['inspect_date'];
 						$inspect_no = $data['inspect_no'];
 						$budget_year = $data['budget_year'];
-						$fullname = $data['fullname'];
+						$fullname = $data['title_name'].$data['firstname']." ".$data['lastname'];
 						$name_division = $data['name'];
 						$num_rows++;
 						?>

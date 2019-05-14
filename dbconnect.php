@@ -1,15 +1,15 @@
 <?php
-	$servername = "localhost";
-	$username = "root";
-	$password = "";
-	$db = "inspection_new";
+$servername = "localhost";
+$username = "root";
+$password = "";
+$db = "inspection_new";
 
-	// Create connection
-	$conn = new mysqli($servername,$username,$password,$db);
-	$conn->query("set names utf8");
+// Create connection
+$conn = new mysqli($servername,$username,$password,$db);
+$conn->query("set names utf8");
 
-	// Check connection
-	if ($conn->connect_error) {
+// Check connection
+if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 }
 
@@ -26,30 +26,30 @@ function checkNull($a) {
 function nameToFormat($oName, $nName) {
 	if (strpos($oName, "|") !== false) {
 		$arr = explode("|",$oName);
-			foreach ($arr as $value) {
-				// echo "$value<br>";
-				if (strpos($value, "1;") !== false && strpos($nName, "1;") !== false) {
-					$strName = empty($strName)?$nName:$strName."|".$nName;
-				} elseif (strpos($value, "2;") !== false && strpos($nName, "2;") !== false) {
-					$strName = empty($strName)?$nName:$strName."|".$nName;
-				} elseif (strpos($value, "3;") !== false && strpos($nName, "3;") !== false) {
-					$strName = empty($strName)?$nName:$strName."|".$nName;
-				} elseif (strpos($value, "4;") !== false && strpos($nName, "4;") !== false) {
-					$strName = empty($strName)?$nName:$strName."|".$nName;
-				} elseif (strpos($value, "5;") !== false && strpos($nName, "5;") !== false) {
-					$strName = empty($strName)?$nName:$strName."|".$nName;
-				} elseif (strpos($value, "6;") !== false && strpos($nName, "6;") !== false) {
-					$strName = empty($strName)?$nName:$strName."|".$nName;
-				} elseif (strpos($value, "7;") !== false && strpos($nName, "7;") !== false) {
-					$strName = empty($strName)?$nName:$strName."|".$nName;
+		foreach ($arr as $value) {
+			// echo "$value<br>";
+			if (strpos($value, "1;") !== false && strpos($nName, "1;") !== false) {
+				$strName = empty($strName)?$nName:$strName."|".$nName;
+			} elseif (strpos($value, "2;") !== false && strpos($nName, "2;") !== false) {
+				$strName = empty($strName)?$nName:$strName."|".$nName;
+			} elseif (strpos($value, "3;") !== false && strpos($nName, "3;") !== false) {
+				$strName = empty($strName)?$nName:$strName."|".$nName;
+			} elseif (strpos($value, "4;") !== false && strpos($nName, "4;") !== false) {
+				$strName = empty($strName)?$nName:$strName."|".$nName;
+			} elseif (strpos($value, "5;") !== false && strpos($nName, "5;") !== false) {
+				$strName = empty($strName)?$nName:$strName."|".$nName;
+			} elseif (strpos($value, "6;") !== false && strpos($nName, "6;") !== false) {
+				$strName = empty($strName)?$nName:$strName."|".$nName;
+			} elseif (strpos($value, "7;") !== false && strpos($nName, "7;") !== false) {
+				$strName = empty($strName)?$nName:$strName."|".$nName;
+			} else {
+				if (!empty($strName)) {
+					$strName .= "|".$value;
 				} else {
-					if (!empty($strName)) {
-						$strName .= "|".$value;
-					} else {
-						$strName = $value;
-					}
+					$strName = $value;
 				}
 			}
+		}
 	} else {
 		if (strpos($oName, "1;") !== false && strpos($nName, "1;") !== false) {
 			$strName = $nName;
@@ -131,11 +131,11 @@ function convertName($name, $pos) {
 }
 
 function DateThai($strDate)	{
-		$strYear = date("Y",strtotime($strDate))+543;
-		$strMonth= date("n",strtotime($strDate));
-		$strDay= date("j",strtotime($strDate));
-		$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-		$strMonthThai=$strMonthCut[$strMonth];
-		return "$strDay $strMonthThai $strYear";
+	$strYear = date("Y",strtotime($strDate))+543;
+	$strMonth= date("n",strtotime($strDate));
+	$strDay= date("j",strtotime($strDate));
+	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+	$strMonthThai=$strMonthCut[$strMonth];
+	return "$strDay $strMonthThai $strYear";
 }
 ?>
