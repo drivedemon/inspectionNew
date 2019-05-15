@@ -34,16 +34,17 @@ $check_locate = "3";
 }
 $menu = $check_locate==3?"editcen":"edit";
 if ($id != "") {
-	$sql = "SELECT d.budget_year,d.type_locate,ins.fullname,d.boss_name,usl.name as divi_name,d.inspect_type,d.inspect_date,d.inspect_no,d.inspect_doc,d.inspect_doc_date,d.personnel1,d.personnel2,d.personnel3,d.personnel4,d.personnel5,d.cm,d.fc,d.cc,d.case53,d.case_f,d.case132,d.case_sp,d.tr1,d.tr2,d.tr3,d.tr4,d.tr5,d.tr6,d.tr7,d.tr8, ";
+	$sql = "SELECT d.budget_year,d.type_locate,t.title_name,ins.firstname,ins.lastname,d.boss_name,usl.name as divi_name,d.inspect_type,d.inspect_date,d.inspect_no,d.inspect_doc,d.inspect_doc_date,d.personnel1,d.personnel2,d.personnel3,d.personnel4,d.personnel5,d.cm,d.fc,d.cc,d.case53,d.case_f,d.case132,d.case_sp,d.tr1,d.tr2,d.tr3,d.tr4,d.tr5,d.tr6,d.tr7,d.tr8, ";
 	$sql .= " d.r1_1,d.cb1_1,d.sub_pr1_1,d.cen1_1,d.r1_2,d.cb1_2,d.sub_pr1_2,d.cen1_2,d.r1_3,d.cb1_3,d.sub_pr1_3,d.cen1_3,d.r1_4,d.cb1_4,d.sub_pr1_4,d.cen1_4,d.r1_5,d.cb1_5,d.sub_pr1_5,d.cen1_5,";
 	$sql .= " d.r2_1,d.cb2_1,d.sub_pr2_1,d.cen2_1,d.r2_2,d.cb2_2,d.sub_pr2_2,d.cen2_2,d.r2_3,d.cb2_3,d.sub_pr2_3,d.cen2_3,d.r2_4,d.cb2_4,d.sub_pr2_4,d.cen2_4,d.r2_5,d.cb2_5,d.sub_pr2_5,d.cen2_5,d.r2_6,d.cb2_6,d.sub_pr2_6,d.cen2_6,d.r2_7,d.cb2_7,d.sub_pr2_7,d.cen2_7,";
 	$sql .= " d.r3_1,d.cb3_1,d.sub_pr3_1,d.cen3_1,d.r3_2,d.cb3_2,d.sub_pr3_2,d.cen3_2,d.r3_3,d.cb3_3,d.sub_pr3_3,d.cen3_3,d.r3_4,d.cb3_4,d.sub_pr3_4,d.cen3_4,d.r3_5,d.cb3_5,d.sub_pr3_5,d.cen3_5,d.r3_6,d.cb3_6,d.sub_pr3_6,d.cen3_6,d.r3_7,d.cb3_7,d.sub_pr3_7,d.cen3_7,d.r3_8,d.cb3_8,d.sub_pr3_8,d.cen3_8,d.r3_9,d.cb3_9,d.sub_pr3_9,d.cen3_9,d.r3_10,d.cb3_10,d.sub_pr3_10,d.cen3_10";
-	$sql .= " FROM data d, inspector ins,userlogin usl WHERE d.division = usl.username and d.inspector = ins.id and d.id = '$id'";
+	$sql .= " FROM data d, inspector ins, userlogin usl, title t WHERE d.division = usl.username and d.inspector = ins.id and d.id = '$id'";
 	$query = mysqli_query($conn, $sql);
 	$row = mysqli_fetch_assoc($query);
 
 	$locate = (!empty($row['type_locate']))?$row['type_locate']:'';
 	$keylocate = $locate=="1"? "sp":'tr';
+	$fullname = $row['title_name'].$row['firstname']." ".$row['lastname'];
 
 	if ($row['inspect_type'] == 1) {
 		$insType = "กรณีปกติ";
@@ -103,8 +104,8 @@ if ($id != "") {
 		<!-- Text input -->
 		<div class="form-group row" style="border-style:solid; background-color: #FFFAE5; border-width:2px; border-color: #FFEEE5; border-radius: 8px !important;">
 			<input type="hidden" name="menu" value="<?=$menu?>">
-			<input type="text" name="locate" value="<?=$locate?>">
-			<input type="text" name="cen_locate" value="<?=$check_locate?>">
+			<input type="hidden" name="locate" value="<?=$locate?>">
+			<input type="hidden" name="cen_locate" value="<?=$check_locate?>">
 			<?php if(!empty($id)){echo "<input type='hidden' name='inid' value='$id'";} ?>
 
 			<label class="col-sm-12 col-form-label"></label>
@@ -114,7 +115,7 @@ if ($id != "") {
 			<label class="col-9 col-form-label"><?=$row['budget_year']?></label>
 
 			<label class="col-3 col-form-label bold">ชื่อผู้ตรวจ:</label>
-			<label class="col-9 col-form-label"><?=$row['fullname']?></label>
+			<label class="col-9 col-form-label"><?=$fullname?></label>
 
 			<label class="col-sm-3 col-form-label bold">ชื่อหัวหน้าหน่วยงาน:</label>
 			<label class="col-9 col-form-label"><?=$row['boss_name']?></label>

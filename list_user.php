@@ -43,8 +43,8 @@ if (isset($_GET['page'])) {
 }
 $start = ($page - 1) * $perpage; //ตำแหน่งข้อมูลแรกในแต่ละหน้า
 
-$sql_detail = "SELECT d.id,d.inspector,d.division,d.inspect_level,d.inspect_date,d.inspect_no,d.budget_year,d.insert_date,ins.fullname,ul.name,d.cb1_1,d.cb1_2,d.cb1_3,d.cb1_4,d.cb1_5,d.cb2_1,d.cb2_2,d.cb2_3,d.cb2_4,d.cb2_5,d.cb2_6,d.cb2_7,d.cb3_1,d.cb3_2,d.cb3_3,d.cb3_4,d.cb3_5,d.cb3_6,d.cb3_7,d.cb3_8,d.cb3_9,d.cb3_10";
-$sql_detail .= " from data d, inspector ins, userlogin ul";
+$sql_detail = "SELECT d.id,d.inspector,d.division,d.inspect_level,d.inspect_date,d.inspect_no,d.budget_year,d.insert_date,t.title_name,ins.firstname,ins.lastname,ul.name,d.cb1_1,d.cb1_2,d.cb1_3,d.cb1_4,d.cb1_5,d.cb2_1,d.cb2_2,d.cb2_3,d.cb2_4,d.cb2_5,d.cb2_6,d.cb2_7,d.cb3_1,d.cb3_2,d.cb3_3,d.cb3_4,d.cb3_5,d.cb3_6,d.cb3_7,d.cb3_8,d.cb3_9,d.cb3_10";
+$sql_detail .= " from data d, inspector ins, userlogin ul, title t";
 if ($check_locate == 1 || $check_locate == 2) {
 	$sql_detail .= " WHERE (d.r1_1 is not null or d.r1_2 is not null or d.r1_3 is not null or d.r1_4 is not null or d.r1_5 is not null or d.r2_1 is not null or d.r2_2 is not null or d.r2_3 is not null or d.r2_4 is not null or d.r2_5 is not null or d.r2_6 is not null or d.r2_7 is not null or d.r3_1 is not null or d.r3_2 is not null or d.r3_3 is not null or d.r3_4 is not null or d.r3_5 is not null or d.r3_6 is not null or d.r3_7 is not null or d.r3_8 is not null or d.r3_9 is not null or d.r3_10 is not null) and ";
 	$sql_detail .= " division = '$locate' and type_locate = $check_locate and ";
@@ -85,7 +85,7 @@ $num_rows = 0;
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="css/style.css" type="text/css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
-
+	<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
 	<!-- Style CSS -->
 	<style>
 	body{
@@ -109,7 +109,7 @@ $num_rows = 0;
 					<!--
 					<div class="row float-right"><small>*หมายเหตุ สีตัวอักษรของกำหนดการตอบกลับ</small>&nbsp;<small style="color:green">สีเขียว หมายถึง ยังไม่เกินเวลาตอบกลับ</small>&nbsp;<small style="color:red">สีแดง หมายถึง เกินกำหนดเวลาตอบกลับแล้ว</small></div>
 				-->
-				<thead>
+				<thead class="thead-dark">
 					<tr>
 						<th scope="col">ผู้ตรวจ</th>
 						<th scope="col">หน่วยงาน</th>
@@ -130,7 +130,7 @@ $num_rows = 0;
 							$inspect_date = $data['inspect_date'];
 							$inspect_no = $data['inspect_no'];
 							$budget_year = $data['budget_year'];
-							$fullname = $data['fullname'];
+							$fullname = $data['title_name'].$data['firstname']." ".$data['lastname'];
 							$name_division = $data['name'];
 							$num_rows++;
 							?>
@@ -147,7 +147,7 @@ $num_rows = 0;
 									echo $sday."/".$smonth."/".$syear;
 									?>
 								</td>
-								<td><a href="form-add-user.php?user=<?=$_GET['user']?>&i=<?=$id?>"><img src="./images/edit.png" width="18" height="18" border="0" /></a></td>
+								<td><a href="form-add-user.php?user=<?=$_GET['user']?>&i=<?=$id?>"><i class='fas fa-pen'></i></a></td>
 							</tr>
 							<?php
 						};

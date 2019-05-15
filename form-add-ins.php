@@ -111,7 +111,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<label>รองที่กำกับดูแล</label>
 					<select class="form-control" name="sub_ins[]" id="sub_ins1">
 						<?php
-						$sql_zone = "SELECT * FROM zone ORDER BY id ASC";
+						$sql_zone = "SELECT * FROM subins_zone ORDER BY id ASC";
 						$query_zone = mysqli_query($conn,$sql_zone);
 						?>
 						<?php while ($data_zone = mysqli_fetch_assoc($query_zone)){ ?>
@@ -125,13 +125,13 @@ $keylocate = $locate=="1"? "sp":'tr';
 				<div class="form-group col-md-1"></div>
 				<div class="form-group col-md-7">
 					<label>ผต.ยธที่ดูแล</label>
-					<input type="text" name="areaname[]" class="form-control" id="insname1" placeholder="ชื่อ-นามสกุล" value="" required>
+					<input type="text" name="insname[]" class="form-control" id="insname1" placeholder="ชื่อ-นามสกุล" value="" required>
 				</div>
 				<div class="form-group col-md-3">
 					<label>ศูนย์ฝึกที่ฝึกอบรม</label>
 					<select class="form-control" name="trlocate[]" id="trlocate1">
 						<?php
-						$sql_divi = "SELECT * FROM tr_area ORDER BY id ASC";
+						$sql_divi = "SELECT * FROM tr_locate ORDER BY id ASC";
 						$query_divi = mysqli_query($conn,$sql_divi);
 						?>
 						<?php while ($data_divi = mysqli_fetch_assoc($query_divi)){ ?>
@@ -230,7 +230,7 @@ $keylocate = $locate=="1"? "sp":'tr';
 				$("#area_zone").append('<div class="form-group col-md-3" id="fsub'+indad+'"><label>รองที่กำกับดูแล</label><select class="form-control" name="sub_ins[]" id="sub_ins'+indad+'"></select></div>');
 				$("#area_zone").append('<div class="form-group col-md-1" id="fcolend'+indad+'"></div>');
 				$("#area_zone").append('<div class="form-group col-md-1" id="scol'+indad+'"></div>');
-				$("#area_zone").append('<div class="form-group col-md-7" id="sinsname'+indad+'"><label>ผต.ยธที่ดูแล</label><input type="text" name="areaname[]" class="form-control" id="insname'+indad+'" placeholder="ชื่อ-นามสกุล" value="" required></div>');
+				$("#area_zone").append('<div class="form-group col-md-7" id="sinsname'+indad+'"><label>ผต.ยธที่ดูแล</label><input type="text" name="insname[]" class="form-control" id="insname'+indad+'" placeholder="ชื่อ-นามสกุล" value="" required></div>');
 				$("#area_zone").append('<div class="form-group col-md-3" id="strzone'+indad+'"><label>ศูนย์ฝึกที่ฝึกอบรม</label><select class="form-control" name="trlocate[]" id="trlocate'+indad+'"></select></div>');
 				$("#area_zone").append('<div class="form-group col-md-1" id="scolend'+indad+'"></div>');
 				subinsLoad(indad);
@@ -281,15 +281,30 @@ $keylocate = $locate=="1"? "sp":'tr';
 
 		function checkInput(i) {
 			if (!$("#firstname").val() || !$("#lastname").val()) {
-				alert("alkaka");
+				alert("กรุณากรอกข้อมูลชื่อหรือนามสกุลให้เรียบร้อย");
 			} else if (i === undefined) {
 				if (!$("#area1").val() || !$("#sub_ins1").val() || !$("#insname1").val() || !$("#trlocate1").val()) {
-					alert(i);
+					alert("กรุณากรอกข้อมูลเขตตรวจราชการให้ครบทุกช่อง");
 				} else {
 					submit();
 				}
 			} else {
-				submit();
+				if (i > 1) {
+					for (var num = 1; num <= i; num++) {
+						if (num > 1) {
+							if (!$("#area"+num).val() || !$("#sub_ins"+num).val() || !$("#insname"+num).val() || !$("#trlocate"+num).val()) {
+								alert("กรุณากรอกข้อมูลเขตตรวจราชการให้ครบทุกช่อง");
+								break;
+							} else {
+									submit();
+							}
+						} else {
+							if (!$("#area1").val() || !$("#sub_ins1").val() || !$("#insname1").val() || !$("#trlocate1").val()) {
+								alert("กรุณากรอกข้อมูลเขตตรวจราชการให้ครบทุกช่อง");
+								break;
+							}
+						}}
+				}
 			}
 		}
 		</script>

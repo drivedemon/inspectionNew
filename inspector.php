@@ -23,8 +23,8 @@ if (isset($_GET['page'])) {
 	$page = 1;
 }
 $start = ($page - 1) * $perpage; //ตำแหน่งข้อมูลแรกในแต่ละหน้า
-$sql_detail = "SELECT d.id,d.inspector,d.division,d.inspect_level,d.inspect_date,d.inspect_no,d.budget_year,d.insert_date,t.title_name,ins.firstname,ins.lastname,ul.name from data d, inspector ins, title t, userlogin ul where ins.titlename=t.id and d.inspector=ins.id and d.division=ul.username
-							 ORDER BY insert_date DESC LIMIT {$start},{$perpage}";
+$sql_detail = "SELECT ins.id,t.title_name,ins.firstname,ins.lastname,ins.area,ins.sub_ins,ins.sub_insname,ins.tr_locate from inspector ins, title t where ins.titlename=t.id
+							 ORDER BY update_date DESC LIMIT {$start},{$perpage}";
 
 $query_detail = mysqli_query($conn, $sql_detail);
 $num_rows = 0;
@@ -70,49 +70,69 @@ $currentdate = date('Y-m-d');
 			<br>
 			<div class="container table-responsive">
 				<table class="table table-striped" style="background-color:white;">
-				<thead>
+				<thead class="thead-dark">
 					<tr>
 						<th scope="col">ลำดับ</th>
 						<th scope="col">ผู้ตรวจ</th>
-			  		<th scope="col">หน่วยงาน</th>
-						<th scope="col">ครั้งที่</th>
-						<th scope="col">วันที่ตรวจ</th>
+						<th scope="col">เขตตรวจราชการ</th>
+			  		<th scope="col">รองที่กำกับดูแล</th>
+						<th scope="col">ผต.ยธ ที่ดูแล</th>
+						<th scope="col">ศูนย์ฝึกที่ฝึกอบรม</th>
 						<th scope="col">แก้ไข</th>
 					</tr>
 				</thead>
 				<tbody>
 
+					<tr>
 					<?php
 					if (mysqli_num_rows($query_detail) >= 1) {
 					while ($data = mysqli_fetch_assoc($query_detail)){
 						//query join table
 						$id = $data['id'];
-						$inspector = $data['inspector'];
-						$division = $data['division'];
-						$inspect_level = $data['inspect_level'];
-						$inspect_date = $data['inspect_date'];
-						$inspect_no = $data['inspect_no'];
-						$budget_year = $data['budget_year'];
 						$fullname = $data['title_name'].$data['firstname']." ".$data['lastname'];
-						$name_division = $data['name'];
 						$num_rows++;
+						$area_arr = explode("|", $data['area']);
+						$sub_ins_arr = explode("|", $data['sub_ins']);
+						$sub_insname_arr = explode("|", $data['sub_insname']);
+						$tr_locate_arr = explode("|", $data['tr_locate']);
+
+						echo "<td>$num_rows</td>";
+						echo "<td>$fullname</td>";
+						foreach ($area_arr as $key => $value) {
+							if ($key >= 1) {
+								echo "<td></td><td></td>";
+								echo "<td>$value</td>";
+								$sql_sub_ins = "select name from subins_zone where id='".$sub_ins_arr[$key]."'";
+								$query_sub_ins = mysqli_query($conn, $sql_sub_ins);
+								$sub_ins = mysqli_fetch_assoc($query_sub_ins);
+								echo "<td>".$sub_ins['name']."</td>";
+								echo "<td>".$sub_insname_arr[$key]."</td>";
+								$sql_sub_insname = "select name from tr_locate where id='".$tr_locate_arr[$key]."'";
+								$query_sub_insname = mysqli_query($conn, $sql_sub_insname);
+								$sub_insname = mysqli_fetch_assoc($query_sub_insname);
+								echo "<td>".$sub_insname['name']."</td>";
+							} else {
+								echo "<td>$value</td>";
+								$sql_sub_ins = "select name from subins_zone where id='".$sub_ins_arr[$key]."'";
+								$query_sub_ins = mysqli_query($conn, $sql_sub_ins);
+								$sub_ins = mysqli_fetch_assoc($query_sub_ins);
+								echo "<td>".$sub_ins['name']."</td>";
+								echo "<td>".$sub_insname_arr[$key]."</td>";
+								$sql_sub_insname = "select name from tr_locate where id='".$tr_locate_arr[$key]."'";
+								$query_sub_insname = mysqli_query($conn, $sql_sub_insname);
+								$sub_insname = mysqli_fetch_assoc($query_sub_insname);
+								echo "<td>".$sub_insname['name']."</td>";
+								echo "<td><a href=\"form-add.php?menu=edit&i=<?=$id?>\"><i class='fas fa-pen'></i></a></td>";
+							}
+							echo "</tr>";
+						}
 						?>
-						<tr>
-							<td><?php echo $num_rows; ?></td>
-							<td><?php echo $fullname; ?></td>
-							<td><?php echo $name_division; ?></td>
+							<!-- <td><?php echo $name_division; ?></td>
 							<td><?php echo $inspect_no.'/'.$budget_year; ?></td>
-							<td>
-								<?php
-								$sent_date = date_create($inspect_date);
-								$sday = date_format($sent_date,"d");
-								$smonth = date_format($sent_date,"m");
-								$syear = date_format($sent_date,"Y")+543;
-								echo $sday."/".$smonth."/".$syear;
-								?>
-							</td>
-							<td><a href="form-add.php?menu=edit&i=<?=$id?>"><i class='fas fa-pen'></i></a></td>
-						</tr>
+							<td></td>
+							<td></td> -->
+							<!-- <td><a href="form-add.php?menu=edit&i=<?=$id?>"><i class='fas fa-pen'></i></a></td> -->
+						<!-- </tr> -->
 					<?php
 				 };
 			 } else {

@@ -92,7 +92,7 @@ $currentdate = date('Y-m-d');
 					<!--
 					<div class="row float-right"><small>*หมายเหตุ สีตัวอักษรของกำหนดการตอบกลับ</small>&nbsp;<small style="color:green">สีเขียว หมายถึง ยังไม่เกินเวลาตอบกลับ</small>&nbsp;<small style="color:red">สีแดง หมายถึง เกินกำหนดเวลาตอบกลับแล้ว</small></div>
 				-->
-				<thead>
+				<thead class="thead-dark">
 					<tr>
 						<th scope="col">ผู้ตรวจ</th>
 						<th scope="col">หน่วยงาน</th>

@@ -11,14 +11,13 @@ $lname = (isset($_POST['lastname']))? $_POST["lastname"]:'';
 
 
 $area = (isset( $_POST['area']))? $_POST['area']:'';
-$area_srl = serialize($area);
 $sub_ins = (isset( $_POST['sub_ins']))? $_POST['sub_ins']:'';
-$areaname = (isset( $_POST['areaname']))? $_POST['areaname']:'';
+$insname = (isset( $_POST['insname']))? $_POST['insname']:'';
 $trlocate = (isset( $_POST['trlocate']))? $_POST['trlocate']:'';
-print_r($sub_ins);
-
-
-
+$area_res = implode("|", $area);
+$sub_ins_res = implode("|", $sub_ins);
+$insname_res = implode("|", $insname);
+$trlocate_res = implode("|", $trlocate);
 
 
 
@@ -26,10 +25,14 @@ print_r($sub_ins);
 $menu = $_POST['menu'];
 $user = $_SESSION["user"];
 $c_date = date("Y-m-d H:i:s");
+echo "$menu".$c_date;
 // ================================ check menu ADD (insert data) ================================ //
 if ($menu == "add") {
+	$sql = " INSERT INTO inspector (titlename, firstname, lastname, area, sub_ins, sub_insname, tr_locate, mar, create_date, update_date)";
+	$sql .= " VALUES ('$tname','$fname','$lname','$area_res','$sub_ins_res','$insname_res','$trlocate_res'";
+	$sql .= ",'1','$c_date','$c_date')";
 
-
+echo "$sql";
 
 // ================================ check menu EDIT (update data) ================================ //
 } elseif ($menu == "edit") {
@@ -45,7 +48,7 @@ if ($menu == "add") {
 if (!empty($sql)) {
   $query = mysqli_query($conn,$sql);
   if($query){
-    echo "<script type='text/javascript'>alert('Save successfully!'); javascript:window.location.href ='list.php';;</script>";//Save successfully!
+    echo "<script type='text/javascript'>alert('Save successfully!'); javascript:window.location.href ='inspector.php';</script>";//Save successfully!
   }else{
 		echo '<script type="text/javascript">';
 		echo 'alert("Error can not save data!");javascript:history.go(-1)';

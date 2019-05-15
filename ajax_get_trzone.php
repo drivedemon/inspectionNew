@@ -4,7 +4,7 @@ include 'dbconnect.php';
 
 // $dpid = $_REQUEST["dpid"];
 
-$sql2= "SELECT * FROM tr_area ORDER BY id ASC";
+$sql2= "SELECT * FROM tr_locate ORDER BY id ASC";
 
 $result2 = mysqli_query($conn, $sql2);
 
