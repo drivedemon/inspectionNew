@@ -23,7 +23,7 @@ if (isset($_GET['page'])) {
 	$page = 1;
 }
 $start = ($page - 1) * $perpage; //ตำแหน่งข้อมูลแรกในแต่ละหน้า
-$sql_detail = "SELECT ins.id,t.title_name,ins.firstname,ins.lastname,ins.area,ins.sub_ins,ins.sub_insname,ins.tr_locate from inspector ins, title t where ins.titlename=t.id
+$sql_detail = "SELECT ins.id,t.title_name,ins.firstname,ins.lastname,ins.area,ins.sub_ins,ins.sub_insname,ins.tr_locate from inspector ins, title t where ins.titlename=t.id and mar=1
 							 ORDER BY update_date DESC LIMIT {$start},{$perpage}";
 
 $query_detail = mysqli_query($conn, $sql_detail);
@@ -107,10 +107,11 @@ $currentdate = date('Y-m-d');
 								$sub_ins = mysqli_fetch_assoc($query_sub_ins);
 								echo "<td>".$sub_ins['name']."</td>";
 								echo "<td>".$sub_insname_arr[$key]."</td>";
-								$sql_sub_insname = "select name from tr_locate where id='".$tr_locate_arr[$key]."'";
-								$query_sub_insname = mysqli_query($conn, $sql_sub_insname);
-								$sub_insname = mysqli_fetch_assoc($query_sub_insname);
-								echo "<td>".$sub_insname['name']."</td>";
+								$sql_trlocate = "select name from tr_locate where id='".$tr_locate_arr[$key]."'";
+								$query_trlocate = mysqli_query($conn, $sql_trlocate);
+								$tr_locate = mysqli_fetch_assoc($query_trlocate);
+								echo "<td>".$tr_locate['name']."</td>";
+								echo "<td></td>";
 							} else {
 								echo "<td>$value</td>";
 								$sql_sub_ins = "select name from subins_zone where id='".$sub_ins_arr[$key]."'";
@@ -118,22 +119,14 @@ $currentdate = date('Y-m-d');
 								$sub_ins = mysqli_fetch_assoc($query_sub_ins);
 								echo "<td>".$sub_ins['name']."</td>";
 								echo "<td>".$sub_insname_arr[$key]."</td>";
-								$sql_sub_insname = "select name from tr_locate where id='".$tr_locate_arr[$key]."'";
-								$query_sub_insname = mysqli_query($conn, $sql_sub_insname);
-								$sub_insname = mysqli_fetch_assoc($query_sub_insname);
-								echo "<td>".$sub_insname['name']."</td>";
-								echo "<td><a href=\"form-add.php?menu=edit&i=<?=$id?>\"><i class='fas fa-pen'></i></a></td>";
+								$sql_trlocate = "select name from tr_locate where id='".$tr_locate_arr[$key]."'";
+								$query_trlocate = mysqli_query($conn, $sql_trlocate);
+								$tr_locate = mysqli_fetch_assoc($query_trlocate);
+								echo "<td>".$tr_locate['name']."</td>";
+								echo "<td><a href=\"form-add-ins.php?menu=edit&i=$id\"><i class='fas fa-pen'></i></a></td>";
 							}
 							echo "</tr>";
 						}
-						?>
-							<!-- <td><?php echo $name_division; ?></td>
-							<td><?php echo $inspect_no.'/'.$budget_year; ?></td>
-							<td></td>
-							<td></td> -->
-							<!-- <td><a href="form-add.php?menu=edit&i=<?=$id?>"><i class='fas fa-pen'></i></a></td> -->
-						<!-- </tr> -->
-					<?php
 				 };
 			 } else {
 				 echo "<td colspan='5'>Please Add more data...</td>";
@@ -141,7 +134,6 @@ $currentdate = date('Y-m-d');
 				 ?>
 				</tbody>
 			</table>
-			<!-- -->
 			<div class="container">
 				<?php
 				$sql3 = "SELECT *FROM data"; //select items มาเพื่อนับจำนวนทั้งหมด มาหาจำนวนหน้า

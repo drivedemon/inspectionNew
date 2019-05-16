@@ -18,27 +18,28 @@ $area_res = implode("|", $area);
 $sub_ins_res = implode("|", $sub_ins);
 $insname_res = implode("|", $insname);
 $trlocate_res = implode("|", $trlocate);
-
-
-
 // hidden input
+$id = $_POST['inid'];
 $menu = $_POST['menu'];
 $user = $_SESSION["user"];
 $c_date = date("Y-m-d H:i:s");
-echo "$menu".$c_date;
 // ================================ check menu ADD (insert data) ================================ //
 if ($menu == "add") {
 	$sql = " INSERT INTO inspector (titlename, firstname, lastname, area, sub_ins, sub_insname, tr_locate, mar, create_date, update_date)";
 	$sql .= " VALUES ('$tname','$fname','$lname','$area_res','$sub_ins_res','$insname_res','$trlocate_res'";
 	$sql .= ",'1','$c_date','$c_date')";
-
-echo "$sql";
-
 // ================================ check menu EDIT (update data) ================================ //
 } elseif ($menu == "edit") {
-
-
-
+	$sql = "UPDATE inspector SET ";
+	$sql .= "titlename = ".((empty($tname))? "NULL" : "'$tname'");
+	$sql .= ", firstname = ".((empty($fname))? "NULL" : "'$fname'");
+	$sql .= ", lastname = ".((empty($lname))? "NULL" : "'$lname'");
+	$sql .= ", area = ".((empty($area_res))? "NULL" : "'$area_res'");
+	$sql .= ", sub_ins = ".((empty($sub_ins_res))? "NULL" : "'$sub_ins_res'");
+	$sql .= ", sub_insname = ".((empty($insname_res))? "NULL" : "'$insname_res'");
+	$sql .= ", tr_locate = ".((empty($trlocate_res))? "NULL" : "'$trlocate_res'");
+	$sql .= ", update_date = '$c_date'";
+	$sql .= " WHERE id = '$id'";
 } else {
 	echo '<script type="text/javascript">';
 	echo 'alert("don\'t skip process pls!");javascript:history.go(-1)';

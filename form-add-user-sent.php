@@ -265,12 +265,10 @@ if ($menu == "edit") {
 
 		$cen1_2 = !empty($cen1_2)?"4;".$cen1_2:"";
 		$cen1_2 = nameToFormat($srow['cen1_2'], $cen1_2);
-		echo "$cen1_2";
 		$cen1_3 = !empty($cen1_3)?"4;".$cen1_3:"";
 		$cen1_3 = nameToFormat($srow['cen1_3'], $cen1_3);
 		$cen1_4 = !empty($cen1_4)?"4;".$cen1_4:"";
 		$cen1_4 = nameToFormat($srow['cen1_4'], $cen1_4);
-		echo "$cen1_4";
 		$cen3_7 = !empty($cen3_7)?"4;".$cen3_7:"";
 		$cen3_7 = nameToFormat($srow['cen3_7'], $cen3_7);
 		$cen3_8 = !empty($cen3_8)?"4;".$cen3_8:"";
