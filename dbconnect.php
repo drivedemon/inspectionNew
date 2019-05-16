@@ -16,7 +16,7 @@ if ($conn->connect_error) {
 function checkNull($a) {
 	if (empty($a)) {
 		echo '<script language="javascript">';
-		echo 'alert("Data can not null value!");javascript:history.go(-1);';
+		echo 'alert("Data must be filled out!");javascript:history.go(-1);';
 		echo '</script>';
 		exit();
 	}

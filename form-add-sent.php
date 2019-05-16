@@ -4,6 +4,12 @@ date_default_timezone_set('Asia/Bangkok');
 header('Content-Type: text/html; charset=utf-8');
 session_start();
 
+// hidden input
+$menu = $_POST['menu'];
+$locate = $_POST['locate'];
+$user = $_SESSION["user"];
+$c_date = date("Y-m-d H:i:s");
+
 //Year
 $txt_dateyear = (isset($_POST['txtDate_year']))? checkNull($_POST["txtDate_year"]):'';
 //insid
@@ -32,27 +38,30 @@ $txtpersonnel4 = (isset($_POST['txtpersonnel4']))? checkNull($_POST["txtpersonne
 $txtpersonnel5 = (isset($_POST['txtpersonnel5']))? checkNull($_POST["txtpersonnel5"]):'';
 // --------------------- zone SP ---------------------------//
 //CM FC CC
-$case_CM = (isset($_POST['casecm']))? checkNull($_POST["casecm"]):'';
-$case_FC = (isset($_POST['casefc']))? checkNull($_POST["casefc"]):'';
-$case_CC = (isset($_POST['casecc']))? checkNull($_POST["casecc"]):'';
-//case 53
-$casechild_53 = (isset($_POST['casechild']))? checkNull($_POST["casechild"]):'';
-//case f
-$caserecov = (isset($_POST['caserecov']))? checkNull($_POST["caserecov"]):'';
-//case 132
-$case132 = (isset($_POST['case_132']))? checkNull($_POST["case_132"]):'';
-//case sp
-$casedjop = (isset($_POST['casedjop']))? checkNull($_POST["casedjop"]):'';
-// --------------------- zone TR ---------------------------//
-//t1-t8
-$t1 = (isset($_POST['casetr']))? checkNull($_POST["casetr"]):'';
-$t2 = (isset($_POST['caseleave']))? checkNull($_POST["caseleave"]):'';
-$t3 = (isset($_POST['casehealth']))? checkNull($_POST["casehealth"]):'';
-$t4 = (isset($_POST['caserest']))? checkNull($_POST["caserest"]):'';
-$t5 = (isset($_POST['caseoutinday']))? checkNull($_POST["caseoutinday"]):'';
-$t6 = (isset($_POST['caseoutallday']))? checkNull($_POST["caseoutallday"]):'';
-$t7 = (isset($_POST['casedead']))? checkNull($_POST["casedead"]):'';
-$t8 = (isset($_POST['caseescape']))? checkNull($_POST["caseescape"]):'';
+if ($locate == 1) {
+	$case_CM = (isset($_POST['casecm']))? checkNull($_POST["casecm"]):'';
+	$case_FC = (isset($_POST['casefc']))? checkNull($_POST["casefc"]):'';
+	$case_CC = (isset($_POST['casecc']))? checkNull($_POST["casecc"]):'';
+	//case 53
+	$casechild_53 = (isset($_POST['casechild']))? checkNull($_POST["casechild"]):'';
+	//case f
+	$caserecov = (isset($_POST['caserecov']))? checkNull($_POST["caserecov"]):'';
+	//case 132
+	$case132 = (isset($_POST['case_132']))? checkNull($_POST["case_132"]):'';
+	//case sp
+	$casedjop = (isset($_POST['casedjop']))? checkNull($_POST["casedjop"]):'';
+} else {
+	// --------------------- zone TR ---------------------------//
+	//t1-t8
+	$t1 = (isset($_POST['casetr']))? checkNull($_POST["casetr"]):'';
+	$t2 = (isset($_POST['caseleave']))? checkNull($_POST["caseleave"]):'';
+	$t3 = (isset($_POST['casehealth']))? checkNull($_POST["casehealth"]):'';
+	$t4 = (isset($_POST['caserest']))? checkNull($_POST["caserest"]):'';
+	$t5 = (isset($_POST['caseoutinday']))? checkNull($_POST["caseoutinday"]):'';
+	$t6 = (isset($_POST['caseoutallday']))? checkNull($_POST["caseoutallday"]):'';
+	$t7 = (isset($_POST['casedead']))? checkNull($_POST["casedead"]):'';
+	$t8 = (isset($_POST['caseescape']))? checkNull($_POST["caseescape"]):'';
+}
 //activity 1 || r1-1,cb1-1
 $r1_1 = (isset($_POST['r1-1']))? $_POST["r1-1"]:'';
 $cb1_1 = (isset($_POST['cb1-1']))? implode("",$_POST["cb1-1"]):'';
@@ -101,11 +110,6 @@ $cb3_9 = (isset($_POST['cb3-9']))? implode("",$_POST["cb3-9"]):'';
 $r3_10 = (isset($_POST['r3-10']))? $_POST["r3-10"]:'';
 $cb3_10 = (isset($_POST['cb3-10']))? implode("",$_POST["cb3-10"]):'';
 
-// hidden input
-$menu = $_POST['menu'];
-$locate = $_POST['locate'];
-$user = $_SESSION["user"];
-$c_date = date("Y-m-d H:i:s");
 // ================================ check menu ADD (insert data) ================================ //
 if ($menu == "add") {
 	// check type locate SP = 1 TR = 2

@@ -96,11 +96,11 @@ $keylocate = $locate=="1"? "sp":'tr';
 			<div class="col-9">
 				<select class="form-control" name="txtinspector" id="inspector_d">
 					<?php
-					$sql_inspector = "select ins.firstname,ins.lastname,t.title_name from inspector ins, title t where ins.titlename=t.id and mar='1'";
+					$sql_inspector = "select ins.id,ins.firstname,ins.lastname,t.title_name from inspector ins, title t where ins.titlename=t.id and mar='1'";
 					$query_inspector = mysqli_query($conn,$sql_inspector);
 					?>
 					<?php while ($data_inspector = mysqli_fetch_assoc($query_inspector)){ ?>
-						<option <?php if($row['inspector']==$data_inspector['id']){echo "selected";}?> value="<?php echo $data_inspector['id']; ?>">
+						<option <?php if($row['inspector']==$data_inspector['id']){echo "selected ";}?> value="<?php echo $data_inspector['id']; ?>">
 							<?php echo $data_inspector['title_name'].$data_inspector['firstname']." ".$data_inspector['lastname']; ?>
 						</option>
 					<?php }; ?>
