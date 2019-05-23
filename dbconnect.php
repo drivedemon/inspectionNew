@@ -15,10 +15,14 @@ if ($conn->connect_error) {
 
 function checkNull($a) {
 	if (empty($a)) {
-		echo '<script language="javascript">';
-		echo 'alert("Data must be filled out!");javascript:history.go(-1);';
-		echo '</script>';
-		exit();
+		if ($a == 0) {
+			// code...
+		} else {
+			echo '<script language="javascript">';
+			echo 'alert("Data must be filled out!");javascript:history.go(-1);';
+			echo '</script>';
+			exit();
+		}
 	}
 	return $a;
 }
