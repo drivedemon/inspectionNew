@@ -30,7 +30,7 @@ if (substr($locate,0,2) == "sp") {
 } elseif (substr($locate,0,2) == "tr") {
 	$check_locate = 2;
 } else {
-	$check_locate = "3";
+	$check_locate = 3;
 }
 
 // $check_locate = substr($locate,0,2)=="sp"?"1":"2";
@@ -48,7 +48,7 @@ $sql_detail .= " from data d, inspector ins, userlogin ul, title t";
 if ($check_locate == 1 || $check_locate == 2) {
 	$sql_detail .= " WHERE (d.r1_1 is not null or d.r1_2 is not null or d.r1_3 is not null or d.r1_4 is not null or d.r1_5 is not null or d.r2_1 is not null or d.r2_2 is not null or d.r2_3 is not null or d.r2_4 is not null or d.r2_5 is not null or d.r2_6 is not null or d.r2_7 is not null or d.r3_1 is not null or d.r3_2 is not null or d.r3_3 is not null or d.r3_4 is not null or d.r3_5 is not null or d.r3_6 is not null or d.r3_7 is not null or d.r3_8 is not null or d.r3_9 is not null or d.r3_10 is not null) and ";
 	$sql_detail .= " division = '$locate' and type_locate = $check_locate and ";
-	$sql_detail .= " d.inspector=ins.id and d.division=ul.username";
+	$sql_detail .= " d.inspector=ins.id and d.division=ul.username and t.id=ins.titlename";
 } else {
 	$sql_detail .= " WHERE (d.r1_1 is not null or d.r1_2 is not null or d.r1_3 is not null or d.r1_4 is not null or d.r1_5 is not null or d.r2_1 is not null or d.r2_2 is not null or d.r2_3 is not null or d.r2_4 is not null or d.r2_5 is not null or d.r2_6 is not null or d.r2_7 is not null or d.r3_1 is not null or d.r3_2 is not null or d.r3_3 is not null or d.r3_4 is not null or d.r3_5 is not null or d.r3_6 is not null or d.r3_7 is not null or d.r3_8 is not null or d.r3_9 is not null or d.r3_10 is not null) and ";
 	if ($_GET['user'] == 99) {
@@ -68,7 +68,7 @@ if ($check_locate == 1 || $check_locate == 2) {
 	} else {
 		$sql_detail .= "";
 	}
-	$sql_detail .= " d.inspector=ins.id and d.division=ul.username";
+	$sql_detail .= " d.inspector=ins.id and d.division=ul.username and t.id=ins.titlename";
 }
 $sql_datail .= " ORDER BY insert_date DESC LIMIT {$start},{$perpage}";
 $query_detail = mysqli_query($conn, $sql_detail);
