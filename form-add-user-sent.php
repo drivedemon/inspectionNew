@@ -228,7 +228,7 @@ if ($round == 1) {
  	update_by = '$user'";
  	$sql .= " WHERE id = '$id'";
 }
-	// add follow tracking round log
+	// add follow tracking round log in report_follow
 	$rf_sql = "INSERT INTO report_follow (data_id, division, track_round, r1_1, r1_2, r1_3, r1_4, r1_5, r2_1, r2_2, r2_3, r2_4, r2_5, r2_6, r2_7, r3_1, r3_2, r3_3, r3_4, r3_5, r3_6, r3_7, r3_8, r3_9, r3_10, create_date, create_by) ";
 	$rf_sql .= "VALUES ('$id', '$user', '$round'";
 	$rf_sql .= ", ".((empty($sub_pr1_1))? "NULL" : "'$sub_pr1_1'");
@@ -261,6 +261,28 @@ if ($round == 1) {
 		$sub_query = mysqli_query($conn,$sub_sql);
 		$srow = mysqli_fetch_assoc($sub_query);
 
+		// add follow tracking round log in report_follow
+		$rf_sql = "INSERT INTO report_follow (data_id, division, track_round, r1_5, r2_1, r2_2, r2_3, r2_4, r2_5, r2_6, r2_7, r3_1, r3_2, r3_3, r3_4, r3_5, r3_6, r3_8, r3_9, create_date, create_by) ";
+		$rf_sql .= "VALUES ('$id', '$user', '$round'";
+		$rf_sql .= ", ".((empty($cen1_5))? "NULL" : "'$cen1_5'");
+		$rf_sql .= ", ".((empty($cen2_1))? "NULL" : "'$cen2_1'");
+		$rf_sql .= ", ".((empty($cen2_2))? "NULL" : "'$cen2_2'");
+		$rf_sql .= ", ".((empty($cen2_3))? "NULL" : "'$cen2_3'");
+		$rf_sql .= ", ".((empty($cen2_4))? "NULL" : "'$cen2_4'");
+		$rf_sql .= ", ".((empty($cen2_5))? "NULL" : "'$cen2_5'");
+		$rf_sql .= ", ".((empty($cen2_6))? "NULL" : "'$cen2_6'");
+		$rf_sql .= ", ".((empty($cen2_7))? "NULL" : "'$cen2_7'");
+		$rf_sql .= ", ".((empty($cen3_1))? "NULL" : "'$cen3_1'");
+		$rf_sql .= ", ".((empty($cen3_2))? "NULL" : "'$cen3_2'");
+		$rf_sql .= ", ".((empty($cen3_3))? "NULL" : "'$cen3_3'");
+		$rf_sql .= ", ".((empty($cen3_4))? "NULL" : "'$cen3_4'");
+		$rf_sql .= ", ".((empty($cen3_5))? "NULL" : "'$cen3_5'");
+		$rf_sql .= ", ".((empty($cen3_6))? "NULL" : "'$cen3_6'");
+		$rf_sql .= ", ".((empty($cen3_8))? "NULL" : "'$cen3_8'");
+		$rf_sql .= ", ".((empty($cen3_9))? "NULL" : "'$cen3_9'");
+		$rf_sql .= ", '$c_date', '$user')";
+
+		// add main data
 		$cen1_5 = !empty($cen1_5)?"6;".$cen1_5:"";
 		$cen1_5 = nameToFormat($srow['cen1_5'], $cen1_5);
 		$cen2_1 = !empty($cen2_1)?"6;".$cen2_1:"";
@@ -319,6 +341,23 @@ if ($round == 1) {
 		$sub_query = mysqli_query($conn,$sub_sql);
 		$srow = mysqli_fetch_assoc($sub_query);
 
+		// add follow tracking round log in report_follow
+		$rf_sql = "INSERT INTO report_follow (data_id, division, track_round, r1_5, r2_1, r2_2, r2_3, r2_6, r2_7, r3_1, r3_2, r3_3, r3_4, r3_5, create_date, create_by) ";
+		$rf_sql .= "VALUES ('$id', '$user', '$round'";
+		$rf_sql .= ", ".((empty($cen1_5))? "NULL" : "'$cen1_5'");
+		$rf_sql .= ", ".((empty($cen2_1))? "NULL" : "'$cen2_1'");
+		$rf_sql .= ", ".((empty($cen2_2))? "NULL" : "'$cen2_2'");
+		$rf_sql .= ", ".((empty($cen2_3))? "NULL" : "'$cen2_3'");
+		$rf_sql .= ", ".((empty($cen2_6))? "NULL" : "'$cen2_6'");
+		$rf_sql .= ", ".((empty($cen2_7))? "NULL" : "'$cen2_7'");
+		$rf_sql .= ", ".((empty($cen3_1))? "NULL" : "'$cen3_1'");
+		$rf_sql .= ", ".((empty($cen3_2))? "NULL" : "'$cen3_2'");
+		$rf_sql .= ", ".((empty($cen3_3))? "NULL" : "'$cen3_3'");
+		$rf_sql .= ", ".((empty($cen3_4))? "NULL" : "'$cen3_4'");
+		$rf_sql .= ", ".((empty($cen3_5))? "NULL" : "'$cen3_5'");
+		$rf_sql .= ", '$c_date', '$user')";
+
+		// add main data
 		$cen1_5 = !empty($cen1_5)?"7;".$cen1_5:"";
 		$cen1_5 = nameToFormat($srow['cen1_5'], $cen1_5);
 		$cen2_1 = !empty($cen2_1)?"7;".$cen2_1:"";
@@ -354,6 +393,7 @@ if ($round == 1) {
 		$sql .= ", cen3_3 = ".((empty($cen3_3))? "NULL" : "'$cen3_3'");
 		$sql .= ", cen3_4 = ".((empty($cen3_4))? "NULL" : "'$cen3_4'");
 		$sql .= ", cen3_5 = ".((empty($cen3_5))? "NULL" : "'$cen3_5'");
+	 	$sql .= ", center_follow_round = ".((empty($round))? "NULL" : "'$newround'");
 		$sql .= ", insert_date = '$c_date',
 		update_by = '$user'";
 		$sql .= " WHERE id = '$id'";
@@ -362,18 +402,27 @@ if ($round == 1) {
 		$sub_query = mysqli_query($conn,$sub_sql);
 		$srow = mysqli_fetch_assoc($sub_query);
 
+		// add follow tracking round log in report_follow
+		$rf_sql = "INSERT INTO report_follow (data_id, division, track_round, r1_1, r3_5, r3_7, create_date, create_by) ";
+		$rf_sql .= "VALUES ('$id', '$user', '$round'";
+		$rf_sql .= ", ".((empty($cen1_1))? "NULL" : "'$cen1_1'");
+		$rf_sql .= ", ".((empty($cen3_5))? "NULL" : "'$cen3_5'");
+		$rf_sql .= ", ".((empty($cen3_7))? "NULL" : "'$cen3_7'");
+		$rf_sql .= ", '$c_date', '$user')";
+
+		// add main data
 		$cen1_1 = !empty($cen1_1)?"1;".$cen1_1:"";
 		$cen1_1 = nameToFormat($srow['cen1_1'], $cen1_1);
-		echo "$cen1_1";
 		$cen3_5 = !empty($cen3_5)?"1;".$cen3_5:"";
 		$cen3_5 = nameToFormat($srow['cen3_5'], $cen3_5);
 		$cen3_7 = !empty($cen3_7)?"1;".$cen3_7:"";
 		$cen3_7 = nameToFormat($srow['cen3_7'], $cen3_7);
-		echo "$cen3_7";
+
 		$sql = "UPDATE data SET ";
 		$sql .= "cen1_1 = ".((empty($cen1_1))? "NULL" : "'$cen1_1'");
 		$sql .= ", cen3_5 = ".((empty($cen3_5))? "NULL" : "'$cen3_5'");
 		$sql .= ", cen3_7 = ".((empty($cen3_7))? "NULL" : "'$cen3_7'");
+	 	$sql .= ", center_follow_round = ".((empty($round))? "NULL" : "'$newround'");
 		$sql .= ", insert_date = '$c_date',
 		update_by = '$user'";
 		$sql .= " WHERE id = '$id'";
@@ -382,12 +431,19 @@ if ($round == 1) {
 		$sub_query = mysqli_query($conn,$sub_sql);
 		$srow = mysqli_fetch_assoc($sub_query);
 
+		// add follow tracking round log in report_follow
+		$rf_sql = "INSERT INTO report_follow (data_id, division, track_round, r1_2, r1_3, r1_4, create_date, create_by) ";
+		$rf_sql .= "VALUES ('$id', '$user', '$round'";
+		$rf_sql .= ", ".((empty($cen1_2))? "NULL" : "'$cen1_2'");
+		$rf_sql .= ", ".((empty($cen1_3))? "NULL" : "'$cen1_3'");
+		$rf_sql .= ", ".((empty($cen1_4))? "NULL" : "'$cen1_4'");
+		$rf_sql .= ", '$c_date', '$user')";
+
+		// add main data
 		$cen1_2 = !empty($cen1_2)?"3;".$cen1_2:"";
 		$cen1_2 = nameToFormat($srow['cen1_2'], $cen1_2);
-		echo "$cen1_2";
 		$cen1_3 = !empty($cen1_3)?"3;".$cen1_3:"";
 		$cen1_3 = nameToFormat($srow['cen1_3'], $cen1_3);
-		echo "$cen1_3";
 		$cen1_4 = !empty($cen1_4)?"3;".$cen1_4:"";
 		$cen1_4 = nameToFormat($srow['cen1_4'], $cen1_4);
 
@@ -395,6 +451,7 @@ if ($round == 1) {
 		$sql .= "cen1_2 = ".((empty($cen1_2))? "NULL" : "'$cen1_2'");
 		$sql .= ", cen1_3 = ".((empty($cen1_3))? "NULL" : "'$cen1_3'");
 		$sql .= ", cen1_4 = ".((empty($cen1_4))? "NULL" : "'$cen1_4'");
+	 	$sql .= ", center_follow_round = ".((empty($round))? "NULL" : "'$newround'");
 		$sql .= ", insert_date = '$c_date',
 		update_by = '$user'";
 		$sql .= " WHERE id = '$id'";
@@ -408,6 +465,7 @@ if ($round == 1) {
 
 		$sql = "UPDATE data SET ";
 		$sql .= "cen1_5 = ".((empty($cen1_5))? "NULL" : "'$cen1_5'");
+	 	$sql .= ", center_follow_round = ".((empty($round))? "NULL" : "'$newround'");
 		$sql .= ", insert_date = '$c_date',
 		update_by = '$user'";
 		$sql .= " WHERE id = '$id'";
@@ -416,6 +474,19 @@ if ($round == 1) {
 		$sub_query = mysqli_query($conn,$sub_sql);
 		$srow = mysqli_fetch_assoc($sub_query);
 
+		// add follow tracking round log in report_follow
+		$rf_sql = "INSERT INTO report_follow (data_id, division, track_round, r1_2, r1_3, r1_4, r3_7, r3_8, r3_9, r3_10, create_date, create_by) ";
+		$rf_sql .= "VALUES ('$id', '$user', '$round'";
+		$rf_sql .= ", ".((empty($cen1_2))? "NULL" : "'$cen1_2'");
+		$rf_sql .= ", ".((empty($cen1_3))? "NULL" : "'$cen1_3'");
+		$rf_sql .= ", ".((empty($cen1_4))? "NULL" : "'$cen1_4'");
+		$rf_sql .= ", ".((empty($cen3_7))? "NULL" : "'$cen3_7'");
+		$rf_sql .= ", ".((empty($cen3_8))? "NULL" : "'$cen3_8'");
+		$rf_sql .= ", ".((empty($cen3_9))? "NULL" : "'$cen3_9'");
+		$rf_sql .= ", ".((empty($cen3_10))? "NULL" : "'$cen3_10'");
+		$rf_sql .= ", '$c_date', '$user')";
+
+		// add main data
 		$cen1_2 = !empty($cen1_2)?"4;".$cen1_2:"";
 		$cen1_2 = nameToFormat($srow['cen1_2'], $cen1_2);
 		$cen1_3 = !empty($cen1_3)?"4;".$cen1_3:"";
@@ -439,6 +510,7 @@ if ($round == 1) {
 		$sql .= ", cen3_8 = ".((empty($cen3_8))? "NULL" : "'$cen3_8'");
 		$sql .= ", cen3_9 = ".((empty($cen3_9))? "NULL" : "'$cen3_9'");
 		$sql .= ", cen3_10 = ".((empty($cen3_10))? "NULL" : "'$cen3_10'");
+	 	$sql .= ", center_follow_round = ".((empty($round))? "NULL" : "'$newround'");
 		$sql .= ", insert_date = '$c_date',
 		update_by = '$user'";
 		$sql .= " WHERE id = '$id'";
@@ -447,6 +519,28 @@ if ($round == 1) {
 		$sub_query = mysqli_query($conn,$sub_sql);
 		$srow = mysqli_fetch_assoc($sub_query);
 
+		// add follow tracking round log in report_follow
+		$rf_sql = "INSERT INTO report_follow (data_id, division, track_round, r1_1, r2_1, r2_2, r2_3, r2_4, r2_5, r2_6, r2_7, r3_1, r3_2, r3_3, r3_4, r3_5, r3_6, r3_7, r3_8, create_date, create_by) ";
+		$rf_sql .= "VALUES ('$id', '$user', '$round'";
+		$rf_sql .= ", ".((empty($cen1_1))? "NULL" : "'$cen1_1'");
+		$rf_sql .= ", ".((empty($cen2_1))? "NULL" : "'$cen2_1'");
+		$rf_sql .= ", ".((empty($cen2_2))? "NULL" : "'$cen2_2'");
+		$rf_sql .= ", ".((empty($cen2_3))? "NULL" : "'$cen2_3'");
+		$rf_sql .= ", ".((empty($cen2_4))? "NULL" : "'$cen2_4'");
+		$rf_sql .= ", ".((empty($cen2_5))? "NULL" : "'$cen2_5'");
+		$rf_sql .= ", ".((empty($cen2_6))? "NULL" : "'$cen2_6'");
+		$rf_sql .= ", ".((empty($cen2_7))? "NULL" : "'$cen2_7'");
+		$rf_sql .= ", ".((empty($cen3_1))? "NULL" : "'$cen3_1'");
+		$rf_sql .= ", ".((empty($cen3_2))? "NULL" : "'$cen3_2'");
+		$rf_sql .= ", ".((empty($cen3_3))? "NULL" : "'$cen3_3'");
+		$rf_sql .= ", ".((empty($cen3_4))? "NULL" : "'$cen3_4'");
+		$rf_sql .= ", ".((empty($cen3_5))? "NULL" : "'$cen3_5'");
+		$rf_sql .= ", ".((empty($cen3_6))? "NULL" : "'$cen3_6'");
+		$rf_sql .= ", ".((empty($cen3_7))? "NULL" : "'$cen3_7'");
+		$rf_sql .= ", ".((empty($cen3_8))? "NULL" : "'$cen3_8'");
+		$rf_sql .= ", '$c_date', '$user')";
+
+		// add main data
 		$cen1_1 = !empty($cen1_1)?"2;".$cen1_1:"";
 		$cen1_1 = nameToFormat($srow['cen1_1'], $cen1_1);
 		$cen2_1 = !empty($cen2_1)?"2;".$cen2_1:"";
@@ -497,6 +591,7 @@ if ($round == 1) {
 		$sql .= ", cen3_6 = ".((empty($cen3_6))? "NULL" : "'$cen3_6'");
 		$sql .= ", cen3_7 = ".((empty($cen3_7))? "NULL" : "'$cen3_7'");
 		$sql .= ", cen3_8 = ".((empty($cen3_8))? "NULL" : "'$cen3_8'");
+	 	$sql .= ", center_follow_round = ".((empty($round))? "NULL" : "'$newround'");
 		$sql .= ", insert_date = '$c_date',
 		update_by = '$user'";
 		$sql .= " WHERE id = '$id'";
@@ -510,7 +605,8 @@ if ($round == 1) {
 if (!empty($sql) || !empty($rf_sql)) {
 	if (!empty($sql)) {
 		$query = mysqli_query($conn,$sql);
-	} elseif (!empty($rf_sql)) {
+	}
+	if (!empty($rf_sql)) {
 		$rf_query = mysqli_query($conn,$rf_sql);
 	}
 	if($query) {
