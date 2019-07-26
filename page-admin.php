@@ -56,13 +56,10 @@
 	<div class="container p-2">
 
     	<a href="list.php" target="_blank">บันทึก/ดูข้อมูล/แก้ไขข้อมูล</a><br />
-
         <a href="inspector.php" target="_blank">รายชื่อผู้ตรวจราชการกรม</a><br />
-
-        <a href="" target="_blank">สรุปรายงานจำแนกรายหน่วยงาน</a><br />
-
+				<a href="" target="_blank">สรุปรายงานจำแนกรายหน่วยงาน</a><br />
+				<a href="list_check_user.php" target="_blank">ผลการดำเนินงานของหน่วยรับการตรวจ</a><br />
         <a href="upload-admin.php" target="_blank">อัพโหลดไฟล์ไปยังหน่วยงานที่รับการตรวจ</a><br />
-
         <a href="detail-upload-admin.php" target="_blank">แสดงรายการอัพโหลดไฟล์/เมนูลบไฟล์</a><br />
 
 		<!--<a href="form-report.php" target="_blank">ส่งรายงานผลการตรวจราชการประจำปี</a><br />
@@ -91,49 +88,4 @@
 
 	</script>
   </body>
-	<!--The MIT License (MIT)-->
-
-	<!--
-	Copyright (c) 2011-2016 Twitter, Inc.
-
-	Permission is hereby granted, free of charge, to any person obtaining a copy
-	of this software and associated documentation files (the "Software"), to deal
-	in the Software without restriction, including without limitation the rights
-	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-	copies of the Software, and to permit persons to whom the Software is
-	furnished to do so, subject to the following conditions:
-
-	The above copyright notice and this permission notice shall be included in
-	all copies or substantial portions of the Software.
-
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-	THE SOFTWARE.
-
-	-------------------------------------------
-	Copyright JS Foundation and other contributors, https://js.foundation/
-
-	Permission is hereby granted, free of charge, to any person obtaining
-	a copy of this software and associated documentation files (the
-	"Software"), to deal in the Software without restriction, including
-	without limitation the rights to use, copy, modify, merge, publish,
-	distribute, sublicense, and/or sell copies of the Software, and to
-	permit persons to whom the Software is furnished to do so, subject to
-	the following conditions:
-
-	The above copyright notice and this permission notice shall be
-	included in all copies or substantial portions of the Software.
-
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-	NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-	LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-	OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-	WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-	-->
 </html>

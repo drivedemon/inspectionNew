@@ -1020,12 +1020,12 @@ $keylocate = $locate=="1"? "sp":'tr';
 					<label class="form-check-label">คลัง</label>
 				</div>
 				<div class="col-sm-1" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" onClick="hide_frm('3-7-2');" name="cb3-7[]" id="reason3-7-2" value="5" <?php if(strpos($row['cb3_7'],"5")!==false){echo "checked";}?>>
-					<label class="form-check-label">กพร</label>
+					<input type="checkbox" class="form-check-input" onClick="hide_frm('3-7-2');" name="cb3-7[]" id="reason3-7-2" value="2" <?php if(strpos($row['cb3_7'],"2")!==false){echo "checked";}?>>
+					<label class="form-check-label">JDI</label>
 				</div>
 				<div class="col-sm-5" style="margin-top: 8px;">
-					<input type="checkbox" class="form-check-input" onClick="hide_frm('3-7-3');" name="cb3-7[]" id="reason3-7-3" value="2" <?php if(strpos($row['cb3_7'],"2")!==false){echo "checked";}?>>
-					<label class="form-check-label">JDI</label>
+					<input type="checkbox" class="form-check-input" onClick="hide_frm('3-7-3');" name="cb3-7[]" id="reason3-7-3" value="5" <?php if(strpos($row['cb3_7'],"5")!==false){echo "checked";}?>>
+					<label class="form-check-label">กพร</label>
 				</div>
 				<div class="col-sm-2"></div>
 				<div class="col-sm-10">
@@ -1034,12 +1034,12 @@ $keylocate = $locate=="1"? "sp":'tr';
 				</div>
 				<div class="col-sm-2"></div>
 				<div class="col-sm-10">
-					<textarea class="form-control" id="frm_hide3-7-2" name="r3-7-2" rows="2" placeholder="กพร" required <?php if(strpos($row['cb3_7'],"5")!==false){}else{echo "disabled style='display:none;'";} ?>><?=$crow['r_cen3_7_2']?></textarea>
+					<textarea class="form-control" id="frm_hide3-7-2" name="r3-7-2" rows="2" placeholder="JDI" required <?php if(strpos($row['cb3_7'],"2")!==false){}else{echo "disabled style='display:none;'";} ?>><?=$crow['r_cen3_7_2']?></textarea>
 					<small class="form-text"></small>
 				</div>
 				<div class="col-sm-2"></div>
 				<div class="col-sm-10">
-					<textarea class="form-control" id="frm_hide3-7-3" name="r3-7-3" rows="2" placeholder="JDI" required <?php if(strpos($row['cb3_7'],"2")!==false){}else{echo "disabled style='display:none;'";} ?>><?=$crow['r_cen3_7_3']?></textarea>
+					<textarea class="form-control" id="frm_hide3-7-3" name="r3-7-3" rows="2" placeholder="กพร" required <?php if(strpos($row['cb3_7'],"5")!==false){}else{echo "disabled style='display:none;'";} ?>><?=$crow['r_cen3_7_3']?></textarea>
 					<small class="form-text"></small>
 				</div>
 					<!-- close activity 3.7 -->

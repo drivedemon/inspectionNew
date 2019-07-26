@@ -462,9 +462,12 @@ if ($round == 1) {
 
 		$cen1_5 = !empty($cen1_5)?"5;".$cen1_5:"";
 		$cen1_5 = nameToFormat($srow['cen1_5'], $cen1_5);
+		$cen3_7 = !empty($cen3_7)?"5;".$cen3_7:"";
+		$cen3_7 = nameToFormat($srow['cen3_7'], $cen3_7);
 
 		$sql = "UPDATE data SET ";
 		$sql .= "cen1_5 = ".((empty($cen1_5))? "NULL" : "'$cen1_5'");
+		$sql .= "cen3_7 = ".((empty($cen3_7))? "NULL" : "'$cen3_7'");
 	 	$sql .= ", center_follow_round = ".((empty($round))? "NULL" : "'$newround'");
 		$sql .= ", insert_date = '$c_date',
 		update_by = '$user'";
