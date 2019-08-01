@@ -91,7 +91,7 @@ $currentdate = date('Y-m-d');
 							<label class="form-check-label" for="type1">ครั้งที่ 3</label>
 						</div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="selectedType" id="typeSelect13" value="3" <?php if($row['inspect_type']==3){echo "checked";}?> required />
+							<input class="form-check-input" type="radio" name="selectedType" id="typeSelect13" value="4" <?php if($row['inspect_type']==3){echo "checked";}?> required />
 							<label class="form-check-label" for="type1">ครั้งที่ 4</label>
 						</div>
 						<!-- </div> -->
@@ -251,7 +251,7 @@ $currentdate = date('Y-m-d');
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
 		<!-- JScript -->
 		<script>
-		
+
 		</script>
 	</body>
 	</html>

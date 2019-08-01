@@ -194,7 +194,7 @@ if ($menu == "edit") {
 	}
 
 // add main data in first case
-if ($round == 1) {
+// if ($round == 1) {
 	// add main data
  	$sql = "UPDATE data SET ";
  	// reason 1 from sub province
@@ -227,7 +227,7 @@ if ($round == 1) {
  	$sql .= ", insert_date = '$c_date',
  	update_by = '$user'";
  	$sql .= " WHERE id = '$id'";
-}
+// }
 	// add follow tracking round log in report_follow
 	$rf_sql = "INSERT INTO report_follow (data_id, division, track_round, r1_1, r1_2, r1_3, r1_4, r1_5, r2_1, r2_2, r2_3, r2_4, r2_5, r2_6, r2_7, r3_1, r3_2, r3_3, r3_4, r3_5, r3_6, r3_7, r3_8, r3_9, r3_10, create_date, create_by) ";
 	$rf_sql .= "VALUES ('$id', '$user', '$round'";

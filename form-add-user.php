@@ -56,7 +56,7 @@ if ($id != "") {
 	$checkRound_row = mysqli_fetch_assoc($checkRound_query);
 
 	$round = (!empty($checkRound_row['r']))?$checkRound_row['r']+1:1;
-
+	
 echo "$round";
 	if ($row['inspect_type'] == 1) {
 		$insType = "กรณีปกติ";
