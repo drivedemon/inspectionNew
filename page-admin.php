@@ -57,7 +57,7 @@
 
     	<a href="list.php" target="_blank">บันทึก/ดูข้อมูล/แก้ไขข้อมูล</a><br />
         <a href="inspector.php" target="_blank">รายชื่อผู้ตรวจราชการกรม</a><br />
-				<a href="" target="_blank">สรุปรายงานจำแนกรายหน่วยงาน</a><br />
+				<a href="print_slip.php" target="_blank">สรุปรายงานจำแนกรายหน่วยงาน</a><br />
 				<a href="list_check_user.php" target="_blank">ผลการดำเนินงานของหน่วยรับการตรวจ</a><br />
         <a href="upload-admin.php" target="_blank">อัพโหลดไฟล์ไปยังหน่วยงานที่รับการตรวจ</a><br />
         <a href="detail-upload-admin.php" target="_blank">แสดงรายการอัพโหลดไฟล์/เมนูลบไฟล์</a><br />
