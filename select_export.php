@@ -25,11 +25,11 @@ if (isset($_GET['page'])) {
 $start = ($page - 1) * $perpage; //ตำแหน่งข้อมูลแรกในแต่ละหน้า
 
 $division = isset($_POST['division'])?$_POST['division']:'';
-$intype = isset($_POST['type'])?$_POST['type']:'';
+$instype = isset($_POST['type'])?$_POST['type']:'';
 $type = isset($_POST['selectedType'])?$_POST['selectedType']:'';
 
-if (!empty($division) && !empty($intype)) {
-	if ($intype == 1) {
+if (!empty($division) && !empty($instype)) {
+	if ($instype == 1) {
 		$sql = "SELECT d.id,d.inspect_date,d.inspect_no,d.budget_year,t.title_name,ins.firstname,ins.lastname,ul.name FROM data d, inspector ins, title t, userlogin ul";
 		$sql .= " WHERE ins.titlename=t.id and d.inspector=ins.id and d.division=ul.username and d.division='$division'";
 	} else {
@@ -157,7 +157,7 @@ $currentdate = date('Y-m-d');
 					<tbody>
 
 						<?php
-						if (!empty($division) && !empty($intype)) {
+						if (!empty($division) && !empty($instype)) {
 							if (mysqli_num_rows($query_detail) >= 1) {
 								while ($data = mysqli_fetch_assoc($query_detail)){
 									//query join table
@@ -165,7 +165,7 @@ $currentdate = date('Y-m-d');
 									$inspect_date = $data['inspect_date'];
 									$inspect_no = $data['inspect_no'];
 									$budget_year = $data['budget_year'];
-									$track = $data['track_round'];
+									$track = (!empty($data['track_round']))?$data['track_round']:'-';
 									$fullname = $data['title_name'].$data['firstname']." ".$data['lastname'];
 									$name_division = $data['name'];
 									$num_rows++;
@@ -184,7 +184,7 @@ $currentdate = date('Y-m-d');
 											echo $sday."/".$smonth."/".$syear;
 											?>
 										</td>
-										<td><a href="view_user.php?id=<?=$id?>&div=<?=$division?>&t=<?=$type?>"><i class='fas fa-print'></i></a></td>
+										<td><a href="print_slip.php?id=<?=$id?>&div=<?=$division?>&t=<?=$type?>"><i class='fas fa-print'></i></a></td>
 									</tr>
 									<?php
 								};
