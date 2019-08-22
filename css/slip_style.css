@@ -1,6 +1,5 @@
 @charset "utf-8";
 /* CSS Document */
-
 .underline{
 	text-decoration:underline;
 }
@@ -14,11 +13,12 @@
 }
 .tb_slip{
 	border:1px solid #000;
-	width:750px;
+  width: 100%;
+	table-layout: fixed;
 	border-collapse:collapse;
 	margin:auto;
-	font-weight:bold;
-	
+	/* font-weight:bold; */
+
 }
 .tb_slip tr{
 	padding-top:5px;
@@ -28,13 +28,14 @@
 .tb_slip td{
 	border-right:1px solid #000;
 	padding-left:5px;
+	border-bottom:1px solid #000;
 }.tb_slip th{
 	border-bottom:1px solid #000;
 	border-right:1px solid #000;
 }
 .tr_border_top{
-	border-top:1px solid #000;	
+	border-top:1px solid #000;
 }
 .tr_border_bottom{
-	border-bottom:1px dotted #000;	
+	border-bottom:1px dotted #000;
 }

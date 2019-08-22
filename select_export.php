@@ -34,7 +34,7 @@ if (!empty($division) && !empty($instype)) {
 		$sql .= " WHERE ins.titlename=t.id and d.inspector=ins.id and d.division=ul.username and d.division='$division'";
 	} else {
 		$sql = "SELECT d.id,d.inspect_date,d.inspect_no,d.budget_year,rf.track_round,t.title_name,ins.firstname,ins.lastname,ul.name FROM data d, inspector ins, title t, userlogin ul, report_follow rf ";
-		$sql .= " WHERE ins.titlename=t.id and d.inspector=ins.id and rf.division=ul.username and d.id=rf.data_id and rf.division='$division' and rf.track_round='$type'";
+		$sql .= " WHERE ins.titlename=t.id and d.inspector=ins.id and rf.division=ul.username and d.id=rf.data_id and rf.division='$division'";
 	}
 	$sql .= " ORDER BY insert_date DESC LIMIT {$start},{$perpage}";
 
@@ -81,25 +81,10 @@ $currentdate = date('Y-m-d');
 			<br>
 			<form name="report" action="select_export.php" method="post" enctype="multipart/form-data" id="report-form">
 				<div class="form-row">
-				<div class="col-sm-4"></div>
-					<div class ="col-sm-4" style="margin-top:5px">
-						<!-- <div class="container"> -->
-						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="type" id="type1" onclick="selected('1');" value="1" required />
-							<label class="form-check-label" for="type1">สำหรับ ผอ.</label>
-						</div>
-						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="type" id="type2" onclick="selected('2');" value="2" required />
-							<label class="form-check-label" for="type2">สำหรับในหน่วยงาน</label>
-						</div>
-						<!-- </div> -->
-					</div>
-					<div class="col-sm-4"></div>
-					<div class="col-sm-12"><p></div>
 					<div class="col-sm-1"></div>
 						<div class ="col-sm-4" style="margin-top:5px">
 							<!-- <div class="container"> -->
-							<div class="form-check form-check-inline">
+							<!-- <div class="form-check form-check-inline">
 								<input class="form-check-input" type="radio" name="selectedType" id="typeSelect1" value="1" required />
 								<label class="form-check-label" for="typeSelect1">ครั้งที่ 1</label>
 							</div>
@@ -114,22 +99,21 @@ $currentdate = date('Y-m-d');
 							<div class="form-check form-check-inline">
 								<input class="form-check-input" type="radio" name="selectedType" id="typeSelect4" value="4" required />
 								<label class="form-check-label" for="typeSelect4">ครั้งที่ 4</label>
-							</div>
+							</div> -->
 							<!-- </div> -->
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="type" id="type1" onclick="selected('1');" value="1" required />
+								<label class="form-check-label" for="type1">สำหรับอธิบดี</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="type" id="type2" onclick="selected('2');" value="2" required />
+								<label class="form-check-label" for="type2">สำหรับในหน่วยงาน</label>
+							</div>
 						</div>
 
 					<div class="col-sm-5">
-						<select class="form-control" name="division" id="division" required>
+						<select style="width:400px;" class="form-control form-control-sm" name="division" id="division" required>
 							<option value="">- กรุณาเลือก -</option>
-							<?php
-							$sql_receiver = "SELECT name,username FROM userlogin WHERE permission_group='2' ORDER BY name ASC";
-							$query_receiver = mysqli_query($conn,$sql_receiver);
-							?>
-							<?php while ($data_receiver = mysqli_fetch_array($query_receiver)){ ?>
-								<option <?php if($row['division']==$data_receiver['username']){echo "selected";}?> value="<?php echo $data_receiver['username']; ?>">
-									<?php echo $data_receiver['name']; ?>
-								</option>
-							<?php }; ?>
 						</select>
 					</div>
 					<div class="col-sm-2"></div>
@@ -274,28 +258,48 @@ $currentdate = date('Y-m-d');
 		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
 		<!-- JScript -->
 		<script>
 			function selected(i) {
-				let t1 = document.getElementById("typeSelect1");
-				let t2 = document.getElementById("typeSelect2");
-				let t3 = document.getElementById("typeSelect3");
-				let t4 = document.getElementById("typeSelect4");
+				// let t1 = document.getElementById("typeSelect1");
+				// let t2 = document.getElementById("typeSelect2");
+				// let t3 = document.getElementById("typeSelect3");
+				// let t4 = document.getElementById("typeSelect4");
 				if (i == 1) {
-					t1.checked = false;
-					t2.checked = false;
-					t3.checked = false;
-					t4.checked = false;
-					t1.disabled = true;
-					t2.disabled = true;
-					t3.disabled = true;
-					t4.disabled = true;
+					typeexport(i);
+					// t1.checked = false;
+					// t2.checked = false;
+					// t3.checked = false;
+					// t4.checked = false;
+					// t1.disabled = true;
+					// t2.disabled = true;
+					// t3.disabled = true;
+					// t4.disabled = true;
 				} else {
-					t1.disabled = false;
-					t2.disabled = false;
-					t3.disabled = false;
-					t4.disabled = false;
+					typeexport(i);
+					// t1.disabled = false;
+					// t2.disabled = false;
+					// t3.disabled = false;
+					// t4.disabled = false;
 				}
+			}
+
+			function typeexport(n) {
+				type = "t="+n;
+				$.ajax({
+					url: "ajax_get_section.php",
+					data: type,
+					type: "POST",
+					async:false,
+					success: function(data, status) {
+						$("#division").empty();
+						$("#division").append('<option value="">- กรุณาเลือก -</option>');
+						$("#division").append(data);
+						var q = data;
+					},
+					error: function(xhr, status, exception) { alert(status); }
+				});
 			}
 		</script>
 	</body>
