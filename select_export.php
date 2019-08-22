@@ -144,7 +144,6 @@ $currentdate = date('Y-m-d');
 						if (!empty($division) && !empty($instype)) {
 							if (mysqli_num_rows($query_detail) >= 1) {
 								while ($data = mysqli_fetch_assoc($query_detail)){
-									//query join table
 									$id = $data['id'];
 									$inspect_date = $data['inspect_date'];
 									$inspect_no = $data['inspect_no'];
