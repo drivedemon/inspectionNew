@@ -35,7 +35,7 @@ $flag = 0;
 $id = $_GET['id'];
 $divi = $_GET['division'];
 $type_export = $_GET['t'];
-// ถึง แปลงค่า query ของส่วนกลางให้ตรงกับตัวแปล อย่าลืม
+
 if ($divi == 'jjs120') {
 	$flag = 1;
 	$sql = "SELECT d.type_locate,d.inspect_type,d.budget_year,ul.name,d.inspect_date";
@@ -89,7 +89,6 @@ if ($divi == 'jjs120') {
 	$sql .= " WHERE d.division=ul.username AND d.id='$id'";
 }
 
-echo "$sql";
 $result = mysqli_query($conn, $sql);
 $data = $result->fetch_assoc();
 
@@ -248,11 +247,10 @@ if ($data['type_locate'] == 1) {
 	"r3_9" => array("๓.๙ การประหยัดพลังงาน", $data['r21'], $t1_21, $t2_21, $t3_21, $t4_21),
 	"r3_10" => array("๓.๑๐ การเงินการคลัง", $data['r22'], $t1_22, $t2_22, $t3_22, $t4_22));
 }
-
-echo "<br><br>";
-print_r($stack);
-echo "<br><br>";
-print_r($data);
+// echo "<br><br>";
+// print_r($stack);
+// echo "<br><br>";
+// print_r($data);
 ?>
 <HTML>
   <HEAD>
