@@ -39,7 +39,7 @@ $sql .= " ,d.r1_1,d.r1_2,d.r1_3,d.r1_4,d.r1_5";
 $sql .= " ,d.r2_1,d.r2_2,d.r2_3,d.r2_4,d.r2_5,d.r2_6,d.r2_7";
 $sql .= " ,d.r3_1,d.r3_2,d.r3_3,d.r3_4,d.r3_5,d.r3_6,d.r3_7,d.r3_8,d.r3_9,d.r3_10";
 
-if (empty($type_export)) {
+if (!empty($type_export)) {
   $sql .= " ,cr.r_cen1_1_1,cr.r_cen1_1_2,cr.r_cen1_2_1,cr.r_cen1_2_2,cr.r_cen1_3_1,cr.r_cen1_3_2,cr.r_cen1_4_1,cr.r_cen1_4_2,cr.r_cen1_5_1,cr.r_cen1_5_2,cr.r_cen1_5_3";
   $sql .= " ,cr.r_cen2_1_1,cr.r_cen2_1_2,cr.r_cen2_1_3,cr.r_cen2_2_1,cr.r_cen2_2_2,cr.r_cen2_2_3,cr.r_cen2_3_1,cr.r_cen2_3_2,cr.r_cen2_3_3,cr.r_cen2_4_1,cr.r_cen2_4_2";
   $sql .= " ,cr.r_cen2_5_1,cr.r_cen2_5_2,cr.r_cen2_6_1,cr.r_cen2_6_2,cr.r_cen2_6_3,cr.r_cen2_7_1,cr.r_cen2_7_2,cr.r_cen2_7_3,cr.r_cen3_1_1,cr.r_cen3_1_2,cr.r_cen3_1_3";
@@ -187,7 +187,7 @@ ob_start();
               echo "<tr>";
               echo "<td width='20%' valign='top'>$skey</td>";
               if (!empty($svalue)) {
-                echo "<td width='20%' valign='top'>."thainumDigit($svalue)."</td>";
+                echo "<td width='20%' valign='top'>".thainumDigit($svalue)."</td>";
               } else {
                 echo "<td width='20%' valign='top'>-</td>";
               }
