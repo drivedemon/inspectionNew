@@ -4,7 +4,7 @@ include("MPDF54/mpdf.php");
 include '../include/connect.php';
 mysql_select_db("inspection_new");
 $id = $_GET['id'];
-$divi = $_GET['div'];
+$divi = $_GET['division'];
 $type_export = $_GET['t'];
 $font="font-family:garuda;table-layout:fixed;overflow:wrap;";
 
@@ -48,13 +48,10 @@ if (empty($type_export)) {
   $sql .= " FROM data d, userlogin ul, center_reason cr";
   $sql .= " WHERE d.division=ul.username AND d.center_id=cr.id AND d.id='$id'";
 } else {
-  $sql .= " ,";
-  $sql .= " FROM data d, userlogin ul, center_reason cr";
-  $sql .= " WHERE d.division=ul.username AND d.center_id=cr.id AND d.id='$id'";
-
+  // $sql .= " ,";
+  // $sql .= " FROM data d, userlogin ul, center_reason cr";
+  // $sql .= " WHERE d.division=ul.username AND d.center_id=cr.id AND d.id='$id'";
 }
-
-
 // echo $sql;
 $result=mysql_query($sql);
 $data=mysql_fetch_assoc($result);
@@ -147,13 +144,10 @@ ob_start();
       // }
       if($data==""){
         echo "ไม่พบข้อมูล";
-        // exit(0);
+        exit(0);
       }
       ?>
     </div>
-    <!-- <?=print_r($data)?> -->
-    <!-- <?=print_r($stack)?> -->
-
     <table width="492" border="0" align="center" style="<?=$font?>">
       <tr>
         <td colspan="2" align="center"><strong>รายงานการตรวจราชการกรณี<?=$data['inspect_type']?> ประจำปีงบประมาณ พ.ศ. <?=thainumDigit($data['budget_year'])?></strong></td>
@@ -170,10 +164,6 @@ ob_start();
       <tr>
         <td colspan="2" align="center">&nbsp;</td>
       </tr>
-      <!-- <tr>
-        <td width="118">ชื่อ-นามสกุล</td>
-        <td class="dotted_fixwidth"><?=$data[prename].$data[firstname]." ".$data[lastname]?></td>
-      </tr> -->
     </table>
 
     <br />
@@ -197,7 +187,7 @@ ob_start();
               echo "<tr>";
               echo "<td width='20%' valign='top'>$skey</td>";
               if (!empty($svalue)) {
-                echo "<td width='20%' valign='top'>$svalue</td>";
+                echo "<td width='20%' valign='top'>."thainumDigit($svalue)."</td>";
               } else {
                 echo "<td width='20%' valign='top'>-</td>";
               }
@@ -205,30 +195,21 @@ ob_start();
               echo "<td width='20%' valign='top'>";
               if (!empty($svalue[0])) {
                 echo "- ";
-                print_r($svalue[0]);
+                print_r(thainumDigit($svalue[0]));
                 echo "<br>";
               }
               if (!empty($svalue[1])) {
                 echo "- ";
-                print_r($svalue[1]);
+                print_r(thainumDigit($svalue[1]));
                 echo "<br>";
               }
               if (!empty($svalue[2])) {
                 echo "- ";
-                print_r($svalue[2]);
+                print_r(thainumDigit($svalue[2]));
               }
               if (empty($svalue[0]) && empty($svalue[1]) && empty($svalue[2])) {
                 echo "- ";
               }
-              // foreach ($svalue as $tkey => $tvalue) {
-              //   if (!empty($tvalue)) {
-              //     echo "- $tvalue";
-              //     echo "<br>";
-              //   } else {
-              //     echo "-";
-              //     echo "<br>";
-              //   }
-              // }
               echo "</td>";
               echo "</tr>";
             }
