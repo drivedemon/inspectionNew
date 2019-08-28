@@ -56,8 +56,7 @@ if ($id != "") {
 	$checkRound_row = mysqli_fetch_assoc($checkRound_query);
 
 	$round = (!empty($checkRound_row['r']))?$checkRound_row['r']+1:1;
-	
-echo "$round";
+
 	if ($row['inspect_type'] == 1) {
 		$insType = "กรณีปกติ";
 	} elseif ($row['inspect_type'] == 2) {
@@ -1176,7 +1175,7 @@ echo "$round";
 					</div>
 					<?php
 				} else {
-					if ($userID == 105) {
+					if ($userID == 99) {
 						?>
 						<div class="col-sm-1"></div>
 						<label class="col-sm-2 col-form-label bold">&emsp;- กพย : </label>

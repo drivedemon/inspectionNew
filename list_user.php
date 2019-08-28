@@ -158,9 +158,9 @@ $num_rows = 0;
 			<!-- -->
 			<div class="container">
 				<?php
-				$sql3 = "SELECT *FROM data"; //select items มาเพื่อนับจำนวนทั้งหมด มาหาจำนวนหน้า
-				$query3 = mysqli_query($conn, $sql3);
-				$total_record = mysqli_num_rows($query3);
+				// $sql3 = "SELECT * FROM data"; //select items มาเพื่อนับจำนวนทั้งหมด มาหาจำนวนหน้า
+				// $query3 = mysqli_query($conn, $sql3);
+				$total_record = mysqli_num_rows($query_detail);
 				$total_pages = ceil($total_record / $perpage);
 
 				$start_loop = $page; //start ที่ page= ที่getมา

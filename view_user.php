@@ -63,7 +63,7 @@ if (!empty($division) && !empty($type)) {
 			$sql .= " cr.r_cen1_5_1,cr.r_cen3_7_3,";
 			$sql .= " rf.r1_5,rf.r3_7";
 		} elseif ($division == 'fin201') {
-			$sql .= " cr.r_cen1_2_1,cr.r_cen1_3_1,cr.r_cen1_4_1,cr.r_cen3_7_1,cr.r_cen3_8_1,cr.r_cen3_9_1,cr.r_cen3_10_1,";
+			$sql .= " cr.r_cen1_2_2,cr.r_cen1_3_2,cr.r_cen1_4_2,cr.r_cen3_7_1,cr.r_cen3_8_1,cr.r_cen3_9_1,cr.r_cen3_10_1,";
 			$sql .= " rf.r1_2, rf.r1_3, rf.r1_4, rf.r3_7, rf.r3_8, rf.r3_9, rf.r3_10";
 		} elseif ($division == 'jdi100') {
 			$sql .= " cr.r_cen1_1_2,cr.r_cen2_1_2,cr.r_cen2_2_2,cr.r_cen2_3_2,cr.r_cen2_4_2,cr.r_cen2_5_2,cr.r_cen2_6_2,cr.r_cen2_7_2,cr.r_cen3_1_2,cr.r_cen3_2_2,cr.r_cen3_3_2,cr.r_cen3_4_2,cr.r_cen3_5_2,cr.r_cen3_6_2,cr.r_cen3_7_2,cr.r_cen3_8_2,";
@@ -73,7 +73,7 @@ if (!empty($division) && !empty($type)) {
 	}
 	$query = mysqli_query($conn, $sql);
 	$row = mysqli_fetch_assoc($query);
-	echo "$sql";
+	// echo "$sql";
 
 	$locate = (!empty($row['type_locate']))?$row['type_locate']:'';
 	$keylocate = $locate=="1"? "sp":'tr';
