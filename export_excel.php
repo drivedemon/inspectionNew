@@ -4,8 +4,8 @@ date_default_timezone_set('Asia/Bangkok');
 session_start();
 error_reporting(0); // close all error
 // set html to excel format
-// header("Content-Type: application/vnd.ms-excel");
-// header('Content-Disposition: attachment; filename="MyXls.xls"');
+header("Content-Type: application/vnd.ms-excel");
+header('Content-Disposition: attachment; filename="MyXls.xls"');
 
 function thainumDigit($num){
 	return str_replace(array( '0' , '1' , '2' , '3' , '4' , '5' , '6' ,'7' , '8' , '9' ),
@@ -264,25 +264,25 @@ if ($data['type_locate'] == 1) {
   <BODY>
     <TABLE x:str BORDER="1" style="font-family: TH SarabunPSK; font-size: 20px; height: 40px;">
       <TR style="font-family: TH SarabunPSK; font-size: 25px;">
-        <th colspan="10" align="center">รายงานการตรวจราชการกรณี<?=$data['inspect_type']?> ประจำปีงบประมาณ พ.ศ. <?=thainumDigit($data['budget_year'])?></th>
+        <th colspan="14" align="center">รายงานการตรวจราชการกรณี<?=$data['inspect_type']?> ประจำปีงบประมาณ พ.ศ. <?=thainumDigit($data['budget_year'])?></th>
       </TR>
       <TR style="font-family: TH SarabunPSK; font-size: 25px;">
-        <th colspan="10" align="center">กรมพินิจและคุ้มครองเด็กและเยาวชน</th>
+        <th colspan="14" align="center">กรมพินิจและคุ้มครองเด็กและเยาวชน</th>
       </TR>
       <TR style="font-family: TH SarabunPSK; font-size: 25px;">
-        <th colspan="10" align="center"><?=($flag == 0)?thainamedepartFull($data['name']):$cname?></th>
+        <th colspan="14" align="center"><?=($flag == 0)?thainamedepartFull($data['name']):$cname?></th>
       </TR>
       <TR style="font-family: TH SarabunPSK; font-size: 25px;">
-        <th colspan="10" align="center">วันที่ตรวจราชการ <?=$ins_fulldate?></th>
+        <th colspan="14" align="center">วันที่ตรวจราชการ <?=$ins_fulldate?></th>
       </TR>
 
       <tr style="height: 50px;" align="center">
         <th>หัวข้อการตรวจราชการ</th>
         <th><?php if ($flag == 1) {echo "ข้อเสนอแนะของผู้ตรวจราชการกรม";} else {echo "ข้อค้นพบ/ผลการดำเนินงาน";} ?></th>
-        <th colspan="2">ผลการดำเนินงานของหน่วยรับการตรวจครั้งที่ 1</th>
-        <th colspan="2">ผลการดำเนินงานของหน่วยรับการตรวจครั้งที่ 2</th>
-        <th colspan="2">ผลการดำเนินงานของหน่วยรับการตรวจครั้งที่ 3</th>
-        <th colspan="2">ผลการดำเนินงานของหน่วยรับการตรวจครั้งที่ 4</th>
+        <th colspan="3">ผลการดำเนินงานของหน่วยรับการตรวจครั้งที่ ๑</th>
+        <th colspan="3">ผลการดำเนินงานของหน่วยรับการตรวจครั้งที่ ๒</th>
+        <th colspan="3">ผลการดำเนินงานของหน่วยรับการตรวจครั้งที่ ๓</th>
+        <th colspan="3">ผลการดำเนินงานของหน่วยรับการตรวจครั้งที่ ๔</th>
       </tr>
       <!-- <TR> -->
       <?php
@@ -292,18 +292,18 @@ if ($data['type_locate'] == 1) {
 				foreach ($value as $fkey => $fvalue) {
 					if ($fkey >= 2) {
 						if (!empty($fvalue)) {
-							echo "<td colspan='2'>";
-							echo "$fvalue";
+							echo "<td colspan='3'>";
+							echo thainumDigit($fvalue);
 							echo "</td>";
 						} else {
-							echo "<td colspan='2'>";
+							echo "<td colspan='3'>";
 							echo "-";
 							echo "</td>";
 						}
 					} else {
 						if (!empty($fvalue)) {
 							echo "<td>";
-							echo "$fvalue";
+							echo thainumDigit($fvalue);
 							echo "</td>";
 						} else {
 							echo "<td>";
