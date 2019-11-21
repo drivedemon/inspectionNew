@@ -44,7 +44,7 @@ if (!empty($division) && !empty($type)) {
 		$sql .= " rf.r1_1 as re1_1, rf.r1_2 as re1_2, rf.r1_3 as re1_3, rf.r1_4 as re1_4, rf.r1_5 as re1_5,";
 		$sql .= " rf.r2_1 as re2_1, rf.r2_2 as re2_2, rf.r2_3 as re2_3, rf.r2_4 as re2_4, rf.r2_5 as re2_5, rf.r2_6 as re2_6, rf.r2_7 as re2_7,";
 		$sql .= " rf.r3_1 as re3_1, rf.r3_2 as re3_2, rf.r3_3 as re3_3, rf.r3_4 as re3_4, rf.r3_5 as re3_5, rf.r3_6 as re3_6, rf.r3_7 as re3_7, rf.r3_8 as re3_8, rf.r3_9 as re3_9, rf.r3_10 as re3_10";
-		$sql .= " FROM data d, inspector ins, userlogin usl, title t, center_reason cr, report_follow rf, pr_filelocate prf WHERE rf.data_id = prf.data_id and rf.track_round = prf.track_round and rf.division = usl.username and d.inspector = ins.id and t.id = ins.titlename and d.center_id = cr.id and d.id = rf.data_id and rf.division='$division' and rf.track_round='$type'";
+		$sql .= " FROM data d, inspector ins, userlogin usl, title t, center_reason cr, report_follow rf, pr_filelocate prf WHERE rf.data_id = prf.data_id and rf.track_round = prf.track_round and rf.division = usl.username and d.inspector = ins.id and t.id = ins.titlename and d.center_id = cr.id and d.id = rf.data_id and rf.division='$division' and rf.track_round='$type' and d.id='$id'";
 	} else {
 		if ($division == 'jjs120') {
 			$sql .= " cr.r_cen1_5_2,cr.r_cen2_1_1,cr.r_cen2_2_1,cr.r_cen2_3_1,cr.r_cen2_4_1,cr.r_cen2_5_1,cr.r_cen2_6_1,cr.r_cen2_7_1,";
@@ -73,7 +73,6 @@ if (!empty($division) && !empty($type)) {
 	}
 	$query = mysqli_query($conn, $sql);
 	$row = mysqli_fetch_assoc($query);
-	// echo "$sql";
 
 	$locate = (!empty($row['type_locate']))?$row['type_locate']:'';
 	$keylocate = $locate=="1"? "sp":'tr';
@@ -181,7 +180,8 @@ if (!empty($division) && !empty($type)) {
 								echo '<a href="./files-reply/'.$row['pr1_1'].'">';
 							} else {
 								echo '<a href="./pic-reply/_RESIZE/'.$row['pr1_1'].'">';
-							} ?>
+							}
+							?>
 								เอกสารแนบ
 							</a>
 						</label>
